@@ -94,6 +94,74 @@ def get_debt_per_person():
     return fabian, elisa
 
 
+# this code has a bug, eg: if you have 2 the same categories on same date but another category in between, it will not group them
+# def group_expenses_by_category_and_date(data):
+#     # data is a list of dicts, already sorted by date
+#     # group by category and date and sum up the prices
+#     # return a list of dicts
+
+#     # list of dicts
+#     data_grouped_by_category_and_date = []
+
+#     previous_category = None
+#     previous_date = None
+#     for entry in data:
+#         category = entry["category"]
+#         date = entry["date"]
+
+#         if category == previous_category and date == previous_date:
+#             # add to previous entry
+#             data_grouped_by_category_and_date[-1]["price"] += entry["price"]
+#         else:
+#             # create new entry
+#             data_grouped_by_category_and_date.append(entry)
+
+#         previous_category = category
+#         previous_date = date
+
+#     return data_grouped_by_category_and_date
+
+
+# this function fixes the bug of the above function
+def group_expenses_by_category_and_date(data):
+    # list of dicts
+    data_grouped_by_category_and_date = []
+
+    occupied_categories = (
+        []
+    )  # the categories that are already used for a given date. If a category is already used for a given date, we need to add the price to the existing entry
+    current_date = None
+    for entry in data:
+        category = entry["category"]
+        date = entry["date"]
+
+        if date != current_date:
+            # new entry
+            data_grouped_by_category_and_date.append(entry)
+            current_date = date
+            occupied_categories = [category]
+        else:
+            if category in occupied_categories:
+                # add to existing entry
+
+                # iterate over all entries in reverse order
+                for i in range(len(data_grouped_by_category_and_date) - 1, -1, -1):
+                    if (
+                        data_grouped_by_category_and_date[i]["category"] == category
+                        and data_grouped_by_category_and_date[i]["date"] == date
+                    ):
+                        # add price to this entry
+                        data_grouped_by_category_and_date[i]["price"] += entry["price"]
+                        break
+
+            else:
+                # create new entry
+                data_grouped_by_category_and_date.append(entry)
+                occupied_categories.append(category)
+
+    return data_grouped_by_category_and_date
+
+
 def get_expenses(name):
     # Get the expenses for `name`
 
@@ -142,10 +210,12 @@ def get_expenses(name):
         if individual_cost["price"] > 0:
             data.append(individual_cost)
 
+    data = group_expenses_by_category_and_date(data)
+
     # reverse order
     data = data[::-1]
 
-    # only first 25 entries
-    data = data[:25]
+    # only first 30 entries
+    data = data[:30]
 
     return data
