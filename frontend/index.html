@@ -349,6 +349,7 @@
       }
 
       readName();
+      location.reload();
     }
 
 
@@ -386,6 +387,13 @@
     });
 
     onload = () => {
+      // default input ratio: 100 for Fabian, 50 for Elisa
+      if (getName() == 'Fabian') {
+        inp_ratio.value = 100;
+      } else {
+        inp_ratio.value = 50;
+      }
+
       lbl_percent.innerHTML = inp_ratio.value + '%';
       readName();
       updateDebts();
