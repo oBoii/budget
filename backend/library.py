@@ -1,8 +1,6 @@
 import json
 import matplotlib.pyplot as plt
-import numpy as np
 from root import ROOT
-from datetime import datetime
 import os
 from openpyxl import Workbook, load_workbook
 

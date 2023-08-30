@@ -182,8 +182,8 @@
   </style>
 
   <script>
-    const url = "http://127.0.0.1:5000"
-    // const url = "http://ofabian.pythonanywhere.com"
+    // const url = "http://127.0.0.1:5000"
+    const url = "http://ofabian.pythonanywhere.com"
     const key = authenticate()
 
     const inp_price = document.getElementById('inp_price');
@@ -327,8 +327,8 @@
       betterFetch(fullUrl)
         .then(response => response.json())
         .then(data => {
-          console.log(data);
-          alert(data.message);
+          // console.log(data);
+          // alert(data.message);
           location.reload();
         })
         .catch(e => handleError(e))
