@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Budget</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/png" href="fav.png" />
+
+</head>
+
+<body>
+
+
+  <div id="main">
+    <div id="div_debts" class="margin" style="background-color: #78f0338a; ; border-radius: 5px;">
+      <!-- Shows debt for Fabian and Elisa  -->
+      <br>
+      <span id="lbl_name_has_debt">##</span> moet <span id="lbl_name_no_debt">##</span> <span id="lbl_debt">##</span>
+      EUR. <br> <br>
+    </div>
+
+    <div id="div_price" class="margin">
+      <!-- round up to 2 decimals -->
+      <span>€</span> <input type="number" name="inp_price" id="inp_price" autofocus placeholder="0,00">
+    </div>
+
+    <div class="margin">
+      <span id="lbl_percent" style="vertical-align: top">##</span>
+      <input type="range" name="inp_ratio" id="inp_ratio" min="0" max="100" value="100" step="10">
+    </div>
+    <div class="margin">
+      <label for="inp_price_me">Me:</label> <input type="number" name="inp_price_me" id="inp_price_me" min="0">
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      <label for="inp_price_other">Other:</label> <input type="number" name="inp_price_other" id="inp_price_other"
+        min="0">
+    </div>
+
+    <div id="div_categories">
+      <!-- Categories: Boodschappen, Restaurants, Ontspanning & Entertainment, 
+        Transport, Vakantie, Infrequent periodiek, Gezondheid, Shopping, Uitzonderlijk & Overige -->
+
+      <!-- button per category: -->
+      <button class="button" onclick="chooseCategory(this, 'Boodschappen')">Boodschappen</button>
+      <button class="button" onclick="chooseCategory(this, 'Restaurants')">Restaurants</button>
+      <button class="button" onclick="chooseCategory(this, 'Ontspanning')">Ontspanning</button>
+      <button class="button" onclick="chooseCategory(this, 'Shopping')">Shopping</button>
+      <button class="button" onclick="chooseCategory(this, 'Infrequent')">Infrequent</button>
+      <button class="button" onclick="chooseCategory(this, 'Transport')">Transport</button>
+      <button class="button" onclick="chooseCategory(this, 'Gezondheid')">Gezondheid</button>
+      <button class="button" onclick="chooseCategory(this, 'Vakantie')">Vakantie</button>
+      <button class="button" onclick="chooseCategory(this, 'Uitzonderlijk & Overige')">Uitzonderlijk</button>
+    </div>
+
+    <div id="div_submit" class="margin">
+      <button name="btn_submit" id="btn_submit" onclick="submit()">Submit</button>
+    </div>
+
+    <div id="profile_name" class="margin" style="text-align: left;">
+      <br><br>
+      Betaald door <span id="lbl_name" onclick="editName()">##</span>.
+    </div>
+
+    <div id="div_expenses" class="margin" style="text-align: left;">
+      <!-- Table of all expenses done by me -->
+      <br><br>
+      <table id="tbl_expenses" style="width: 100%;">
+        <tr>
+          <th>Datum</th>
+          <th>Prijs</th>
+          <th>Categorie</th>
+        </tr>
+        <!-- <tr>
+          <td>Do 01/10 </td>
+          <td>€ 12,00</td>
+          <td>Boodschappen</td>
+        </tr> -->
+    </div>
+  </div>
+
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      color: #3e3e3e;
+    }
+
+    #main {
+      text-align: center;
+      /* margin-top: 5em; */
+    }
+
+    .margin {
+      margin: 20px;
+    }
+
+    button,
+    .button {
+      font-size: 16px;
+      display: inline-block;
+      height: 35px;
+      background-color: black;
+      color: white;
+      padding-left: 1em;
+      padding-right: 1em;
+      border: 0;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    #div_submit button:hover {
+      background-color: #007AFB;
+      transition: 0.15s;
+    }
+
+    #div_submit button:active {
+      background-color: #034286;
+      transition: 0.15s;
+    }
+
+    #div_submit button:disabled {
+      background-color: #707070;
+      cursor: not-allowed;
+    }
+
+    input[type=text],
+    input[type=date],
+    input[type=number] {
+      padding: 10px;
+      border: solid 1px #dcdcdc;
+      transition: box-shadow 0.3s, border 0.3s;
+      height: 1em;
+      width: 3em;
+    }
+
+    input[type=text]:focus,
+    select:focus,
+    input[type=date]:focus,
+    input[type=number]:focus {
+      outline-width: 0;
+      border: solid 1px #707070;
+      box-shadow: 0 0 5px 1px #969696;
+    }
+
+    input[type=text]:hover,
+    select:hover,
+    input[type=date]:hover {
+      border: solid 1px #707070;
+    }
+
+    #div_price {
+      font-size: 4em;
+      text-align: center;
+    }
+
+    #inp_price {
+      font-size: 1em;
+      text-align: center;
+    }
+
+    #inp_ratio {
+      width: 80%;
+    }
+
+    #div_categories {
+      text-align: center;
+    }
+
+    #div_categories button {
+      margin: 0.5em 0em;
+      border-radius: 20px;
+      background-color: #8ac3ff;
+    }
+
+    #lbl_name {
+      /* underline */
+      text-decoration: underline;
+      cursor: pointer;
+      color: #007AFB;
+    }
+  </style>
+
+  <script>
+    const url = "http://127.0.0.1:5000"
+    // const url = "http://ofabian.pythonanywhere.com"
+    const key = authenticate()
+
+    const inp_price = document.getElementById('inp_price');
+    const inp_ratio = document.getElementById('inp_ratio');
+    const lbl_percent = document.getElementById('lbl_percent');
+    const inp_price_me = document.getElementById('inp_price_me');
+    const inp_price_other = document.getElementById('inp_price_other');
+    const lbl_name = document.getElementById('lbl_name');
+
+    const data = {
+      price: 0,
+      ratio: 100,
+      category: '',
+    }
+
+    // *** authentication ***
+    function getKey() {
+      return localStorage.getItem("budget_key")
+    }
+
+    function setKey(key) {
+      localStorage.setItem('budget_key', key)
+    }
+
+    function authenticate(isForceAuthenticate = false) {
+      let key = getKey()
+      if (!key || isForceAuthenticate) {
+        key = prompt("Password")
+        setKey(key)
+      }
+      return key
+    }
+
+    function handleError(err) {
+      if (err == `SyntaxError: Unexpected token 'U', "Unauthorized Access" is not valid JSON`) {
+        authenticate(true)
+        location.reload()
+      } else {
+        alert("Error: " + err)
+      }
+    }
+
+    function betterFetch(url, options = {}) {
+      options.headers = { 'Authorization': 'Basic ' + btoa(getKey()) }
+      return fetch(url, options)
+    }
+
+    const getName = () => {
+      return localStorage.getItem('budget_name') || 'Fabian';
+    }
+
+    const readName = () => {
+      const lbl_name = document.getElementById('lbl_name');
+      lbl_name.innerHTML = getName();
+    }
+
+    const update = () => {
+      // round to 2 decimals
+      inp_price_me.value = (inp_price.value * (inp_ratio.value / 100)).toFixed(2);
+      inp_price_other.value = (inp_price.value * ((100 - inp_ratio.value) / 100)).toFixed(2);
+
+      data.price = inp_price.value;
+      data.ratio = inp_ratio.value;
+    }
+
+    const updateDebts = () => {
+      const fullUrl = `${url}/get_debts`;
+      betterFetch(fullUrl)
+        .then(response => response.json())
+        .then(data => {
+          fabian = data.fabian; // eg: +12.00
+          elisa = data.elisa; // eg: -12.00
+
+          const lbl_name_has_debt = document.getElementById('lbl_name_has_debt');
+          const lbl_name_no_debt = document.getElementById('lbl_name_no_debt');
+          const lbl_debt = document.getElementById('lbl_debt');
+
+          if (fabian > 0) {
+            lbl_name_has_debt.innerHTML = 'Elisa';
+            lbl_name_no_debt.innerHTML = 'Fabian';
+            lbl_debt.innerHTML = fabian;
+          } else {
+            lbl_name_has_debt.innerHTML = 'Fabian';
+            lbl_name_no_debt.innerHTML = 'Elisa';
+            lbl_debt.innerHTML = elisa;
+
+          }
+        })
+        .catch(e => handleError(e))
+    }
+
+    const updateExpenses = () => {
+      const fullUrl = `${url}/get_expenses?name=${getName()}`;
+      betterFetch(fullUrl)
+        .then(response => response.json())
+        .then(data => {
+          data = data.expenses;
+          console.log(data);
+
+          const tbl_expenses = document.getElementById('tbl_expenses');
+          data.forEach(expense => {
+            tbl_expenses.innerHTML += `
+              <tr>
+                <td>${expense.date}</td>
+                <td>€ ${expense.price}</td>
+                <td>${expense.category}</td>
+              </tr>
+            `;
+          });
+        })
+        .catch(e => handleError(e))
+    }
+
+    const checkSubmit = () => {
+      if (inp_price.value != '' && inp_price.value != 0 && data.category != '') {
+        btn_submit.disabled = false;
+      } else {
+        btn_submit.disabled = true;
+      }
+      console.log(btn_submit.disabled);
+    }
+
+    const chooseCategory = (button, category) => {
+      // clear all other buttons back to original and set this button to active (#034286;)
+      // buttons in div: div_categories
+      const buttons = document.querySelectorAll('#div_categories button');
+
+      buttons.forEach((btn) => {
+        btn.style.backgroundColor = '#8ac3ff';
+      });
+
+      button.style.backgroundColor = '#034286';
+
+      data.category = category;
+      checkSubmit();
+    }
+
+    const submit = () => {
+      // send data to server
+      const fullUrl = `${url}/add_expense?price=${data.price}&ratio=${data.ratio}&category=${data.category}&name=${getName()}`;
+      betterFetch(fullUrl)
+        .then(response => response.json())
+        .then(data => {
+          console.log(data);
+          alert(data.message);
+          location.reload();
+        })
+        .catch(e => handleError(e))
+
+      // url: 
+      console.log(data);
+    }
+
+    const editName = () => {
+      // toggle between Fabian and Elisa. Store in localStorage
+      const lbl_name = document.getElementById('lbl_name');
+      if (lbl_name.innerHTML == 'Fabian') {
+        lbl_name.innerHTML = 'Elisa';
+        localStorage.setItem('budget_name', 'Elisa');
+      } else {
+        lbl_name.innerHTML = 'Fabian';
+        localStorage.setItem('budget_name', 'Fabian');
+      }
+
+      readName();
+    }
+
+
+
+    inp_price.addEventListener('input', () => {
+      update();
+      checkSubmit();
+    });
+
+    inp_ratio.addEventListener('input', () => {
+      lbl_percent.innerHTML = inp_ratio.value + '%';
+      update();
+    });
+
+    inp_price_me.addEventListener('input', () => {
+      checkSubmit();
+
+      // change value of inp_price_other accordingly
+      inp_price_other.value = (inp_price.value - inp_price_me.value).toFixed(2);
+
+      //update slider
+      inp_ratio.value = (inp_price_me.value / inp_price.value * 100).toFixed(0);
+      lbl_percent.innerHTML = inp_ratio.value + '%';
+    });
+
+    inp_price_other.addEventListener('input', () => {
+      checkSubmit();
+
+      // change value of inp_price_me accordingly
+      inp_price_me.value = (inp_price.value - inp_price_other.value).toFixed(2);
+
+      //update slider
+      inp_ratio.value = (inp_price_me.value / inp_price.value * 100).toFixed(0);
+      lbl_percent.innerHTML = inp_ratio.value + '%';
+    });
+
+    onload = () => {
+      lbl_percent.innerHTML = inp_ratio.value + '%';
+      readName();
+      updateDebts();
+      updateExpenses();
+      update();
+      checkSubmit();
+    }
+
+    // submit button enabled when all fields are filled in
+    const btn_submit = document.getElementById('btn_submit');
+    btn_submit.disabled = true;
+
+
+
+
+
+
+
+
+  </script>
+</body>
+
+</html>
