@@ -77,9 +77,12 @@ def get_expenses(name):
     # Query the expenses for the specified person, group by date and category.
     # The price is summed up for each date and category.
     # the subcategories are all appended in a single column/string
+
+    # group: id: take the maximum
     cursor.execute(
         f"""
-        SELECT date,  sum(price_{name.lower()}) as price, category, group_concat(subcategory, ', ') as subcategories, group_concat(description, ', ') as descriptions
+        SELECT max(id) as id, date, sum(price_{name.lower()}) as price, category, group_concat(subcategory, ', ') as subcategories, group_concat(description, ', ') as descriptions
+        FROM expenses
         WHERE price_{name.lower()} > 0 AND price_{name.lower()} IS NOT NULL
         group by date, category
         ORDER by date DESC
@@ -91,8 +94,16 @@ def get_expenses(name):
     # Perform expense calculations based on fetched data
     data = []
     for row in rows:
-        date, price_person, category, subcategories, descriptions = row
+        id, date, price_person, category, subcategories, descriptions = row
+
+        # remove 'null, ' from subcategories and descriptions
+        subcategories = subcategories.replace("null, ", "")
+        descriptions = descriptions.replace("null, ", "")
+        subcategories = subcategories.replace("null", "")
+        descriptions = descriptions.replace("null", "")
+
         individual_cost = {
+            "id": id,
             "date": datetime.strptime(date, "%Y-%m-%d").strftime("%d-%m"),
             "price": price_person,
             "category": category,
@@ -104,7 +115,26 @@ def get_expenses(name):
     conn.close()
 
     # Group expenses by category and date
-    # TODO
-    # data = group_expenses_by_category_and_date(data)
+    data = data[:31]  # only show the last 31 entries
 
     return data
+
+
+def delete_expense(id):
+    # Connect to the SQLite database
+    conn = sqlite3.connect("expenses.db")
+    cursor = conn.cursor()
+
+    # group: id: take the maximum
+    cursor.execute(
+        """
+        DELETE FROM expenses
+        WHERE id = ?
+        """,
+        (id,),
+    )
+
+    conn.commit()
+    conn.close()
+
+    return True
