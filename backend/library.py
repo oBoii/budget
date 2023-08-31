@@ -10,7 +10,9 @@ def param(name):
         return data[name]
 
 
-def append_expense(price_fabian, price_elisa, paid_by, category, description, subcategory, now):
+def append_expense(
+    price_fabian, price_elisa, paid_by, category, description, subcategory, now
+):
     # Connect to the SQLite database
     conn = sqlite3.connect("expenses.db")
     cursor = conn.cursor()
@@ -21,7 +23,15 @@ def append_expense(price_fabian, price_elisa, paid_by, category, description, su
         INSERT INTO expenses (date, price_fabian, price_elisa, paid_by, category, description, subcategory)
         VALUES (?, ?, ?, ?, ?, ?, ?)
         """,
-        (now.strftime("%Y-%m-%d"), price_fabian, price_elisa, paid_by.lower(), category, description, subcategory),
+        (
+            now.strftime("%Y-%m-%d"),
+            price_fabian,
+            price_elisa,
+            paid_by.lower(),
+            category,
+            description,
+            subcategory,
+        ),
     )
 
     # Commit the changes and close the connection
@@ -59,69 +69,35 @@ def get_debt_per_person():
     return fabian, elisa
 
 
-def group_expenses_by_category_and_date(data):
-    # list of dicts
-    data_grouped_by_category_and_date = []
-
-    # the categories that are already used for a given date. If a category is already used for a given date, we need to add the price to the existing entry
-    occupied_categories = []
-    current_date = None
-    for entry in data:
-        category = entry["category"]
-        date = entry["date"]
-
-        if date != current_date:
-            # new entry
-            data_grouped_by_category_and_date.append(entry)
-            current_date = date
-            occupied_categories = [category]
-        else:
-            if category in occupied_categories:
-                # add to existing entry
-
-                # iterate over all entries in reverse order
-                for i in range(len(data_grouped_by_category_and_date) - 1, -1, -1):
-                    if (
-                        data_grouped_by_category_and_date[i]["category"] == category
-                        and data_grouped_by_category_and_date[i]["date"] == date
-                    ):
-                        # add price to this entry
-                        data_grouped_by_category_and_date[i]["price"] += entry["price"]
-                        break
-
-            else:
-                # create new entry
-                data_grouped_by_category_and_date.append(entry)
-                occupied_categories.append(category)
-
-    return data_grouped_by_category_and_date
-
 def get_expenses(name):
     # Connect to the SQLite database
     conn = sqlite3.connect("expenses.db")
     cursor = conn.cursor()
 
-    # Query the expenses for the specified person
+    # Query the expenses for the specified person, group by date and category.
+    # The price is summed up for each date and category.
+    # the subcategories are all appended in a single column/string
     cursor.execute(
         f"""
-        SELECT date, price_{name.lower()} as price, category, description, subcategory FROM expenses
+        SELECT date,  sum(price_{name.lower()}) as price, category, group_concat(subcategory, ', ') as subcategories, group_concat(description, ', ') as descriptions
         WHERE price_{name.lower()} > 0 AND price_{name.lower()} IS NOT NULL
+        group by date, category
         ORDER by date DESC
         """,
-        (), # (name,),
+        (),  # (name,),
     )
     rows = cursor.fetchall()
 
     # Perform expense calculations based on fetched data
     data = []
     for row in rows:
-        date, price_person, category, description, subcategory = row
+        date, price_person, category, subcategories, descriptions = row
         individual_cost = {
             "date": datetime.strptime(date, "%Y-%m-%d").strftime("%d-%m"),
             "price": price_person,
             "category": category,
-            "description": description,
-            "subcategory": subcategory,
+            "description": descriptions,
+            "subcategory": subcategories,
         }
         data.append(individual_cost)
 

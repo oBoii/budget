@@ -278,7 +278,7 @@
         .catch(e => handleError(e))
     }
 
-    const updateExpenses = () => {
+    const listExpenses = () => {
       const fullUrl = `${url}/get_expenses?name=${getName()}`;
       betterFetch(fullUrl)
         .then(response => response.json())
@@ -288,11 +288,14 @@
 
           const tbl_expenses = document.getElementById('tbl_expenses');
           data.forEach(expense => {
+            // final row is subcategories, if subcategories is null, set to empty string
             tbl_expenses.innerHTML += `
               <tr>
                 <td>${expense.date}</td>
                 <td>€ ${expense.price}</td>
                 <td>${expense.category}</td>
+                <td>${expense.subcategory == null ? '' : expense.subcategory}</td>
+                <td>${expense.description == null ? '' : expense.description}</td>
               </tr>
             `;
           });
@@ -411,7 +414,7 @@
       lbl_percent.innerHTML = inp_ratio.value + '%';
       readName();
       updateDebts();
-      updateExpenses();
+      listExpenses();
       update();
       checkSubmit();
     }
@@ -419,13 +422,6 @@
     // submit button enabled when all fields are filled in
     const btn_submit = document.getElementById('btn_submit');
     btn_submit.disabled = true;
-
-
-
-
-
-
-
 
   </script>
 </body>
