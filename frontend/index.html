@@ -182,8 +182,8 @@
   </style>
 
   <script>
-    // const url = "http://127.0.0.1:5000"
-    const url = "http://ofabian.pythonanywhere.com"
+    const url = "http://127.0.0.1:5000"
+    // const url = "http://ofabian.pythonanywhere.com"
     const key = authenticate()
 
     const inp_price = document.getElementById('inp_price');
@@ -192,6 +192,9 @@
     const inp_price_me = document.getElementById('inp_price_me');
     const inp_price_other = document.getElementById('inp_price_other');
     const lbl_name = document.getElementById('lbl_name');
+
+    const FABIAN = 'Fabian';
+    const ELISA = 'Elisa';
 
     const data = {
       price: 0,
@@ -232,7 +235,7 @@
     }
 
     const getName = () => {
-      return localStorage.getItem('budget_name') || 'Fabian';
+      return localStorage.getItem('budget_name') || 'FABIAN';
     }
 
     const readName = () => {
@@ -262,12 +265,12 @@
           const lbl_debt = document.getElementById('lbl_debt');
 
           if (fabian > 0) {
-            lbl_name_has_debt.innerHTML = 'Elisa';
-            lbl_name_no_debt.innerHTML = 'Fabian';
+            lbl_name_has_debt.innerHTML = ELISA;
+            lbl_name_no_debt.innerHTML = FABIAN;
             lbl_debt.innerHTML = fabian;
           } else {
-            lbl_name_has_debt.innerHTML = 'Fabian';
-            lbl_name_no_debt.innerHTML = 'Elisa';
+            lbl_name_has_debt.innerHTML = FABIAN;
+            lbl_name_no_debt.innerHTML = ELISA;
             lbl_debt.innerHTML = elisa;
 
           }
@@ -323,7 +326,18 @@
 
     const submit = () => {
       // send data to server
-      const fullUrl = `${url}/add_expense?price=${data.price}&ratio=${data.ratio}&category=${data.category}&name=${getName()}`;
+      const price_me = inp_price_me.value;
+      const price_other = inp_price_other.value;
+
+      const price_fabian = getName() == FABIAN ? price_me : price_other;
+      const price_elisa = getName() == FABIAN ? price_other : price_me;
+      const paidBy = getName().toLowerCase();
+      const category = data.category;
+      const subcategory = null;
+      const description = null;
+
+      const fullUrl = `${url}/add_expense?price_fabian=${price_fabian}&price_elisa=${price_elisa}&paid_by=${paidBy}&category=${category}&subcategory=${subcategory}&description=${description}`;
+
       betterFetch(fullUrl)
         .then(response => response.json())
         .then(data => {
@@ -340,16 +354,16 @@
     const editName = () => {
       // toggle between Fabian and Elisa. Store in localStorage
       const lbl_name = document.getElementById('lbl_name');
-      if (lbl_name.innerHTML == 'Fabian') {
-        lbl_name.innerHTML = 'Elisa';
-        localStorage.setItem('budget_name', 'Elisa');
+      if (lbl_name.innerHTML == FABIAN) {
+        lbl_name.innerHTML = ELISA;
+        localStorage.setItem('budget_name', ELISA);
       } else {
-        lbl_name.innerHTML = 'Fabian';
-        localStorage.setItem('budget_name', 'Fabian');
+        lbl_name.innerHTML = FABIAN;
+        localStorage.setItem('budget_name', FABIAN);
       }
 
       readName();
-      location.reload();
+      // location.reload();
     }
 
 
@@ -388,7 +402,7 @@
 
     onload = () => {
       // default input ratio: 100 for Fabian, 50 for Elisa
-      if (getName() == 'Fabian') {
+      if (getName() == FABIAN) {
         inp_ratio.value = 100;
       } else {
         inp_ratio.value = 50;

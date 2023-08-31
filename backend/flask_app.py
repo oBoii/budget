@@ -1,10 +1,10 @@
+import json
+from datetime import datetime
+import seaborn as sns
 from flask_httpauth import HTTPBasicAuth
 from flask import Flask, request
 from flask_cors import CORS
-from library import *
-import json
-import seaborn as sns
-from datetime import datetime
+from library import append_expense, get_debt_per_person, get_expenses, param
 
 
 sns.set_theme()
@@ -32,6 +32,7 @@ def page_index():
 
     return json.dumps({"fabian": fabian, "elisa": elisa})
 
+
 @app.route("/get_expenses")
 @auth.login_required
 def page_get_expenses():
@@ -45,15 +46,17 @@ def page_get_expenses():
 def page_add_expense():
     # retrieve params: price, ratio, category
     r = request
-    price = float(r.args.get("price"))
-    ratio = float(r.args.get("ratio"))
+    price_fabian = float(r.args.get("price_fabian"))
+    price_elisa = float(r.args.get("price_elisa"))
+    paid_by = r.args.get("paid_by")
     category = r.args.get("category")
-    name = r.args.get("name")
+    subcategory = r.args.get("subcategory")
+    description = r.args.get("description")
     now = datetime.now()
 
-    # append to csv
-    # append_expense(price, ratio, category, now)
-    append_expense_excel(price, ratio, category, name, now)
+    append_expense(
+        price_fabian, price_elisa, paid_by, category, description, subcategory, now
+    )
     return json.dumps({"message": "Expense added"})
 
 
