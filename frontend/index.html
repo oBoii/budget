@@ -8,11 +8,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
   <link rel="icon" type="image/png" href="fav.png" />
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-
-
   <div id="main">
     <div id="div_debts" class="margin" style="background-color: #78f0338a; ; border-radius: 5px;">
       <!-- Shows debt for Fabian and Elisa  -->
@@ -78,112 +77,6 @@
         </tr> -->
     </div>
   </div>
-
-  <style>
-    body {
-      font-family: 'Roboto', sans-serif;
-      color: #3e3e3e;
-
-      /* disable horizontal scrolling */
-      max-width: 100%;
-      overflow-x: hidden;
-    }
-
-    #main {
-      text-align: center;
-      /* margin-top: 5em; */
-    }
-
-    .margin {
-      margin: 20px;
-    }
-
-    button,
-    .button {
-      font-size: 16px;
-      display: inline-block;
-      height: 35px;
-      background-color: black;
-      color: white;
-      padding-left: 1em;
-      padding-right: 1em;
-      border: 0;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-
-    #div_submit button:hover {
-      background-color: #007AFB;
-      transition: 0.15s;
-    }
-
-    #div_submit button:active {
-      background-color: #034286;
-      transition: 0.15s;
-    }
-
-    #div_submit button:disabled {
-      background-color: #707070;
-      cursor: not-allowed;
-    }
-
-    input[type=text],
-    input[type=date],
-    input[type=number] {
-      padding: 10px;
-      border: solid 1px #dcdcdc;
-      transition: box-shadow 0.3s, border 0.3s;
-      height: 1em;
-      width: 3em;
-    }
-
-    input[type=text]:focus,
-    select:focus,
-    input[type=date]:focus,
-    input[type=number]:focus {
-      outline-width: 0;
-      border: solid 1px #707070;
-      box-shadow: 0 0 5px 1px #969696;
-    }
-
-    input[type=text]:hover,
-    select:hover,
-    input[type=date]:hover {
-      border: solid 1px #707070;
-    }
-
-    #div_price {
-      font-size: 4em;
-      text-align: center;
-    }
-
-    #inp_price {
-      font-size: 1em;
-      text-align: center;
-    }
-
-    #inp_ratio {
-      width: 80%;
-    }
-
-    #div_categories {
-      text-align: center;
-    }
-
-    #div_categories button {
-      margin: 0.5em 0em;
-      border-radius: 20px;
-      background-color: #8ac3ff;
-    }
-
-    #lbl_name {
-      /* underline */
-      text-decoration: underline;
-      cursor: pointer;
-      color: #007AFB;
-    }
-  </style>
-
   <script>
     const url = "http://127.0.0.1:5000"
     // const url = "http://ofabian.pythonanywhere.com"
@@ -195,6 +88,8 @@
     const inp_price_me = document.getElementById('inp_price_me');
     const inp_price_other = document.getElementById('inp_price_other');
     const lbl_name = document.getElementById('lbl_name');
+    const btn_submit = document.getElementById('btn_submit');
+
 
     const FABIAN = 'Fabian';
     const ELISA = 'Elisa';
@@ -306,6 +201,7 @@
         .catch(e => handleError(e))
     }
 
+
     const checkSubmit = () => {
       if (inp_price.value != '' && inp_price.value != 0 && data.category != '') {
         btn_submit.disabled = false;
@@ -374,6 +270,8 @@
 
 
 
+
+
     inp_price.addEventListener('input', () => {
       update();
       checkSubmit();
@@ -406,7 +304,8 @@
       lbl_percent.innerHTML = inp_ratio.value + '%';
     });
 
-    onload = () => {
+
+    document.addEventListener('DOMContentLoaded', () => {
       // default input ratio: 100 for Fabian, 50 for Elisa
       if (getName() == FABIAN) {
         inp_ratio.value = 100;
@@ -420,11 +319,11 @@
       listExpenses();
       update();
       checkSubmit();
-    }
 
-    // submit button enabled when all fields are filled in
-    const btn_submit = document.getElementById('btn_submit');
-    btn_submit.disabled = true;
+      // submit button enabled when all fields are filled in
+      btn_submit.disabled = true;
+    });
+
 
   </script>
 </body>
