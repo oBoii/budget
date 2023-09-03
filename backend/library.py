@@ -14,7 +14,7 @@ def append_expense(
     price_fabian, price_elisa, paid_by, category, description, subcategory, now
 ):
     # Connect to the SQLite database
-    conn = sqlite3.connect("expenses.db")
+    conn = sqlite3.connect(f"{ROOT}/expenses.db")
     cursor = conn.cursor()
 
     # Insert the expense into the expenses table
@@ -41,7 +41,7 @@ def append_expense(
 
 def get_debt_per_person():
     # Connect to the SQLite database
-    conn = sqlite3.connect("expenses.db")
+    conn = sqlite3.connect(f"{ROOT}/expenses.db")
     cursor = conn.cursor()
 
     # Query the expenses for calculations
@@ -70,10 +70,10 @@ def get_debt_per_person():
 
 
 def get_expenses(name, grouped):
-    assert (name in ["Fabian", "Elisa"] and grouped) or (name is None and not grouped)
+    assert (name.lower() in ["fabian", "elisa"] and grouped) or (name is None and not grouped)
 
     # Connect to the SQLite database
-    conn = sqlite3.connect("expenses.db")
+    conn = sqlite3.connect(f"{ROOT}/expenses.db")
     cursor = conn.cursor()
 
     query_group = f"""
@@ -136,7 +136,7 @@ def get_expenses(name, grouped):
 
 def delete_expense(id):
     # Connect to the SQLite database
-    conn = sqlite3.connect("expenses.db")
+    conn = sqlite3.connect(f"{ROOT}/expenses.db")
     cursor = conn.cursor()
 
     # group: id: take the maximum
