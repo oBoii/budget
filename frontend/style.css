@@ -134,11 +134,14 @@ ol span {
   width: 4em;
   display: inline-flex;
   height: 1em;
-  margin: .4em 0;
+  margin: .05em 0 .05em 0;
 }
 
 li {
   user-select: none;
+  position: relativ e;
+  border: solid 2px rgba(0, 0, 0, 0.45);
+  vertical-align: bottom;
 }
 
 .slip-swiping-container {
@@ -147,8 +150,4 @@ li {
 
 .slip-reordering {
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.45);
-}
-
-li {
-  position: relative;
 }

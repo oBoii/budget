@@ -69,24 +69,27 @@ def get_debt_per_person():
     return fabian, elisa
 
 
-def get_expenses(name):
+def get_expenses(name, grouped):
+    assert (name in ["Fabian", "Elisa"] and grouped) or (name is None and not grouped)
+
     # Connect to the SQLite database
     conn = sqlite3.connect("expenses.db")
     cursor = conn.cursor()
 
-    # Query the expenses for the specified person, group by date and category.
-    # The price is summed up for each date and category.
-    # the subcategories are all appended in a single column/string
+    query_group = f"""
+            SELECT max(id) as id, date, sum(price_{name.lower()}) as price, sum(price_{name.lower()}) as price2, category, group_concat(subcategory, ', ') as subcategories, group_concat(description, ', ') as descriptions
+            FROM expenses
+            WHERE price_{name.lower()} > 0 AND price_{name.lower()} IS NOT NULL
+            group by date, category
+            ORDER by date DESC"""
 
-    # group: id: take the maximum
+    query_indiv = """
+            SELECT id, date, price_fabian, price_elisa, category, subcategory, description
+            FROM expenses
+            ORDER by date DESC"""
+
     cursor.execute(
-        f"""
-        SELECT max(id) as id, date, sum(price_{name.lower()}) as price, category, group_concat(subcategory, ', ') as subcategories, group_concat(description, ', ') as descriptions
-        FROM expenses
-        WHERE price_{name.lower()} > 0 AND price_{name.lower()} IS NOT NULL
-        group by date, category
-        ORDER by date DESC
-        """,
+        query_group if grouped else query_indiv,
         (),  # (name,),
     )
     rows = cursor.fetchall()
@@ -94,28 +97,39 @@ def get_expenses(name):
     # Perform expense calculations based on fetched data
     data = []
     for row in rows:
-        id, date, price_person, category, subcategories, descriptions = row
+        id, date, price_person, price_other, category, subcategories, descriptions = row
 
-        # remove 'null, ' from subcategories and descriptions
-        subcategories = subcategories.replace("null, ", "")
-        descriptions = descriptions.replace("null, ", "")
-        subcategories = subcategories.replace("null", "")
-        descriptions = descriptions.replace("null", "")
+        if grouped:
+            # remove 'null, ' from subcategories and descriptions
+            subcategories = subcategories.replace("null, ", "")
+            descriptions = descriptions.replace("null, ", "")
+            subcategories = subcategories.replace("null", "")
+            descriptions = descriptions.replace("null", "")
 
-        individual_cost = {
-            "id": id,
-            "date": datetime.strptime(date, "%Y-%m-%d").strftime("%d-%m"),
-            "price": price_person,
-            "category": category,
-            "description": descriptions,
-            "subcategory": subcategories,
-        }
-        data.append(individual_cost)
+            individual_cost = {
+                "id": id,
+                "date": datetime.strptime(date, "%Y-%m-%d").strftime("%d-%m"),
+                "price": price_person,
+                "category": category,
+                "description": descriptions,
+                "subcategory": subcategories,
+            }
+            data.append(individual_cost)
+        else:
+            individual_cost = {
+                "id": id,
+                "date": datetime.strptime(date, "%Y-%m-%d").strftime("%d-%m"),
+                "price_fabian": price_person,
+                "price_elisa": price_other,
+                "category": category,
+                "subcategory": subcategories,
+                "description": descriptions,
+            }
 
     conn.close()
 
     # Group expenses by category and date
-    data = data[:31]  # only show the last 31 entries
+    data = data[:100]  # only show the last 31 entries
 
     return data
 

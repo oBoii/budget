@@ -4,7 +4,13 @@ import seaborn as sns
 from flask_httpauth import HTTPBasicAuth
 from flask import Flask, request
 from flask_cors import CORS
-from library import append_expense, get_debt_per_person, get_expenses, param, delete_expense
+from library import (
+    append_expense,
+    get_debt_per_person,
+    get_expenses,
+    param,
+    delete_expense,
+)
 
 
 sns.set_theme()
@@ -37,7 +43,13 @@ def page_index():
 @auth.login_required
 def page_get_expenses():
     name = request.args.get("name")
-    expenses = get_expenses(name)
+    expenses = get_expenses(name, True)
+    return json.dumps({"expenses": expenses})
+
+@app.route("/get_expenses_all")
+@auth.login_required
+def page_get_expenses_all():
+    expenses = get_expenses(None, False)
     return json.dumps({"expenses": expenses})
 
 
@@ -69,6 +81,7 @@ def page_delete_expense():
 
     delete_expense(id)
     return json.dumps({"message": "Expense deleted"})
+
 
 if not (param("isServer")):
     app.run()
