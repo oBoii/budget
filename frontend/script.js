@@ -1,5 +1,5 @@
-// const url = "http://127.0.0.1:5000"
-const url = "http://ofabian.pythonanywhere.com"
+const url = "http://127.0.0.1:5000"
+// const url = "http://ofabian.pythonanywhere.com"
 const key = authenticate()
 
 const inp_price = document.getElementById('inp_price');
@@ -96,7 +96,7 @@ const updateDebts = () => {
     .catch(e => handleError(e))
 }
 
-const listExpenses = () => {
+const listExpensesSummarized = () => {
   const fullUrl = `${url}/get_expenses?name=${getName()}`;
   betterFetch(fullUrl)
     .then(response => response.json())
@@ -125,6 +125,42 @@ const listExpenses = () => {
     })
     .catch(e => handleError(e))
 }
+
+const listExpensesAll = () => {
+  const fullUrl = `${url}/get_expenses_all`;
+  betterFetch(fullUrl)
+    .then(response => response.json())
+    .then(data => {
+      data = data.expenses;
+      console.log(data);
+
+      const tbl_expenses = document.getElementById('tbl_expenses_all');
+      data.forEach(expense => {
+        date = expense.date;
+        priceFabian = expense.price_fabian;
+        priceElisa = expense.price_elisa;
+        category = expense.category;
+        subcategory = expense.subcategory;
+        description = expense.description;
+        id = expense.id;
+
+        tbl_expenses.innerHTML +=
+          `<tr>
+            <td>${date}</td> <td>€ ${priceFabian}</td> <td>€  ${priceElisa}</td> <td>${category}</td> <td>${subcategory == null ? '' : subcategory}</td> <td>${description == null ? '' : description}</td>
+            <td><button onclick="deleteExpense(${id})">Delete</button></td>
+          </tr>
+          `
+        // `<li id="${id}">
+        // <span>${date}</span> <span>${priceFabian}</span> <span>${priceElisa}</span> <span>${category}</span> <span>${subcategory == null ? '' : subcategory}</span> <span>${description == null ? '' : description}</span>
+        // <button onclick="deleteExpense(${id})">Delete</button>
+        // </li>
+        // `
+
+      });
+    })
+    .catch(e => handleError(e))
+}
+
 
 
 const checkSubmit = () => {
@@ -163,7 +199,7 @@ const submit = () => {
   const subcategory = null;
   const description = null;
 
-  const fullUrl = `${url}/add_expense?price_fabian=${price_fabian}&price_elisa=${price_elisa}&paid_by=${paidBy}&category=${category}&subcategory=${subcategory}&description=${description}`;
+  const fullUrl = `${url} /add_expense?price_fabian=${price_fabian}&price_elisa=${price_elisa}&paid_by=${paidBy}&category=${category}&subcategory=${subcategory}&description=${description}`;
 
   betterFetch(fullUrl)
     .then(response => response.json())
@@ -198,6 +234,7 @@ const deleteExpense = (id) => {
   betterFetch(fullUrl)
     .then(response => response.json())
     .then(data => {
+      location.reload();
     })
     .catch(e => handleError(e))
 }
@@ -237,28 +274,3 @@ inp_price_other.addEventListener('input', () => {
   inp_ratio.value = (inp_price_me.value / inp_price.value * 100).toFixed(0);
   lbl_percent.innerHTML = inp_ratio.value + '%';
 });
-
-
-document.addEventListener('DOMContentLoaded', () => {
-  // default input ratio: 100 for Fabian, 50 for Elisa
-  if (getName() == FABIAN) {
-    inp_ratio.value = 100;
-  } else {
-    inp_ratio.value = 50;
-  }
-
-  lbl_percent.innerHTML = inp_ratio.value + '%';
-  readName();
-  updateDebts();
-  listExpenses();
-  update();
-  checkSubmit();
-
-  // submit button enabled when all fields are filled in
-  btn_submit.disabled = true;
-});
-
-
-
-
-// swipe to delete

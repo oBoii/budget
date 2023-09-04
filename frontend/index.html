@@ -65,19 +65,23 @@
     <div>
       <!-- arrow icon favicon -->
       <!-- ↓↳➜⇢ -->
-      <a href="expenses-all.html" style="color: #007AFB;">
-        ➤ Alle uitgaven
+      <a href="statistics.html" style="color: #007AFB;">
+        ➤ Statistics
       </a>
     </div>
 
     <div id="div_expenses" class="margin" style="text-align: left;">
       <br><br>
-      <ol id="tbl_expenses" style="width: 100%;">
-        <li class="fixed expensesHead"> <span>Datum</span> <span> Prijs </span> <span>
-            Categorie</span></li>
-      </ol>
+      <table id="tbl_expenses_all" style="width: 100%;">
+        <!-- datum, prijs Fabian, Prijs Elisa categorie -->
+        <tr class="fixed expensesHead">
+          <th>Datum</th>
+          <th>Prijs Fabian</th>
+          <th>Prijs Elisa</th>
+          <th>Categorie</th>
+        </tr>
+      </table>
     </div>
-
 
   </div>
 
@@ -85,6 +89,25 @@
   <script src="script.js"></script>
 
   <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // default input ratio: 100 for Fabian, 50 for Elisa
+      if (getName() == FABIAN) {
+        inp_ratio.value = 100;
+      } else {
+        inp_ratio.value = 50;
+      }
+
+      lbl_percent.innerHTML = inp_ratio.value + '%';
+      readName();
+      updateDebts();
+      listExpensesAll();
+      update();
+      checkSubmit();
+
+      // submit button enabled when all fields are filled in
+      btn_submit.disabled = true;
+    });
+
     function setupSlip(list) {
       list.addEventListener('slip:beforereorder', function (e) {
         if (e.target.nodeName == 'SPAN') {
@@ -134,7 +157,9 @@
       return new Slip(list);
     }
 
-    setupSlip(document.getElementById('tbl_expenses'));
+    setupSlip(document.getElementById('tbl_expenses_all'));
+
+
 
 
   </script>

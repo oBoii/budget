@@ -70,16 +70,16 @@ def get_debt_per_person():
 
 
 def get_expenses(name, grouped):
-    assert (name.lower() in ["fabian", "elisa"] and grouped) or (name is None and not grouped)
+    assert (name in ["fabian", "elisa"] and grouped) or (name is None and not grouped)
 
     # Connect to the SQLite database
     conn = sqlite3.connect(f"{ROOT}/expenses.db")
     cursor = conn.cursor()
 
     query_group = f"""
-            SELECT max(id) as id, date, sum(price_{name.lower()}) as price, sum(price_{name.lower()}) as price2, category, group_concat(subcategory, ', ') as subcategories, group_concat(description, ', ') as descriptions
+            SELECT max(id) as id, date, sum(price_{name}) as price, sum(price_{name}) as price2, category, group_concat(subcategory, ', ') as subcategories, group_concat(description, ', ') as descriptions
             FROM expenses
-            WHERE price_{name.lower()} > 0 AND price_{name.lower()} IS NOT NULL
+            WHERE price_{name} > 0 AND price_{name} IS NOT NULL
             group by date, category
             ORDER by date DESC"""
 
@@ -114,8 +114,11 @@ def get_expenses(name, grouped):
                 "description": descriptions,
                 "subcategory": subcategories,
             }
-            data.append(individual_cost)
         else:
+            category = category.replace("null", "")
+            subcategories = subcategories.replace("null", "")
+            descriptions = descriptions.replace("null", "")
+            
             individual_cost = {
                 "id": id,
                 "date": datetime.strptime(date, "%Y-%m-%d").strftime("%d-%m"),
@@ -126,6 +129,7 @@ def get_expenses(name, grouped):
                 "description": descriptions,
             }
 
+        data.append(individual_cost)
     conn.close()
 
     # Group expenses by category and date

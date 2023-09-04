@@ -43,7 +43,7 @@ def page_index():
 @auth.login_required
 def page_get_expenses():
     name = request.args.get("name")
-    expenses = get_expenses(name, True)
+    expenses = get_expenses(name.lower(), True)
     return json.dumps({"expenses": expenses})
 
 @app.route("/get_expenses_all")
