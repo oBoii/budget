@@ -1,5 +1,5 @@
-const url = "http://127.0.0.1:5000"
-// const url = "http://ofabian.pythonanywhere.com"
+// const url = "http://127.0.0.1:5000"
+const url = "http://ofabian.pythonanywhere.com"
 const key = authenticate()
 
 const inp_price = document.getElementById('inp_price');
@@ -75,21 +75,22 @@ const updateDebts = () => {
   betterFetch(fullUrl)
     .then(response => response.json())
     .then(data => {
-      fabian = data.fabian; // eg: +12.00
-      elisa = data.elisa; // eg: -12.00
+      fabian = data.fabian; // eg: +14.00
+      elisa = data.elisa; // eg: +12.00
+      const toPay = Math.abs(fabian - elisa);
 
       const lbl_name_has_debt = document.getElementById('lbl_name_has_debt');
       const lbl_name_no_debt = document.getElementById('lbl_name_no_debt');
       const lbl_debt = document.getElementById('lbl_debt');
 
-      if (fabian > 0) {
+      if (elisa > fabian) { // elisa has debt
         lbl_name_has_debt.innerHTML = ELISA;
         lbl_name_no_debt.innerHTML = FABIAN;
-        lbl_debt.innerHTML = fabian;
+        lbl_debt.innerHTML = toPay;
       } else {
         lbl_name_has_debt.innerHTML = FABIAN;
         lbl_name_no_debt.innerHTML = ELISA;
-        lbl_debt.innerHTML = elisa;
+        lbl_debt.innerHTML = toPay;
 
       }
     })
@@ -136,18 +137,19 @@ const listExpensesAll = () => {
 
       const tbl_expenses = document.getElementById('tbl_expenses_all');
       data.forEach(expense => {
-        date = expense.date;
-        priceFabian = expense.price_fabian;
-        priceElisa = expense.price_elisa;
-        category = expense.category;
-        subcategory = expense.subcategory;
-        description = expense.description;
-        id = expense.id;
+        const date = expense.date;
+        const priceFabian = expense.price_fabian;
+        const priceElisa = expense.price_elisa;
+        const category = expense.category;
+        const subcategory = expense.subcategory;
+        const description = expense.description;
+        const paidBy = (expense.paid_by).charAt(0).toUpperCase();
+        const id = expense.id;
 
         tbl_expenses.innerHTML +=
           `<tr>
-            <td>${date}</td> <td>€ ${priceFabian}</td> <td>€  ${priceElisa}</td> <td>${category}</td> <td>${subcategory == null ? '' : subcategory}</td> <td>${description == null ? '' : description}</td>
-            <td><button onclick="deleteExpense(${id})">Delete</button></td>
+            <td>${date}</td> <td>€ ${priceFabian}</td> <td>€  ${priceElisa}</td> <td>${paidBy}</td> <td>${category}</td> <td>${subcategory == null ? '' : subcategory}</td> <td>${description == null ? '' : description}</td>
+            <td><button onclick="deleteExpense(${id})">x</button></td>
           </tr>
           `
         // `<li id="${id}">
@@ -199,7 +201,7 @@ const submit = () => {
   const subcategory = null;
   const description = null;
 
-  const fullUrl = `${url} /add_expense?price_fabian=${price_fabian}&price_elisa=${price_elisa}&paid_by=${paidBy}&category=${category}&subcategory=${subcategory}&description=${description}`;
+  const fullUrl = `${url}/add_expense?price_fabian=${price_fabian}&price_elisa=${price_elisa}&paid_by=${paidBy}&category=${category}&subcategory=${subcategory}&description=${description}`;
 
   betterFetch(fullUrl)
     .then(response => response.json())
