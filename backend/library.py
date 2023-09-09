@@ -86,7 +86,8 @@ def get_expenses(name, grouped):
     query_indiv = """
             SELECT id, date, price_fabian, price_elisa, paid_by, category, subcategory, description
             FROM expenses
-            ORDER by date DESC"""
+            ORDER by date DESC, id DESC
+            """
 
     cursor.execute(
         query_group if grouped else query_indiv,
