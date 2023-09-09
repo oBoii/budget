@@ -137,18 +137,26 @@ const listExpensesAll = () => {
 
       const tbl_expenses = document.getElementById('tbl_expenses_all');
       data.forEach(expense => {
-        const date = expense.date;
+        // const date = expense.date; // eg: dd-mm
+        // convert to dd/mm
+        const date = expense.date.split('-').reverse().join('/');
+        // convert to dd
+        // const date = expense.date.split('-')[0];
         const priceFabian = expense.price_fabian;
         const priceElisa = expense.price_elisa;
-        const category = expense.category;
+        // const category = expense.category;
+        // max 20 chars
+        const category = expense.category.length > 5 ? expense.category.substring(0, 5) + '.' : expense.category;
         const subcategory = expense.subcategory;
         const description = expense.description;
         const paidBy = (expense.paid_by).charAt(0).toUpperCase();
         const id = expense.id;
 
         tbl_expenses.innerHTML +=
+        // <td>${paidBy}</td> 
           `<tr>
-            <td>${date}</td> <td>€ ${priceFabian}</td> <td>€  ${priceElisa}</td> <td>${paidBy}</td> <td>${category}</td> <td>${subcategory == null ? '' : subcategory}</td> <td>${description == null ? '' : description}</td>
+            <td> <span class="badge rounded-pill bg-${paidBy.toLowerCase() == "f" ? "primary" : "warning"}">${paidBy}</span> </td>
+            <td>${date}</td> <td>€ ${priceFabian}</td> <td>€  ${priceElisa}</td> <td>${category}</td> <td>${subcategory == null ? '' : subcategory}</td> <td>${description == null ? '' : description}</td>
             <td><button onclick="deleteExpense(${id})">x</button></td>
           </tr>
           `
