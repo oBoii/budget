@@ -77,14 +77,14 @@ def get_expenses(name, grouped):
     cursor = conn.cursor()
 
     query_group = f"""
-            SELECT max(id) as id, date, sum(price_{name}) as price, sum(price_{name}) as price2, category, group_concat(subcategory, ', ') as subcategories, group_concat(description, ', ') as descriptions
+            SELECT max(id) as id, date, sum(price_{name}) as price, sum(price_{name}) as price2, sum(price_{name}) as price3, category, group_concat(subcategory, ', ') as subcategories, group_concat(description, ', ') as descriptions
             FROM expenses
             WHERE price_{name} > 0 AND price_{name} IS NOT NULL
             group by date, category
             ORDER by date DESC"""
 
     query_indiv = """
-            SELECT id, date, price_fabian, price_elisa, category, subcategory, description
+            SELECT id, date, price_fabian, price_elisa, paid_by, category, subcategory, description
             FROM expenses
             ORDER by date DESC"""
 
@@ -97,7 +97,7 @@ def get_expenses(name, grouped):
     # Perform expense calculations based on fetched data
     data = []
     for row in rows:
-        id, date, price_person, price_other, category, subcategories, descriptions = row
+        id, date, price_person, price_other, paid_by, category, subcategories, descriptions = row
 
         if grouped:
             # remove 'null, ' from subcategories and descriptions
@@ -124,6 +124,7 @@ def get_expenses(name, grouped):
                 "date": datetime.strptime(date, "%Y-%m-%d").strftime("%d-%m"),
                 "price_fabian": price_person,
                 "price_elisa": price_other,
+                "paid_by": paid_by,
                 "category": category,
                 "subcategory": subcategories,
                 "description": descriptions,
@@ -133,7 +134,7 @@ def get_expenses(name, grouped):
     conn.close()
 
     # Group expenses by category and date
-    data = data[:100]  # only show the last 31 entries
+    data = data[:100]  # only show the most recent entries
 
     return data
 

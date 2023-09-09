@@ -77,7 +77,7 @@ const updateDebts = () => {
     .then(data => {
       fabian = data.fabian; // eg: +14.00
       elisa = data.elisa; // eg: +12.00
-      const toPay = Math.abs(fabian - elisa);
+      const toPay = Math.abs((fabian - elisa).toFixed(2));
 
       const lbl_name_has_debt = document.getElementById('lbl_name_has_debt');
       const lbl_name_no_debt = document.getElementById('lbl_name_no_debt');
