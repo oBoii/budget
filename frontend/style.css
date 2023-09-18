@@ -88,11 +88,6 @@ input[type=date]:hover {
   text-align: center;
 }
 
-#div_categories button {
-  margin: 0.5em 0em;
-  border-radius: 20px;
-  background-color: #8ac3ff;
-}
 
 #lbl_name {
   /* underline */
@@ -157,6 +152,6 @@ td button {
   background-color: transparent;
   cursor: pointer;
   /* color: #3e3e3e; */
-  color:#007AFB;
+  color: #007AFB;
   text-decoration: underline;
 }
