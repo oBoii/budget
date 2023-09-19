@@ -185,13 +185,13 @@ const checkSubmit = () => {
 const chooseCategory = (button, category) => {
   // clear all other buttons back to original and set this button to active (#034286;)
   // buttons in div: div_categories
-  const buttons = document.querySelectorAll('#div_categories button');
+  // const buttons = document.querySelectorAll('#div_categories button');
 
-  buttons.forEach((btn) => {
-    btn.style.backgroundColor = '#8ac3ff';
-  });
+  // buttons.forEach((btn) => {
+  //   btn.style.backgroundColor = '#8ac3ff';
+  // });
 
-  button.style.backgroundColor = '#034286';
+  // button.style.backgroundColor = '#034286';
 
   data.category = category;
   checkSubmit();

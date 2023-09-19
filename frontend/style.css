@@ -13,7 +13,7 @@ body {
 }
 
 .margin {
-  margin: 20px;
+  margin: 40px 20px;
 }
 
 button,
@@ -51,9 +51,22 @@ input[type=number] {
   padding: 10px;
   border: solid 1px #dcdcdc;
   transition: box-shadow 0.3s, border 0.3s;
-  height: 1em;
-  width: 3em;
+  height: 2.5em;
+  width: 5em;
+  text-align: center;
 }
+
+input[type=text] {
+  width: 80%;
+  text-align: left;
+}
+
+#inp_price {
+  width: 80%;
+  height: 2em;
+}
+
+
 
 input[type=text]:focus,
 select:focus,
