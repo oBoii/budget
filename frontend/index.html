@@ -38,7 +38,7 @@
       <input type="number" name="inp_price_me" id="inp_price_me" min="0" placeholder="Me">
       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
       <label for="inp_price_other"></label>
-      <input type="number" name="inp_price_other" id="inp_price_other" min="0">
+      <input type="number" name="inp_price_other" id="inp_price_other" min="0" placeholder="Other">
     </div>
 
 
@@ -60,7 +60,6 @@
               verzorging</a>
             <a class="dropdown-item" onclick="chooseCategory(this, 'Bakker')">Openbaar vervoer</a>
             <a class="dropdown-item" onclick="chooseCategory(this, 'Auto')">Auto</a>
-            <!-- <div class="dropdown-divider"></div> -->
           </div>
         </div>
 
@@ -71,11 +70,11 @@
             Fun
           </button>
           <div class="dropdown-menu">
-            <a class="dropdown-item" href="#">Restaurant</a>
-            <a class="dropdown-item" href="#">Café & Drinks</a>
-            <a class="dropdown-item" href="#">Amusement</a>
-            <a class="dropdown-item" href="#">Sport</a>
-            <a class="dropdown-item" href="#">Shopping</a>
+            <a class="dropdown-item" onclick="chooseCategory(this, 'Restaurant')">Restaurant</a>
+            <a class="dropdown-item" onclick="chooseCategory(this, 'Café & Drinks')">Café & Drinks</a>
+            <a class="dropdown-item" onclick="chooseCategory(this, 'Amusement')">Amusement</a>
+            <a class="dropdown-item" onclick="chooseCategory(this, 'Sport')">Sport</a>
+            <a class="dropdown-item" onclick="chooseCategory(this, 'Shopping')">Shopping</a>
           </div>
         </div>
 
@@ -86,43 +85,48 @@
             Infreq
           </button>
           <div class="dropdown-menu">
-            <a class="dropdown-item" href="#">Kleding</a>
-            <a class="dropdown-item" href="#">Schoenen</a>
-            <a class="dropdown-item" href="#">Kapper</a>
-            <a class="dropdown-item" href="#">Gifts</a>
-            <a class="dropdown-item" href="#">Reizen</a>
-            <a class="dropdown-item" href="#">Meubels</a>
-            <a class="dropdown-item" href="#">Zelfontwikkeling</a>
-            <a class="dropdown-item" href="#">Uitzonderlijk</a>
-
-            <!-- Subscriptions, Travel. Gifts, Shopping,  
-            -->
-
-
-            <!-- <a class="dropdown-item" href="#">Item 3.1</a> -->
-            <!-- <div class="dropdown-divider"></div> -->
+            <a class="dropdown-item" onclick="chooseCategory(this, 'Abonnementen')">Abonnementen</a>
+            <a class="dropdown-item" onclick="chooseCategory(this, 'Kleding')">Kleding</a>
+            <a class="dropdown-item" onclick="chooseCategory(this, 'Schoenen')">Schoenen</a>
+            <a class="dropdown-item" onclick="chooseCategory(this, 'Kapper')">Kapper</a>
+            <a class="dropdown-item" onclick="chooseCategory(this, 'Gifts')">Gifts</a>
+            <a class="dropdown-item" onclick="chooseCategory(this, 'Reizen')">Reizen</a>
+            <a class="dropdown-item" onclick="chooseCategory(this, 'Meubels')">Meubels</a>
+            <a class="dropdown-item" onclick="chooseCategory(this, 'Zelfontwikkeling')">Zelfontwikkeling</a>
+            <a class="dropdown-item" onclick="chooseCategory(this, 'Uitzonderlijk')">Uitzonderlijk</a>
           </div>
-
         </div>
 
+        <!-- Basisbehoeften en dagelijkse uitgaven:
+        Boodschappen
+        Bakker
+        Gezondheid en verzorging
+        Auto
+        Restaurant
+        Café & Drinks
+        Lifestyle en vrijetijdsuitgaven:
+
+        Amusement
+        Sport
+        Shopping
+        Kleding
+        Schoenen
+        Kapper
+        Gifts
+        Reizen
+        Langere termijn en speciale uitgaven:
+
+        Meubels
+        Zelfontwikkeling
+        Uitzonderlijk (voor onverwachte of uitzonderlijke uitgaven)
+        Abonnementen (afhankelijk van wat voor soort abonnementen je bedoelt, kan dit ook in een andere groep passen) -->
 
         <br>
 
-
-        <!-- button per category: -->
-        <!-- <button class="button" onclick="chooseCategory(this, 'Boodschappen')">Boodschappen</button>
-      <button class="button" onclick="chooseCategory(this, 'Restaurants')">Restaurants</button>
-      <button class="button" onclick="chooseCategory(this, 'Ontspanning')">Ontspanning</button>
-      <button class="button" onclick="chooseCategory(this, 'Shopping')">Shopping</button>
-      <button class="button" onclick="chooseCategory(this, 'Infrequent')">Infrequent</button>
-      <button class="button" onclick="chooseCategory(this, 'Transport')">Transport</button>
-      <button class="button" onclick="chooseCategory(this, 'Gezondheid')">Gezondheid</button>
-      <button class="button" onclick="chooseCategory(this, 'Vakantie')">Vakantie</button>
-      <button class="button" onclick="chooseCategory(this, 'Uitzonderlijk & Overige')">Uitzonderlijk</button> -->
       </div>
 
       <div class="margin">
-        <input type="text" name="inp_category" id="inp_category" placeholder="Beschrijving">
+        <input type="text" name="inp_description" id="inp_description" placeholder="Beschrijving">
       </div>
 
       <div id="div_submit" class="margin">
@@ -151,7 +155,7 @@
             <th>Datum</th>
             <th>Fabian</th>
             <th>Elisa</th>
-            <th>Categor.</th>
+            <th>Wat</th>
             <th></th>
           </tr>
         </table>
@@ -187,7 +191,7 @@
         readName();
         updateDebts();
         listExpensesAll();
-        update();
+        // update();
         checkSubmit();
 
         // submit button enabled when all fields are filled in

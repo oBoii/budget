@@ -18,6 +18,7 @@ const data = {
   price: 0,
   ratio: 100,
   category: '',
+  description: '',
 }
 
 // *** authentication ***
@@ -147,25 +148,18 @@ const listExpensesAll = () => {
         // const category = expense.category;
         // max 20 chars
         const category = expense.category.length > 5 ? expense.category.substring(0, 5) + '.' : expense.category;
-        const subcategory = expense.subcategory;
         const description = expense.description;
         const paidBy = (expense.paid_by).charAt(0).toUpperCase();
         const id = expense.id;
 
         tbl_expenses.innerHTML +=
-        // <td>${paidBy}</td> 
           `<tr>
             <td> <span class="badge rounded-pill bg-${paidBy.toLowerCase() == "f" ? "primary" : "warning"}">${paidBy}</span> </td>
-            <td>${date}</td> <td>€ ${priceFabian}</td> <td>€  ${priceElisa}</td> <td>${category}</td> <td>${subcategory == null ? '' : subcategory}</td> <td>${description == null ? '' : description}</td>
+            <td>${date}</td> <td>€ ${priceFabian}</td> 
+            <td>€  ${priceElisa}</td> <td>${description == null || description == '' ? category : description}</td>
             <td><button onclick="deleteExpense(${id})">x</button></td>
           </tr>
           `
-        // `<li id="${id}">
-        // <span>${date}</span> <span>${priceFabian}</span> <span>${priceElisa}</span> <span>${category}</span> <span>${subcategory == null ? '' : subcategory}</span> <span>${description == null ? '' : description}</span>
-        // <button onclick="deleteExpense(${id})">Delete</button>
-        // </li>
-        // `
-
       });
     })
     .catch(e => handleError(e))
@@ -185,13 +179,13 @@ const checkSubmit = () => {
 const chooseCategory = (button, category) => {
   // clear all other buttons back to original and set this button to active (#034286;)
   // buttons in div: div_categories
-  // const buttons = document.querySelectorAll('#div_categories button');
+  const buttons = document.querySelectorAll('#div_categories a');
 
-  // buttons.forEach((btn) => {
-  //   btn.style.backgroundColor = '#8ac3ff';
-  // });
+  buttons.forEach((btn) => {
+    btn.style.backgroundColor = '#FFFFFF';
+  });
 
-  // button.style.backgroundColor = '#034286';
+  button.style.backgroundColor = '#8ac3ff';
 
   data.category = category;
   checkSubmit();
@@ -207,7 +201,7 @@ const submit = () => {
   const paidBy = getName().toLowerCase();
   const category = data.category;
   const subcategory = null;
-  const description = null;
+  const description = document.getElementById('inp_description').value;
 
   const fullUrl = `${url}/add_expense?price_fabian=${price_fabian}&price_elisa=${price_elisa}&paid_by=${paidBy}&category=${category}&subcategory=${subcategory}&description=${description}`;
 

@@ -168,3 +168,14 @@ td button {
   color: #007AFB;
   text-decoration: underline;
 }
+
+.btn-group {
+  display: inline-flex;
+  width: 16em;
+  justify-content: space-between;
+}
+
+#inp_description {
+  width: 15.6em;
+  text-align: left;
+}
