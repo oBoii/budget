@@ -98,7 +98,16 @@ def get_expenses(name, grouped):
     # Perform expense calculations based on fetched data
     data = []
     for row in rows:
-        id, date, price_person, price_other, paid_by, category, subcategories, descriptions = row
+        (
+            id,
+            date,
+            price_person,
+            price_other,
+            paid_by,
+            category,
+            subcategories,
+            descriptions,
+        ) = row
 
         if grouped:
             # remove 'null, ' from subcategories and descriptions
@@ -119,7 +128,7 @@ def get_expenses(name, grouped):
             category = category.replace("null", "")
             subcategories = subcategories.replace("null", "")
             descriptions = descriptions.replace("null", "")
-            
+
             individual_cost = {
                 "id": id,
                 "date": datetime.strptime(date, "%Y-%m-%d").strftime("%d-%m"),

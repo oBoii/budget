@@ -71,32 +71,103 @@ const update = () => {
   data.ratio = inp_ratio.value;
 }
 
-const updateDebts = () => {
-  const fullUrl = `${url}/get_debts`;
+const updateDebtsAndExpensesAll = (maxTrials = 3) => {
+  const fullUrl = `${url}/`;
   betterFetch(fullUrl)
     .then(response => response.json())
     .then(data => {
-      fabian = data.fabian; // eg: +14.00
-      elisa = data.elisa; // eg: +12.00
-      const toPay = Math.abs((fabian - elisa).toFixed(2));
+      const fabian = data.fabian; // eg: +14.00
+      const elisa = data.elisa; // eg: +12.00
+      expenses = data.expenses;
 
-      const lbl_name_has_debt = document.getElementById('lbl_name_has_debt');
-      const lbl_name_no_debt = document.getElementById('lbl_name_no_debt');
-      const lbl_debt = document.getElementById('lbl_debt');
-
-      if (elisa > fabian) { // elisa has debt
-        lbl_name_has_debt.innerHTML = ELISA;
-        lbl_name_no_debt.innerHTML = FABIAN;
-        lbl_debt.innerHTML = toPay;
-      } else {
-        lbl_name_has_debt.innerHTML = FABIAN;
-        lbl_name_no_debt.innerHTML = ELISA;
-        lbl_debt.innerHTML = toPay;
-
-      }
+      updateDebts(fabian, elisa);
+      updateExpensesAll(expenses);
     })
-    .catch(e => handleError(e))
+    .catch(e => {
+      if (maxTrials > 0)
+        updateDebtsAndExpensesAll(maxTrials - 1)
+      else
+        handleError(e)
+    })
 }
+
+const updateDebts = (fabian, elisa) => {
+  // fabian eg: +14.00
+  // elisa eg: +12.00
+  const toPay = Math.abs((fabian - elisa).toFixed(2));
+
+  const lbl_name_has_debt = document.getElementById('lbl_name_has_debt');
+  const lbl_name_no_debt = document.getElementById('lbl_name_no_debt');
+  const lbl_debt = document.getElementById('lbl_debt');
+
+  if (elisa > fabian) { // elisa has debt
+    lbl_name_has_debt.innerHTML = ELISA;
+    lbl_name_no_debt.innerHTML = FABIAN;
+    lbl_debt.innerHTML = toPay;
+  } else {
+    lbl_name_has_debt.innerHTML = FABIAN;
+    lbl_name_no_debt.innerHTML = ELISA;
+    lbl_debt.innerHTML = toPay;
+  }
+}
+
+const updateExpensesAll = (expenses) => {
+  const tbl_expenses = document.getElementById('tbl_expenses_all');
+  expenses.forEach(expense => {
+    // const date = expense.date; // eg: dd-mm
+    // convert to dd/mm
+    const date = expense.date.split('-').reverse().join('/');
+    const priceFabian = expense.price_fabian;
+    const priceElisa = expense.price_elisa;
+    // max 20 chars
+    const category = expense.category.length > 5 ? expense.category.substring(0, 5) + '.' : expense.category;
+    
+    // capitalize first letter of description, if not null or ''
+    const description = expense.description == null || expense.description == '' ? '' : expense.description.charAt(0).toUpperCase() + expense.description.slice(1);
+    const paidBy = (expense.paid_by).charAt(0).toUpperCase();
+    const id = expense.id;
+
+    tbl_expenses.innerHTML +=
+      `<tr>
+            <td> <span class="badge rounded-pill bg-${paidBy.toLowerCase() == "f" ? "primary" : "warning"}">${paidBy}</span> </td>
+            <td>${date}</td> <td>€ ${priceFabian}</td> 
+            <td>€  ${priceElisa}</td> <td>${description == null || description == '' ? category : description}</td>
+            <td><button onclick="deleteExpense(${id})">x</button></td>
+          </tr>
+          `
+  });
+}
+
+
+
+
+
+// const updateDebts = () => {
+//   const fullUrl = `${url}/get_debts`;
+//   betterFetch(fullUrl)
+//     .then(response => response.json())
+//     .then(data => {
+//       fabian = data.fabian; // eg: +14.00
+//       elisa = data.elisa; // eg: +12.00
+//       const toPay = Math.abs((fabian - elisa).toFixed(2));
+
+//       const lbl_name_has_debt = document.getElementById('lbl_name_has_debt');
+//       const lbl_name_no_debt = document.getElementById('lbl_name_no_debt');
+//       const lbl_debt = document.getElementById('lbl_debt');
+
+//       if (elisa > fabian) { // elisa has debt
+//         lbl_name_has_debt.innerHTML = ELISA;
+//         lbl_name_no_debt.innerHTML = FABIAN;
+//         lbl_debt.innerHTML = toPay;
+//       } else {
+//         lbl_name_has_debt.innerHTML = FABIAN;
+//         lbl_name_no_debt.innerHTML = ELISA;
+//         lbl_debt.innerHTML = toPay;
+
+//       }
+//     })
+//     .catch(e => handleError(e))
+// }
 
 const listExpensesSummarized = () => {
   const fullUrl = `${url}/get_expenses?name=${getName()}`;
@@ -128,42 +199,42 @@ const listExpensesSummarized = () => {
     .catch(e => handleError(e))
 }
 
-const listExpensesAll = () => {
-  const fullUrl = `${url}/get_expenses_all`;
-  betterFetch(fullUrl)
-    .then(response => response.json())
-    .then(data => {
-      data = data.expenses;
-      console.log(data);
+// const listExpensesAll = () => {
+//   const fullUrl = `${url}/get_expenses_all`;
+//   betterFetch(fullUrl)
+//     .then(response => response.json())
+//     .then(data => {
+//       data = data.expenses;
+//       console.log(data);
 
-      const tbl_expenses = document.getElementById('tbl_expenses_all');
-      data.forEach(expense => {
-        // const date = expense.date; // eg: dd-mm
-        // convert to dd/mm
-        const date = expense.date.split('-').reverse().join('/');
-        // convert to dd
-        // const date = expense.date.split('-')[0];
-        const priceFabian = expense.price_fabian;
-        const priceElisa = expense.price_elisa;
-        // const category = expense.category;
-        // max 20 chars
-        const category = expense.category.length > 5 ? expense.category.substring(0, 5) + '.' : expense.category;
-        const description = expense.description;
-        const paidBy = (expense.paid_by).charAt(0).toUpperCase();
-        const id = expense.id;
+//       const tbl_expenses = document.getElementById('tbl_expenses_all');
+//       data.forEach(expense => {
+//         // const date = expense.date; // eg: dd-mm
+//         // convert to dd/mm
+//         const date = expense.date.split('-').reverse().join('/');
+//         // convert to dd
+//         // const date = expense.date.split('-')[0];
+//         const priceFabian = expense.price_fabian;
+//         const priceElisa = expense.price_elisa;
+//         // const category = expense.category;
+//         // max 20 chars
+//         const category = expense.category.length > 5 ? expense.category.substring(0, 5) + '.' : expense.category;
+//         const description = expense.description;
+//         const paidBy = (expense.paid_by).charAt(0).toUpperCase();
+//         const id = expense.id;
 
-        tbl_expenses.innerHTML +=
-          `<tr>
-            <td> <span class="badge rounded-pill bg-${paidBy.toLowerCase() == "f" ? "primary" : "warning"}">${paidBy}</span> </td>
-            <td>${date}</td> <td>€ ${priceFabian}</td> 
-            <td>€  ${priceElisa}</td> <td>${description == null || description == '' ? category : description}</td>
-            <td><button onclick="deleteExpense(${id})">x</button></td>
-          </tr>
-          `
-      });
-    })
-    .catch(e => handleError(e))
-}
+//         tbl_expenses.innerHTML +=
+//           `<tr>
+//             <td> <span class="badge rounded-pill bg-${paidBy.toLowerCase() == "f" ? "primary" : "warning"}">${paidBy}</span> </td>
+//             <td>${date}</td> <td>€ ${priceFabian}</td> 
+//             <td>€  ${priceElisa}</td> <td>${description == null || description == '' ? category : description}</td>
+//             <td><button onclick="deleteExpense(${id})">x</button></td>
+//           </tr>
+//           `
+//       });
+//     })
+//     .catch(e => handleError(e))
+// }
 
 
 

@@ -27,9 +27,25 @@ def verify_password(username, password):
         return username
 
 
-@app.route("/get_debts")
+# returns bot debts and all expenses
+@app.route("/")
 @auth.login_required
 def page_index():
+    # get debt per person
+    fabian, elisa = get_debt_per_person()
+    # round to 2 decimals
+    fabian = round(fabian, 2)
+    elisa = round(elisa, 2)
+
+    # get all expenses
+    expenses = get_expenses(None, False)
+
+    return json.dumps({"fabian": fabian, "elisa": elisa, "expenses": expenses})
+
+
+@app.route("/get_debts")
+@auth.login_required
+def page_get_debts():
     # get debt per person
     fabian, elisa = get_debt_per_person()
     # round to 2 decimals
@@ -45,6 +61,7 @@ def page_get_expenses():
     name = request.args.get("name")
     expenses = get_expenses(name.lower(), True)
     return json.dumps({"expenses": expenses})
+
 
 @app.route("/get_expenses_all")
 @auth.login_required

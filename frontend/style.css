@@ -54,6 +54,7 @@ input[type=number] {
   height: 2.5em;
   width: 5em;
   text-align: center;
+  color: #3e3e3e;
 }
 
 input[type=text] {

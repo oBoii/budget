@@ -91,7 +91,7 @@
             <a class="dropdown-item" onclick="chooseCategory(this, 'Kapper')">Kapper</a>
             <a class="dropdown-item" onclick="chooseCategory(this, 'Gifts')">Gifts</a>
             <a class="dropdown-item" onclick="chooseCategory(this, 'Reizen')">Reizen</a>
-            <a class="dropdown-item" onclick="chooseCategory(this, 'Meubels')">Meubels</a>
+            <a class="dropdown-item" onclick="chooseCategory(this, 'Meubels & Interieur')">Meubels & Interieur</a>
             <a class="dropdown-item" onclick="chooseCategory(this, 'Zelfontwikkeling')">Zelfontwikkeling</a>
             <a class="dropdown-item" onclick="chooseCategory(this, 'Uitzonderlijk')">Uitzonderlijk</a>
           </div>
@@ -189,8 +189,7 @@
 
         lbl_percent.innerHTML = inp_ratio.value + '%';
         readName();
-        updateDebts();
-        listExpensesAll();
+        updateDebtsAndExpensesAll();
         // update();
         checkSubmit();
 
