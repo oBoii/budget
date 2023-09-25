@@ -1,5 +1,5 @@
-const url = "http://127.0.0.1:5000"
-// const url = "http://ofabian.pythonanywhere.com"
+// const url = "http://127.0.0.1:5000"
+const url = "http://ofabian.pythonanywhere.com"
 const key = authenticate()
 
 const inp_price = document.getElementById('inp_price');
@@ -121,7 +121,7 @@ const updateExpensesAll = (expenses) => {
     const priceElisa = expense.price_elisa;
     // max 20 chars
     const category = expense.category.length > 5 ? expense.category.substring(0, 5) + '.' : expense.category;
-    
+
     // capitalize first letter of description, if not null or ''
     const description = expense.description == null || expense.description == '' ? '' : expense.description.charAt(0).toUpperCase() + expense.description.slice(1);
     const paidBy = (expense.paid_by).charAt(0).toUpperCase();
