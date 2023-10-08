@@ -4,3 +4,5 @@ backend/.vscode/settings.json
 frontend/.vscode/settings.json
 *.pyc
 *.db
+backend/.idea/workspace.xml
+*.xml

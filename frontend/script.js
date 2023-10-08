@@ -113,12 +113,16 @@ const updateDebts = (fabian, elisa) => {
 
 const getPriceText = (myPrice, total) => {
   if (myPrice == total) {
-    return `<span class="blue" style="font-size: 0.8em;">${myPrice}</span>`;
+    return `<span class="expenseItemTop blue" style="font-size: 0.9em;">${myPrice}</span> <br>
+    <span class="expenseItemBot"></span>`
+    // return `<span class="blue" style="font-size: 0.8em;">${myPrice} <br> </span>`;
   }
   else if (myPrice == 0) {
     return `&frasl;`;
   }
-  return `<sup><span class="blue">${myPrice}</span></sup>&frasl;<sub><span class="expenseTotal">${total}</span></sub>`
+  return `<span style="font-size: 1.2em; position: relative; top: 10px;">
+  <sup><span class="blue">${myPrice}</span></sup>&frasl;<sub><span class="expenseTotal">${total}</span></sub>
+  </span>`
 }
 
 // &frasl;

@@ -210,9 +210,6 @@ td button {
 
 .rightSpan {
   flex: 0 0 28%;
-  font-size: 1.2em;
-  position: relative;
-  top: 10px;
   text-align: center;
 }
 
