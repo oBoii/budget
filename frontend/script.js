@@ -1,5 +1,5 @@
-// const url = "http://127.0.0.1:5000"
-const url = "http://ofabian.pythonanywhere.com"
+const url = "http://127.0.0.1:5000"
+// const url = "http://ofabian.pythonanywhere.com"
 const key = authenticate()
 
 const inp_price = document.getElementById('inp_price');
@@ -78,7 +78,9 @@ const updateDebtsAndExpensesAll = (maxTrials = 3) => {
     .then(data => {
       const fabian = data.fabian; // eg: +14.00
       const elisa = data.elisa; // eg: +12.00
-      expenses = data.expenses;
+      const expenses = data.expenses;
+      const groupedExenses = data;
+      console.log(groupedExenses);
 
       updateDebts(fabian, elisa);
       updateExpensesAll(expenses);
@@ -139,12 +141,8 @@ const updateExpensesAll = (expenses) => {
 
     // capitalize first letter of description, if not null or ''
     const description = expense.description == null || expense.description == '' ? '' : expense.description.charAt(0).toUpperCase() + expense.description.slice(1);
-    const paidBy = (expense.paid_by).charAt(0).toUpperCase();
-    const id = expense.id;
 
     const myPrice = getName() == FABIAN ? priceFabian : priceElisa;
-
-    console.log(date);
 
     const day = date.split('/')[1];
     const monthNumeric = date.split('/')[0];

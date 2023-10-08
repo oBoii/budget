@@ -68,6 +68,38 @@ def get_debt_per_person():
     conn.close()
     return fabian, elisa
 
+def get_total_expenses_grouped_by_category_this_month():
+    # Connect to the SQLite database
+    conn = sqlite3.connect(f"{ROOT}/expenses.db")
+    cursor = conn.cursor()
+
+    # Query the expenses for calculations
+    cursor.execute(
+        """
+        SELECT category, sum(price_fabian), sum(price_elisa) FROM expenses
+        WHERE date >= date('now', 'start of month')
+        GROUP BY category
+        """
+    )
+    rows = cursor.fetchall()
+
+    # Perform debt calculations based on fetched data
+    data = []
+    for row in rows:
+        category, price_fabian, price_elisa = row
+        data.append(
+            {
+                "category": category,
+                "price_fabian": price_fabian,
+                "price_elisa": price_elisa,
+            }
+        )
+
+    conn.close()
+    return data
+
+
+
 
 def get_expenses(name, grouped):
     assert (name in ["fabian", "elisa"] and grouped) or (name is None and not grouped)

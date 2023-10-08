@@ -9,12 +9,10 @@ from library import (
     get_debt_per_person,
     get_expenses,
     param,
-    delete_expense,
+    delete_expense, get_total_expenses_grouped_by_category_this_month,
 )
 
-
 sns.set_theme()
-
 
 app = Flask(__name__)
 CORS(app, resources={r"*": {"origins": "*"}})
@@ -40,7 +38,10 @@ def page_index():
     # get all expenses
     expenses = get_expenses(None, False)
 
-    return json.dumps({"fabian": fabian, "elisa": elisa, "expenses": expenses})
+    # get debts per category from current month
+    grouped_expenses = get_total_expenses_grouped_by_category_this_month()
+
+    return json.dumps({"fabian": fabian, "elisa": elisa, "expenses": expenses, "grouped_expenses": grouped_expenses})
 
 
 @app.route("/get_debts")
