@@ -111,30 +111,57 @@ const updateDebts = (fabian, elisa) => {
   }
 }
 
+const getPriceText = (myPrice, total) => {
+  if (myPrice == total) {
+    return `<span class="blue" style="font-size: 0.8em;">${myPrice}</span>`;
+  }
+  else if (myPrice == 0) {
+    return `&frasl;`;
+  }
+  return `<sup><span class="blue">${myPrice}</span></sup>&frasl;<sub><span class="expenseTotal">${total}</span></sub>`
+}
+
+// &frasl;
+
 const updateExpensesAll = (expenses) => {
-  const tbl_expenses = document.getElementById('tbl_expenses_all');
+  const tbl_expenses = document.getElementById('ul_expenses_all');
   expenses.forEach(expense => {
     // const date = expense.date; // eg: dd-mm
     // convert to dd/mm
     const date = expense.date.split('-').reverse().join('/');
     const priceFabian = expense.price_fabian;
     const priceElisa = expense.price_elisa;
-    // max 20 chars
-    const category = expense.category.length > 5 ? expense.category.substring(0, 5) + '.' : expense.category;
+    const category = expense.category;
 
     // capitalize first letter of description, if not null or ''
     const description = expense.description == null || expense.description == '' ? '' : expense.description.charAt(0).toUpperCase() + expense.description.slice(1);
     const paidBy = (expense.paid_by).charAt(0).toUpperCase();
     const id = expense.id;
 
-    tbl_expenses.innerHTML +=
-      `<tr>
-            <td> <span class="badge rounded-pill bg-${paidBy.toLowerCase() == "f" ? "primary" : "warning"}">${paidBy}</span> </td>
-            <td>${date}</td> <td>€ ${priceFabian}</td> 
-            <td>€  ${priceElisa}</td> <td>${description == null || description == '' ? category : description}</td>
-            <td><button onclick="deleteExpense(${id})">x</button></td>
-          </tr>
-          `
+    const myPrice = getName() == FABIAN ? priceFabian : priceElisa;
+
+    console.log(date);
+
+    const day = date.split('/')[1];
+    const monthNumeric = date.split('/')[0];
+    const month = monthNumeric == '01' ? 'Jan' : monthNumeric == '02' ? 'Feb' : monthNumeric == '03' ? 'Mar' : monthNumeric == '04' ? 'Apr' : monthNumeric == '05' ? 'May' : monthNumeric == '06' ? 'Jun' : monthNumeric == '07' ? 'Jul' : monthNumeric == '08' ? 'Aug' : monthNumeric == '09' ? 'Sep' : monthNumeric == '10' ? 'Oct' : monthNumeric == '11' ? 'Nov' : 'Dec';
+
+    tbl_expenses.innerHTML += `
+    <li class="expenseItem">
+      <span class="leftSpan">
+        <span class="expenseItemTop expenseItemDay">${day}</span> <br>
+        <span class="expenseItemBot">${month}</span>
+      </span>
+      <span class="centerSpan">
+        <span class="expenseItemTop">${category}</span> <br>
+        <span class="expenseItemBot">${description}</span>
+      </span>
+      <span class="rightSpan">
+        ${getPriceText(myPrice, priceFabian + priceElisa)}
+      </span>
+    </li>
+    `
+
   });
 }
 

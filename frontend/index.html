@@ -49,7 +49,7 @@
       <div class="btn-group">
         <!-- Dropdown 1 -->
         <div class="btn-group">
-          <button type="button" class="btn btn-primary dropdown-toggle custom-dropdown" data-toggle="dropdown"
+          <button type="button" class="btn btn-secondary dropdown-toggle custom-dropdown" data-toggle="dropdown"
             aria-haspopup="true" aria-expanded="false">
             Basics
             <!-- Basisbehoeften -->
@@ -82,7 +82,7 @@
 
         <!-- Infrequent -->
         <div class="btn-group">
-          <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+          <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
             aria-expanded="false">
             Infreq
             <!-- Langere termijn en speciale uitgaven -->
@@ -143,18 +143,10 @@
       Betaald door <span id="lbl_name" onclick="editName()">##</span>.
     </div>
 
-    <!-- <div> -->
-    <!-- arrow icon favicon -->
-    <!-- ↓↳➜⇢ -->
-    <!-- <a href="statistics.html" style="color: #007AFB;"> -->
-    <!-- ➤ Statistics -->
-    <!-- </a> -->
-    <!-- </div> -->
-
-    <div style="text-align: left; width: 100%;">
-      <ul class="expenseHistory">
+    <div id="div_expenses" style="text-align: left; width: 100%;">
+      <ul id="ul_expenses_all" class="expenseHistory">
         <!-- show spans side by side -->
-        <li class="expenseItem">
+        <!-- <li class="expenseItem">
           <span class="leftSpan">
             <span class="expenseItemTop expenseItemDay">09</span> <br>
             <span class="expenseItemBot"> Aug</span>
@@ -164,70 +156,18 @@
             <span class="expenseItemBot">Zwembad</span>
           </span>
           <span class="rightSpan">
-            <sup><span class="expenseMine fabianPaid">5.00</span></sup>&frasl;<sub> <span class="expenseTotal">10.00</span></sub>
+            <sup><span class="expenseMine blue">5.00</span></sup>&frasl;<sub> <span
+                class="expenseTotal">10.00</span></sub>
           </span>
-        </li>
+        </li> -->
       </ul>
-      <style>
-        /* show spans side by side */
-        .expenseHistory {
-          list-style-type: none;
-          border: none;
-          padding: 0;
-          margin: 0.5em;
-        }
-
-        .expenseItem {
-          display: flex;
-          border: none;
-          padding: 0.5em;
-          margin: 0.5em;
-        }
-
-        .leftSpan {
-          flex: 0 0 20%;
-          /* Fixed width for left span */
-        }
-
-        .centerSpan {
-          flex-grow: 1;
-          /* Takes up remaining space */
-        }
-
-        .rightSpan {
-          flex: 0 0 25%;
-          font-size: 1.2em;
-          position: relative;
-          top: 10px;
-        }
-
-        .expenseItemDay {
-          position: relative;
-          left: 3px;
-        }
-
-        .expenseItemBot,
-        .expenseTotal {
-          font-size: 0.8em;
-          color: #0000009c;
-        }
-
-        .fabianPaid {
-          color: #007AFB;
-        }
-
-        .elisaPaid { /* bootstrap yellow darken */
-          color: #c29100;
-        }
-      </style>
     </div>
 
 
 
-    <div id="div_expenses" class="margin" style="text-align: left;">
+    <!-- <div id="div_expenses" class="margin" style="text-align: left;">
       <br><br>
       <table id="tbl_expenses_all" style="width: 100%;">
-        <!-- datum, prijs Fabian, Prijs Elisa categorie -->
         <tr class="fixed expensesHead">
           <th style='width: 2em'></th>
           <th>Datum</th>
@@ -237,7 +177,7 @@
           <th></th>
         </tr>
       </table>
-    </div>
+    </div> -->
 
   </div>
   <!-- Optional JavaScript -->
@@ -273,10 +213,6 @@
       // submit button enabled when all fields are filled in
       btn_submit.disabled = true;
     });
-
-
-
-
   </script>
 </body>
 

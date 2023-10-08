@@ -21,7 +21,7 @@ button,
   font-size: 16px;
   display: inline-block;
   height: 35px;
-  background-color: black;
+  background-color: #007AFB;
   color: white;
   padding-left: 1em;
   padding-right: 1em;
@@ -179,4 +179,54 @@ td button {
 #inp_description {
   width: 15.6em;
   text-align: left;
+}
+
+/* show spans side by side */
+.expenseHistory {
+  list-style-type: none;
+  border: none;
+  padding: 0;
+  margin: 0.5em;
+}
+
+.expenseItem {
+  display: flex;
+  border: none;
+  padding: 0.5em;
+  /* margin: 0.5em; */
+}
+
+.leftSpan {
+  flex: 0 0 10%;
+  text-align: center;
+  margin-right: 1em;
+  /* Fixed width for left span */
+}
+
+.centerSpan {
+  flex-grow: 1;
+  /* Takes up remaining space */
+}
+
+.rightSpan {
+  flex: 0 0 28%;
+  font-size: 1.2em;
+  position: relative;
+  top: 10px;
+  text-align: center;
+}
+
+.expenseItemDay {
+  /* position: relative; */
+  /* left: 3px; */
+}
+
+.expenseItemBot,
+.expenseTotal {
+  font-size: 0.8em;
+  color: #0000009c;
+}
+
+.blue {
+  color: #007AFB;
 }

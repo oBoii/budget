@@ -144,7 +144,7 @@ def get_expenses(name, grouped):
     conn.close()
 
     # Group expenses by category and date
-    data = data[:100]  # only show the most recent entries
+    data = data[:30]  # only show the most recent entries
 
     return data
 
