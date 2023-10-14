@@ -228,6 +228,12 @@ td button {
   color: rgb(0, 122, 251);
 }
 
-
-#div_statistics {
+.donut-inner {
+  height: 0;
+  width: 0;
+  position: relative;
+  top: -50vw;
+  left: 20vw;
 }
+
+

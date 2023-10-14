@@ -146,9 +146,9 @@
     <div id="div_statistics" class="margin">
       <div>
         <canvas id="myChart"></canvas>
-        <div>
-          100.33 EUR
-        </div>
+        <!-- <div class="donut-inner">
+          100.00
+        </div> -->
 
       </div>
 
@@ -161,13 +161,18 @@
       <script>
         const ctx = document.getElementById('myChart');
 
+        const prices = [400, 300, 700, 500]
+
         const statistics = {
           labels: [
-            '🍎 Basics', '🎉 Fun', '💭 Infreq', 'Overschot'
+            `🍎 €${prices[0]}`,
+            `🎉 €${prices[1]}`,
+            `📅 €${prices[2]}`,
+            `💰 €${prices[3]}`
           ],
           datasets: [
             {
-              data: [400, 300, 700, 500],
+              data: prices,
               backgroundColor: [
                 'rgb(255, 99, 132)',
                 'rgb(0, 122, 251)',
@@ -179,6 +184,30 @@
           ]
         };
 
+        const plugin = {
+          id: 'my-plugin',
+          beforeDraw: (chart, args, options) => {
+            const data = chart.data.datasets[0].data;
+            // exclude last element
+            const sum = data.slice(0, data.length - 1).reduce((a, b) => a + b, 0);
+
+            const width = chart.width, height = chart.height, ctx = chart.ctx;
+            const legendWidth = chart.legend.width;
+            ctx.restore();
+            // var fontSize = (height / 114).toFixed(2);
+            const fontSize = 1.75;
+            ctx.font = fontSize + "em Roboto";
+            ctx.textBaseline = "middle";
+            var text = `€${sum}`,
+              textX = Math.round((width - ctx.measureText(text).width) / 2) - legendWidth / 2,
+              textY = height / 2;
+            ctx.fillStyle = '#3e3e3e';
+
+            ctx.fillText(text, textX, textY);
+            ctx.save();
+          },
+        }
+
         const config = {
           type: 'doughnut',
           data: statistics,
@@ -187,6 +216,9 @@
             plugins: {
               legend: {
                 position: 'right',
+                labels: {
+                  boxWidth: 10,
+                }
               },
               title: {
               },
@@ -195,13 +227,34 @@
                 fontSize: 14,
                 position: 'border', // outside, border
                 fontColor: '#FFFFFF',
-              }
-
+              },
             }
-          }
+          },
+          plugins: [plugin]
         };
 
+
+
+
         new Chart(ctx, config);
+        // Chart.register({
+        //   beforeDraw: function (chart) {
+        //     var width = chart.chart.width,
+        //       height = chart.chart.height,
+        //       ctx = chart.chart.ctx;
+        //     ctx.restore();
+        //     var fontSize = (height / 114).toFixed(2);
+        //     ctx.font = fontSize + "em sans-serif";
+        //     ctx.textBaseline = "middle";
+        //     var text = "75%",
+        //       textX = Math.round((width - ctx.measureText(text).width) / 2),
+        //       textY = height / 2;
+        //     ctx.fillText(text, textX, textY);
+        //     ctx.save();
+        //   }
+        // });
+
+
 
 
         // new Chart(ctx, {
