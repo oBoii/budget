@@ -79,11 +79,10 @@ const updateDebtsAndExpensesAll = (maxTrials = 3) => {
       const fabian = data.fabian; // eg: +14.00
       const elisa = data.elisa; // eg: +12.00
       const expenses = data.expenses;
-      const groupedExenses = data;
-      console.log(groupedExenses);
-
+      const groupedExenses = data.grouped_expenses;
       updateDebts(fabian, elisa);
       updateExpensesAll(expenses);
+      updateDonut(groupedExenses)
     })
     .catch(e => {
       if (maxTrials > 0)
@@ -91,6 +90,128 @@ const updateDebtsAndExpensesAll = (maxTrials = 3) => {
       else
         handleError(e)
     })
+}
+
+const getExpenesPerMainCategory = (expenses) => {
+  // expense: eg [{category: "Groceries", price_fabian: 10, price_elisa: 20}, ... ]
+
+  let expensesBasics = 0;
+  let expensesFun = 0;
+  let expensesInfreq = 0;
+
+  expenses.forEach(expense => {
+    const category = expense.category.toLowerCase();
+    const priceFabian = expense.price_fabian;
+    const priceElisa = expense.price_elisa;
+
+    // lowercase all items in list
+    const basics_keys = categories_basics_keys.map(category => category.toLowerCase());
+    const fun_keys = categories_fun_keys.map(category => category.toLowerCase());
+    const infreq_keys = categories_infreq_keys.map(category => category.toLowerCase());
+
+    console.log(basics_keys, category);
+    
+
+    // category is in `categories_basics_keys`
+    if (basics_keys.includes(category)) {
+      // only my price
+      expensesBasics += getName() == FABIAN ? priceFabian : priceElisa;
+    } else if (fun_keys.includes(category)) {
+      expensesFun += getName() == FABIAN ? priceFabian : priceElisa;
+    } else if (infreq_keys.includes(category)) {
+      expensesInfreq += getName() == FABIAN ? priceFabian : priceElisa;
+    } else {
+      console.log("******")
+      console.log(category, basics_keys, fun_keys, infreq_keys);
+      // alert(`Category ${category} not found in categories_basics_keys, categories_fun_keys or categories_infreq_keys`)
+      // raiseError(`Category ${category} not found in categories_basics_keys, categories_fun_keys or categories_infreq_keys`)
+    }
+  });
+
+  const leftOver = 600 - expensesBasics - expensesFun - expensesInfreq;
+
+  return [expensesBasics, expensesFun, expensesInfreq, leftOver];
+}
+const updateDonut = (groupedExenses) => {
+  //const prices = [400, 300, 700, 500]
+  const prices = getExpenesPerMainCategory(groupedExenses)
+  const ctx = document.getElementById('myChart');
+
+
+  const statistics = {
+    labels: [
+      `🍎 €${prices[0]}`,
+      `🎉 €${prices[1]}`,
+      `📅 €${prices[2]}`,
+      `⬜ €${prices[3]}`
+    ],
+    datasets: [
+      {
+        data: prices,
+        backgroundColor: [
+          'rgb(255, 99, 132)',
+          'rgb(0, 122, 251)',
+          'rgb(255, 205, 86)',
+          // 'rgb(255, 255, 255)',
+          'rgb(240, 240, 240)',
+        ],
+      }
+    ]
+  };
+
+  const plugin = {
+    id: 'my-plugin',
+    beforeDraw: (chart, args, options) => {
+      const data = chart.data.datasets[0].data;
+      // exclude last element
+      const sum = data.slice(0, data.length - 1).reduce((a, b) => a + b, 0);
+
+      const width = chart.width, height = chart.height, ctx = chart.ctx;
+      const legendWidth = chart.legend.width;
+      ctx.restore();
+      // var fontSize = (height / 114).toFixed(2);
+      const fontSize = 1.75;
+      ctx.font = fontSize + "em Roboto";
+      ctx.textBaseline = "middle";
+      var text = `€${sum}`,
+        textX = Math.round((width - ctx.measureText(text).width) / 2) - legendWidth / 2,
+        textY = height / 2;
+      ctx.fillStyle = '#3e3e3e';
+
+      ctx.fillText(text, textX, textY);
+      ctx.save();
+    },
+  }
+
+  const config = {
+    type: 'doughnut',
+    data: statistics,
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'right',
+          labels: {
+            boxWidth: 10,
+          }
+        },
+        title: {
+        },
+        labels: {
+          render: 'label+value',
+          fontSize: 14,
+          position: 'border', // outside, border
+          fontColor: '#FFFFFF',
+        },
+      }
+    },
+    plugins: [plugin]
+  };
+
+
+
+
+  new Chart(ctx, config);
 }
 
 const updateDebts = (fabian, elisa) => {

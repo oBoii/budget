@@ -54,13 +54,12 @@
             Basics
             <!-- Basisbehoeften -->
           </button>
-          <div class="dropdown-menu">
-            <a class="dropdown-item" onclick="chooseCategory(this, 'Boodschappen')">Boodschappen</a>
+          <div id="lst_categories_basics" class="dropdown-menu">
+            <!-- <a class="dropdown-item" onclick="chooseCategory(this, 'Boodschappen')">Boodschappen</a>
             <a class="dropdown-item" onclick="chooseCategory(this, 'Bakker')">Bakker</a>
-            <a class="dropdown-item" onclick="chooseCategory(this, 'Gezondheid en verzorging')">Gezondheid &
-              verzorging</a>
+            <a class="dropdown-item" onclick="chooseCategory(this, 'Gezondheid en verzorging')">Gezondheid & verzorging</a>
             <a class="dropdown-item" onclick="chooseCategory(this, 'Bakker')">Openbaar vervoer</a>
-            <a class="dropdown-item" onclick="chooseCategory(this, 'Auto')">Auto</a>
+            <a class="dropdown-item" onclick="chooseCategory(this, 'Auto')">Auto</a> -->
           </div>
         </div>
 
@@ -71,12 +70,12 @@
             Fun
             <!-- Lifestyle en vrijetijdsuitgaven -->
           </button>
-          <div class="dropdown-menu">
-            <a class="dropdown-item" onclick="chooseCategory(this, 'Restaurant')">Restaurant</a>
+          <div id="lst_categories_fun" class="dropdown-menu">
+            <!-- <a class="dropdown-item" onclick="chooseCategory(this, 'Restaurant')">Restaurant</a>
             <a class="dropdown-item" onclick="chooseCategory(this, 'Café en Drinks')">Café & Drinks</a>
             <a class="dropdown-item" onclick="chooseCategory(this, 'Amusement')">Amusement</a>
             <a class="dropdown-item" onclick="chooseCategory(this, 'Sport')">Sport</a>
-            <a class="dropdown-item" onclick="chooseCategory(this, 'Shopping')">Shopping</a>
+            <a class="dropdown-item" onclick="chooseCategory(this, 'Shopping')">Shopping</a> -->
           </div>
         </div>
 
@@ -87,8 +86,8 @@
             Infreq
             <!-- Langere termijn en speciale uitgaven -->
           </button>
-          <div class="dropdown-menu">
-            <a class="dropdown-item" onclick="chooseCategory(this, 'Abonnementen')">Abonnementen</a>
+          <div id="lst_categories_infreq" class="dropdown-menu">
+            <!-- <a class="dropdown-item" onclick="chooseCategory(this, 'Abonnementen')">Abonnementen</a>
             <a class="dropdown-item" onclick="chooseCategory(this, 'Kleding')">Kleding</a>
             <a class="dropdown-item" onclick="chooseCategory(this, 'Schoenen')">Schoenen</a>
             <a class="dropdown-item" onclick="chooseCategory(this, 'Kapper')">Kapper</a>
@@ -97,36 +96,10 @@
             <a class="dropdown-item" onclick="chooseCategory(this, 'Meubels en Interieur')">Meubels & Interieur</a>
             <a class="dropdown-item" onclick="chooseCategory(this, 'Zelfontwikkeling')">Zelfontwikkeling</a>
             <a class="dropdown-item" onclick="chooseCategory(this, 'ICT')">ICT</a>
-            <a class="dropdown-item" onclick="chooseCategory(this, 'Uitzonderlijk')">Uitzonderlijk</a>
+            <a class="dropdown-item" onclick="chooseCategory(this, 'Uitzonderlijk')">Uitzonderlijk</a> -->
           </div>
         </div>
-
-        <!-- Basisbehoeften en dagelijkse uitgaven:
-        Boodschappen
-        Bakker
-        Gezondheid en verzorging
-        Auto
-        Restaurant
-        Café & Drinks
-
-        Lifestyle en vrijetijdsuitgaven:
-        Amusement
-        Sport
-        Shopping
-        Kleding
-        Schoenen
-        Kapper
-        Gifts
-        Reizen
-
-        Langere termijn en speciale uitgaven:
-        Meubels
-        Zelfontwikkeling
-        Uitzonderlijk (voor onverwachte of uitzonderlijke uitgaven)
-        Abonnementen (afhankelijk van wat voor soort abonnementen je bedoelt, kan dit ook in een andere groep passen) -->
-
         <br>
-
       </div>
     </div>
 
@@ -146,136 +119,8 @@
     <div id="div_statistics" class="margin">
       <div>
         <canvas id="myChart"></canvas>
-        <!-- <div class="donut-inner">
-          100.00
-        </div> -->
-
       </div>
 
-      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-      <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.bundle.min.js"></script> -->
-      <!-- <script type="text/javascript" src="chartjs-plugin-labels.js"></script> -->
-
-
-
-      <script>
-        const ctx = document.getElementById('myChart');
-
-        const prices = [400, 300, 700, 500]
-
-        const statistics = {
-          labels: [
-            `🍎 €${prices[0]}`,
-            `🎉 €${prices[1]}`,
-            `📅 €${prices[2]}`,
-            `💰 €${prices[3]}`
-          ],
-          datasets: [
-            {
-              data: prices,
-              backgroundColor: [
-                'rgb(255, 99, 132)',
-                'rgb(0, 122, 251)',
-                'rgb(255, 205, 86)',
-                // 'rgb(255, 255, 255)',
-                'rgb(240, 240, 240)',
-              ],
-            }
-          ]
-        };
-
-        const plugin = {
-          id: 'my-plugin',
-          beforeDraw: (chart, args, options) => {
-            const data = chart.data.datasets[0].data;
-            // exclude last element
-            const sum = data.slice(0, data.length - 1).reduce((a, b) => a + b, 0);
-
-            const width = chart.width, height = chart.height, ctx = chart.ctx;
-            const legendWidth = chart.legend.width;
-            ctx.restore();
-            // var fontSize = (height / 114).toFixed(2);
-            const fontSize = 1.75;
-            ctx.font = fontSize + "em Roboto";
-            ctx.textBaseline = "middle";
-            var text = `€${sum}`,
-              textX = Math.round((width - ctx.measureText(text).width) / 2) - legendWidth / 2,
-              textY = height / 2;
-            ctx.fillStyle = '#3e3e3e';
-
-            ctx.fillText(text, textX, textY);
-            ctx.save();
-          },
-        }
-
-        const config = {
-          type: 'doughnut',
-          data: statistics,
-          options: {
-            responsive: true,
-            plugins: {
-              legend: {
-                position: 'right',
-                labels: {
-                  boxWidth: 10,
-                }
-              },
-              title: {
-              },
-              labels: {
-                render: 'label+value',
-                fontSize: 14,
-                position: 'border', // outside, border
-                fontColor: '#FFFFFF',
-              },
-            }
-          },
-          plugins: [plugin]
-        };
-
-
-
-
-        new Chart(ctx, config);
-        // Chart.register({
-        //   beforeDraw: function (chart) {
-        //     var width = chart.chart.width,
-        //       height = chart.chart.height,
-        //       ctx = chart.chart.ctx;
-        //     ctx.restore();
-        //     var fontSize = (height / 114).toFixed(2);
-        //     ctx.font = fontSize + "em sans-serif";
-        //     ctx.textBaseline = "middle";
-        //     var text = "75%",
-        //       textX = Math.round((width - ctx.measureText(text).width) / 2),
-        //       textY = height / 2;
-        //     ctx.fillText(text, textX, textY);
-        //     ctx.save();
-        //   }
-        // });
-
-
-
-
-        // new Chart(ctx, {
-        //   type: 'bar',
-        //   data: {
-        //     labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-        //     datasets: [{
-        //       label: '# of Votes',
-        //       data: [12, 19, 3, 5, 2, 3],
-        //       borderWidth: 1
-        //     }]
-        //   },
-        //   options: {
-        //     scales: {
-        //       y: {
-        //         beginAtZero: true
-        //       }
-        //     }
-        //   }
-        // });
-      </script>
 
       Day: 12/31
     </div>
@@ -288,6 +133,8 @@
 
   </div>
   <!-- Optional JavaScript -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
   <!-- jQuery first, then Popper.js, then Bootstrap JS -->
   <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
     integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
@@ -303,6 +150,52 @@
   <script src="script.js?version=1"></script>
 
   <script>
+    const categories_basics_keys = ['Boodschappen', 'Bakker', 'Gezondheid en verzoring', 'Bakker', 'Auto',]
+    const categories_basics_names = ['Boodschappen', 'Bakker', 'Gezondheid & verzorging', 'Openbaar', 'Auto']
+
+    const categories_fun_keys = ['Restaurant', 'Café en Drinks', 'Amusement', 'Sport', 'Shopping']
+    const categories_fun_names = ['Restaurant', 'Café & Drinks', 'Amusement', 'Sport', 'Shopping']
+
+    const categories_infreq_keys = ['Abonnementen', 'Kleding', 'Schoenen', 'Kapper', 'Gifts', 'Reizen', 'Meubels en Interieur', 'Zelfontwikkeling', 'ICT', 'Uitzonderlijk']
+    const categories_infreq_names = ['Abonnementen', 'Kleding', 'Schoenen', 'Kapper', 'Gifts', 'Reizen', 'Meubels & Interieur', 'Zelfontwikkeling', 'ICT', 'Uitzonderlijk']
+
+    const fillCategoriesList = () => {
+      const lst_categories_basics = document.getElementById('lst_categories_basics');
+      const lst_categories_fun = document.getElementById('lst_categories_fun');
+      const lst_categories_infreq = document.getElementById('lst_categories_infreq');
+
+      for (let i = 0; i < categories_basics_keys.length; i++) {
+        const key = categories_basics_keys[i];
+        const name = categories_basics_names[i];
+        const a = document.createElement('a');
+        a.classList.add('dropdown-item');
+        a.setAttribute('onclick', `chooseCategory(this, '${key}')`);
+        a.innerHTML = name;
+        lst_categories_basics.appendChild(a);
+      }
+
+      for (let i = 0; i < categories_fun_keys.length; i++) {
+        const key = categories_fun_keys[i];
+        const name = categories_fun_names[i];
+        const a = document.createElement('a');
+        a.classList.add('dropdown-item');
+        a.setAttribute('onclick', `chooseCategory(this, '${key}')`);
+        a.innerHTML = name;
+        lst_categories_fun.appendChild(a);
+      }
+
+      for (let i = 0; i < categories_infreq_keys.length; i++) {
+        const key = categories_infreq_keys[i];
+        const name = categories_infreq_names[i];
+        const a = document.createElement('a');
+        a.classList.add('dropdown-item');
+        a.setAttribute('onclick', `chooseCategory(this, '${key}')`);
+        a.innerHTML = name;
+        lst_categories_infreq.appendChild(a);
+      }
+
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
       // default input ratio: 100 for Fabian, 50 for Elisa
       if (getName() == FABIAN) {
@@ -311,11 +204,14 @@
         inp_ratio.value = 50;
       }
 
+      fillCategoriesList();
+
       lbl_percent.innerHTML = inp_ratio.value + '%';
       readName();
       updateDebtsAndExpensesAll();
       // update();
       checkSubmit();
+
 
       // submit button enabled when all fields are filled in
       btn_submit.disabled = true;
