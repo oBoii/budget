@@ -57,7 +57,7 @@
           <div class="dropdown-menu">
             <a class="dropdown-item" onclick="chooseCategory(this, 'Boodschappen')">Boodschappen</a>
             <a class="dropdown-item" onclick="chooseCategory(this, 'Bakker')">Bakker</a>
-            <a class="dropdown-item" onclick="chooseCategory(this, 'Gezondheid en verzorging')">Gezondheid en
+            <a class="dropdown-item" onclick="chooseCategory(this, 'Gezondheid en verzorging')">Gezondheid &
               verzorging</a>
             <a class="dropdown-item" onclick="chooseCategory(this, 'Bakker')">Openbaar vervoer</a>
             <a class="dropdown-item" onclick="chooseCategory(this, 'Auto')">Auto</a>
@@ -73,7 +73,7 @@
           </button>
           <div class="dropdown-menu">
             <a class="dropdown-item" onclick="chooseCategory(this, 'Restaurant')">Restaurant</a>
-            <a class="dropdown-item" onclick="chooseCategory(this, 'Café & Drinks')">Café & Drinks</a>
+            <a class="dropdown-item" onclick="chooseCategory(this, 'Café en Drinks')">Café & Drinks</a>
             <a class="dropdown-item" onclick="chooseCategory(this, 'Amusement')">Amusement</a>
             <a class="dropdown-item" onclick="chooseCategory(this, 'Sport')">Sport</a>
             <a class="dropdown-item" onclick="chooseCategory(this, 'Shopping')">Shopping</a>
@@ -94,7 +94,7 @@
             <a class="dropdown-item" onclick="chooseCategory(this, 'Kapper')">Kapper</a>
             <a class="dropdown-item" onclick="chooseCategory(this, 'Gifts')">Gifts</a>
             <a class="dropdown-item" onclick="chooseCategory(this, 'Reizen')">Reizen</a>
-            <a class="dropdown-item" onclick="chooseCategory(this, 'Meubels & Interieur')">Meubels & Interieur</a>
+            <a class="dropdown-item" onclick="chooseCategory(this, 'Meubels en Interieur')">Meubels & Interieur</a>
             <a class="dropdown-item" onclick="chooseCategory(this, 'Zelfontwikkeling')">Zelfontwikkeling</a>
             <a class="dropdown-item" onclick="chooseCategory(this, 'ICT')">ICT</a>
             <a class="dropdown-item" onclick="chooseCategory(this, 'Uitzonderlijk')">Uitzonderlijk</a>
@@ -143,41 +143,95 @@
       Betaald door <span id="lbl_name" onclick="editName()">##</span>.
     </div>
 
+    <div id="div_statistics" class="margin">
+      <div>
+        <canvas id="myChart"></canvas>
+        <div>
+          100.33 EUR
+        </div>
+
+      </div>
+
+      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+      <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.bundle.min.js"></script> -->
+      <!-- <script type="text/javascript" src="chartjs-plugin-labels.js"></script> -->
+
+
+
+      <script>
+        const ctx = document.getElementById('myChart');
+
+        const statistics = {
+          labels: [
+            '🍎 Basics', '🎉 Fun', '💭 Infreq', 'Overschot'
+          ],
+          datasets: [
+            {
+              data: [400, 300, 700, 500],
+              backgroundColor: [
+                'rgb(255, 99, 132)',
+                'rgb(0, 122, 251)',
+                'rgb(255, 205, 86)',
+                // 'rgb(255, 255, 255)',
+                'rgb(240, 240, 240)',
+              ],
+            }
+          ]
+        };
+
+        const config = {
+          type: 'doughnut',
+          data: statistics,
+          options: {
+            responsive: true,
+            plugins: {
+              legend: {
+                position: 'right',
+              },
+              title: {
+              },
+              labels: {
+                render: 'label+value',
+                fontSize: 14,
+                position: 'border', // outside, border
+                fontColor: '#FFFFFF',
+              }
+
+            }
+          }
+        };
+
+        new Chart(ctx, config);
+
+
+        // new Chart(ctx, {
+        //   type: 'bar',
+        //   data: {
+        //     labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+        //     datasets: [{
+        //       label: '# of Votes',
+        //       data: [12, 19, 3, 5, 2, 3],
+        //       borderWidth: 1
+        //     }]
+        //   },
+        //   options: {
+        //     scales: {
+        //       y: {
+        //         beginAtZero: true
+        //       }
+        //     }
+        //   }
+        // });
+      </script>
+
+      Day: 12/31
+    </div>
+
     <div id="div_expenses" style="text-align: left; width: 100%;">
       <ul id="ul_expenses_all" class="expenseHistory">
-        <!-- show spans side by side -->
-        <!-- <li class="expenseItem">
-          <span class="leftSpan">
-            <span class="expenseItemTop expenseItemDay">09</span> <br>
-            <span class="expenseItemBot"> Aug</span>
-          </span>
-          <span class="centerSpan">
-            <span class="expenseItemTop">Café & Drinks</span> <br>
-            <span class="expenseItemBot">Zwembad</span>
-          </span>
-          <span class="rightSpan">
-            <sup><span class="expenseMine blue">5.00</span></sup>&frasl;<sub> <span
-                class="expenseTotal">10.00</span></sub>
-          </span>
-        </li> -->
       </ul>
     </div>
 
-
-
-    <!-- <div id="div_expenses" class="margin" style="text-align: left;">
-      <br><br>
-      <table id="tbl_expenses_all" style="width: 100%;">
-        <tr class="fixed expensesHead">
-          <th style='width: 2em'></th>
-          <th>Datum</th>
-          <th>Fabian</th>
-          <th>Elisa</th>
-          <th>Wat</th>
-          <th></th>
-        </tr>
-      </table>
-    </div> -->
 
   </div>
   <!-- Optional JavaScript -->
@@ -214,6 +268,7 @@
       btn_submit.disabled = true;
     });
   </script>
+
 </body>
 
 </html>
