@@ -1,5 +1,5 @@
-// const url = "http://127.0.0.1:5000"
-const url = "http://ofabian.pythonanywhere.com"
+const url = "http://127.0.0.1:5000"
+// const url = "http://ofabian.pythonanywhere.com"
 const key = authenticate()
 
 const inp_price = document.getElementById('inp_price');
@@ -82,7 +82,8 @@ const updateDebtsAndExpensesAll = (maxTrials = 3) => {
       const groupedExenses = data.grouped_expenses;
       updateDebts(fabian, elisa);
       updateExpensesAll(expenses);
-      updateDonut(groupedExenses)
+      // updateDonut(groupedExenses)
+      updateBar(groupedExenses)
     })
     .catch(e => {
       if (maxTrials > 0)
@@ -129,8 +130,72 @@ const getExpenesPerMainCategory = (expenses) => {
 
   return [expensesBasics, expensesFun, expensesInfreq, leftOver];
 }
+
+const updateBar = (groupedExenses) => {
+  // groupedExenses: 
+  // eg [{category: "Groceries", price_fabian: 10, price_elisa: 20}, ... ]
+  const ctx = document.getElementById('myChart');
+  ctx.height = 350;
+
+
+  const labels = groupedExenses.map(expense => expense.category);
+  const prices = groupedExenses.map(expense => getName() == FABIAN ? expense.price_fabian : expense.price_elisa);
+
+  const statistics = {
+    labels: labels,
+    datasets: [
+      {
+        label: 'Expenses per category, current month',
+
+        data: prices,
+        backgroundColor: [
+          'rgba(255, 99, 132, 0.5)',
+          'rgba(0, 122, 251, 0.5)',
+          'rgba(255, 205, 86, 0.5)',
+          'rgba(240, 240, 240, 0.5)',
+        ],
+      }
+    ]
+  };
+
+
+  const config = {
+    type: 'bar',
+    data: statistics,
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+        },
+        title: {
+        },
+        labels: {
+          render: 'label+value',
+          fontSize: 14,
+          position: 'border', // outside, border
+          fontColor: '#FFFFFF',
+        },
+        tooltip: {
+          callbacks: {
+            label: function (context) {
+              console.log(context);
+              const price = context.dataset.data[context.dataIndex];
+              // const category = context.dataset.label;
+              // TODO: Should give list of all exepnses in this category for the given month
+              return `€${price.toFixed(2)}`;
+            }
+          }
+        }
+      }
+    },
+  };
+
+  new Chart(ctx, config);
+}
+
 const updateDonut = (groupedExenses) => {
-  //const prices = [400, 300, 700, 500]
+  // eg prices = [400, 300, 700, 500]
   const prices = getExpenesPerMainCategory(groupedExenses)
   const ctx = document.getElementById('myChart');
 
@@ -149,7 +214,6 @@ const updateDonut = (groupedExenses) => {
           'rgb(255, 99, 132)',
           'rgb(0, 122, 251)',
           'rgb(255, 205, 86)',
-          // 'rgb(255, 255, 255)',
           'rgb(240, 240, 240)',
         ],
       }
@@ -168,7 +232,7 @@ const updateDonut = (groupedExenses) => {
       const text = `€${sum}`
       const textX = Math.round((width - ctx.measureText(text).width) / 2) - legendWidth / 2
       const textY = height / 2;
-      
+
       const textLength = text.length;
       const fontSize = textLength > 6 ? 1 : 1.5;
 
@@ -206,9 +270,6 @@ const updateDonut = (groupedExenses) => {
     },
     plugins: [plugin]
   };
-
-
-
 
   new Chart(ctx, config);
 }
@@ -288,35 +349,6 @@ const updateExpensesAll = (expenses) => {
 }
 
 
-
-
-
-// const updateDebts = () => {
-//   const fullUrl = `${url}/get_debts`;
-//   betterFetch(fullUrl)
-//     .then(response => response.json())
-//     .then(data => {
-//       fabian = data.fabian; // eg: +14.00
-//       elisa = data.elisa; // eg: +12.00
-//       const toPay = Math.abs((fabian - elisa).toFixed(2));
-
-//       const lbl_name_has_debt = document.getElementById('lbl_name_has_debt');
-//       const lbl_name_no_debt = document.getElementById('lbl_name_no_debt');
-//       const lbl_debt = document.getElementById('lbl_debt');
-
-//       if (elisa > fabian) { // elisa has debt
-//         lbl_name_has_debt.innerHTML = ELISA;
-//         lbl_name_no_debt.innerHTML = FABIAN;
-//         lbl_debt.innerHTML = toPay;
-//       } else {
-//         lbl_name_has_debt.innerHTML = FABIAN;
-//         lbl_name_no_debt.innerHTML = ELISA;
-//         lbl_debt.innerHTML = toPay;
-
-//       }
-//     })
-//     .catch(e => handleError(e))
-// }
 
 const listExpensesSummarized = () => {
   const fullUrl = `${url}/get_expenses?name=${getName()}`;

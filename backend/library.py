@@ -115,9 +115,11 @@ def get_expenses(name, grouped):
             group by date, category
             ORDER by date DESC"""
 
+    # only expenses of the current month
     query_indiv = """
             SELECT id, date, price_fabian, price_elisa, paid_by, category, subcategory, description
             FROM expenses
+            WHERE date >= date('now', 'start of month')
             ORDER by date DESC, id DESC
             """
 
@@ -174,9 +176,6 @@ def get_expenses(name, grouped):
 
         data.append(individual_cost)
     conn.close()
-
-    # Group expenses by category and date
-    data = data[:30]  # only show the most recent entries
 
     return data
 
