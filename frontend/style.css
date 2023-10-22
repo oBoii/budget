@@ -186,7 +186,8 @@ td button {
   list-style-type: none;
   border: none;
   padding: 0;
-  margin: 0.5em;
+  /* margin: 0.5em; */
+  margin: 0;
 }
 
 .expenseItem {
@@ -237,3 +238,7 @@ td button {
 }
 
 
+#div_expenses {
+  text-align: left;
+  width: 100%;
+}

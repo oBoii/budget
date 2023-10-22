@@ -1,5 +1,5 @@
-const url = "http://127.0.0.1:5000"
-// const url = "http://ofabian.pythonanywhere.com"
+// const url = "http://127.0.0.1:5000"
+const url = "http://ofabian.pythonanywhere.com"
 const key = authenticate()
 
 const inp_price = document.getElementById('inp_price');
@@ -84,7 +84,7 @@ const updateDebtsAndExpensesAll = (maxTrials = 3) => {
       updateExpensesAll(expenses);
 
       updateDonut(groupedExenses);
-      updateBar(groupedExenses);
+      updateBar(groupedExenses, expenses);
     })
     .catch(e => {
       if (maxTrials > 0)
@@ -145,15 +145,15 @@ const getExpenesPerMainCategory = (expenses) => {
   return [expensesBasics, expensesFun, expensesInfreq, leftOver];
 }
 
-const updateBar = (groupedExenses) => {
+const updateBar = (groupedExenses, indivualExpenses) => {
   // groupedExenses: 
   // eg [{category: "Groceries", price_fabian: 10, price_elisa: 20}, ... ]
   const ctx = document.getElementById('barChart');
-  ctx.height = 350;
-
 
   const labels = groupedExenses.map(expense => expense.category);
   const prices = groupedExenses.map(expense => getName() == FABIAN ? expense.price_fabian : expense.price_elisa);
+
+  ctx.height = 350;
 
   const statistics = {
     labels: labels,
@@ -172,6 +172,8 @@ const updateBar = (groupedExenses) => {
     ]
   };
 
+
+  let clicked = new Map();
 
   const config = {
     type: 'bar',
@@ -193,13 +195,32 @@ const updateBar = (groupedExenses) => {
         tooltip: {
           callbacks: {
             label: function (context) {
-              console.log(context);
               const price = context.dataset.data[context.dataIndex];
-              // const category = context.dataset.label;
-              // TODO: Should give list of all exepnses in this category for the given month
+              const category = context.label;
+              const expenses = indivualExpenses.filter(expense => expense.category == category);
+
+              // filter div_expenses to only show expenses of this category
+              const lst_expenses = document.getElementById('ul_expenses_all');
+
+              lst_expenses.innerHTML = '';
+              expenses.forEach(expense => {
+                const date = expense.date; // eg: dd-mm
+                const day = date.split('-')[0];
+                const monthNumeric = date.split('-')[1];
+                const priceFabian = expense.price_fabian;
+                const priceElisa = expense.price_elisa;
+                const description = expense.description;
+
+                const myPrice = getName() == FABIAN ? priceFabian : priceElisa;
+
+                lst_expenses.innerHTML += getExepenseListItem(day, monthNumeric, category, description, myPrice, priceFabian + priceElisa);
+               
+              });
+
               return `€${price.toFixed(2)}`;
             }
           }
+          // callback after the tooltip has been is closed
         }
       }
     },
@@ -308,6 +329,26 @@ const updateDebts = (fabian, elisa) => {
   }
 }
 
+const getExepenseListItem = (day, monthNumeric, category, description, myPrice, priceBoth) => {
+  const month = monthNumeric == '01' ? 'Jan' : monthNumeric == '02' ? 'Feb' : monthNumeric == '03' ? 'Mar' : monthNumeric == '04' ? 'Apr' : monthNumeric == '05' ? 'May' : monthNumeric == '06' ? 'Jun' : monthNumeric == '07' ? 'Jul' : monthNumeric == '08' ? 'Aug' : monthNumeric == '09' ? 'Sep' : monthNumeric == '10' ? 'Oct' : monthNumeric == '11' ? 'Nov' : 'Dec';
+
+  return `
+    <li class="expenseItem">
+      <span class="leftSpan">
+        <span class="expenseItemTop expenseItemDay">${day}</span> <br>
+        <span class="expenseItemBot">${month}</span>
+      </span>
+      <span class="centerSpan">
+        <span class="expenseItemTop">${category}</span> <br>
+        <span class="expenseItemBot">${description}</span>
+      </span>
+      <span class="rightSpan">
+        ${getPriceText(myPrice, priceBoth)}
+      </span>
+    </li>
+    `
+}
+
 const getPriceText = (myPrice, total) => {
   if (myPrice == total) {
     return `<span class="expenseItemTop blue" style="font-size: 0.9em;">${myPrice}</span> <br>
@@ -325,7 +366,7 @@ const getPriceText = (myPrice, total) => {
 // &frasl;
 
 const updateExpensesAll = (expenses) => {
-  const tbl_expenses = document.getElementById('ul_expenses_all');
+  const lst_expenses = document.getElementById('ul_expenses_all');
   expenses.forEach(expense => {
     // const date = expense.date; // eg: dd-mm
     // convert to dd/mm
@@ -338,26 +379,11 @@ const updateExpensesAll = (expenses) => {
     const description = expense.description == null || expense.description == '' ? '' : expense.description.charAt(0).toUpperCase() + expense.description.slice(1);
 
     const myPrice = getName() == FABIAN ? priceFabian : priceElisa;
-
     const day = date.split('/')[1];
     const monthNumeric = date.split('/')[0];
-    const month = monthNumeric == '01' ? 'Jan' : monthNumeric == '02' ? 'Feb' : monthNumeric == '03' ? 'Mar' : monthNumeric == '04' ? 'Apr' : monthNumeric == '05' ? 'May' : monthNumeric == '06' ? 'Jun' : monthNumeric == '07' ? 'Jul' : monthNumeric == '08' ? 'Aug' : monthNumeric == '09' ? 'Sep' : monthNumeric == '10' ? 'Oct' : monthNumeric == '11' ? 'Nov' : 'Dec';
+  
 
-    tbl_expenses.innerHTML += `
-    <li class="expenseItem">
-      <span class="leftSpan">
-        <span class="expenseItemTop expenseItemDay">${day}</span> <br>
-        <span class="expenseItemBot">${month}</span>
-      </span>
-      <span class="centerSpan">
-        <span class="expenseItemTop">${category}</span> <br>
-        <span class="expenseItemBot">${description}</span>
-      </span>
-      <span class="rightSpan">
-        ${getPriceText(myPrice, priceFabian + priceElisa)}
-      </span>
-    </li>
-    `
+    lst_expenses.innerHTML += getExepenseListItem(day, monthNumeric, category, description, myPrice, priceFabian + priceElisa);
 
   });
 }
