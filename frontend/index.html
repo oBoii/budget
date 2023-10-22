@@ -98,11 +98,15 @@
 
     <div id="div_statistics" class="margin">
       <div>
-        <canvas id="myChart"></canvas>
+        <canvas id="donutChart"></canvas>
+      </div>
+      <div>
+        <canvas id="barChart"></canvas>
       </div>
 
 
-      Day: 12/31
+      <!-- Day: 12/31 -->
+      Day: <span id="lbl_day">##</span> / <span id="lbl_month">##</span> <br>
     </div>
 
     <div id="div_expenses" style="text-align: left; width: 100%;">
@@ -191,6 +195,7 @@
       updateDebtsAndExpensesAll();
       // update();
       checkSubmit();
+      printCurrentDayAndMonth();
 
 
       // submit button enabled when all fields are filled in

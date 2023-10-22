@@ -82,8 +82,9 @@ const updateDebtsAndExpensesAll = (maxTrials = 3) => {
       const groupedExenses = data.grouped_expenses;
       updateDebts(fabian, elisa);
       updateExpensesAll(expenses);
-      // updateDonut(groupedExenses)
-      updateBar(groupedExenses)
+
+      updateDonut(groupedExenses);
+      updateBar(groupedExenses);
     })
     .catch(e => {
       if (maxTrials > 0)
@@ -91,6 +92,19 @@ const updateDebtsAndExpensesAll = (maxTrials = 3) => {
       else
         handleError(e)
     })
+}
+
+const printCurrentDayAndMonth = () => {
+  const date = new Date();
+  const day = date.getDate();
+  const daysInMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
+
+
+  const lbl_day = document.getElementById('lbl_day');
+  const lbl_month = document.getElementById('lbl_month');
+
+  lbl_day.innerHTML = day;
+  lbl_month.innerHTML = daysInMonth;
 }
 
 const getExpenesPerMainCategory = (expenses) => {
@@ -134,7 +148,7 @@ const getExpenesPerMainCategory = (expenses) => {
 const updateBar = (groupedExenses) => {
   // groupedExenses: 
   // eg [{category: "Groceries", price_fabian: 10, price_elisa: 20}, ... ]
-  const ctx = document.getElementById('myChart');
+  const ctx = document.getElementById('barChart');
   ctx.height = 350;
 
 
@@ -197,7 +211,7 @@ const updateBar = (groupedExenses) => {
 const updateDonut = (groupedExenses) => {
   // eg prices = [400, 300, 700, 500]
   const prices = getExpenesPerMainCategory(groupedExenses)
-  const ctx = document.getElementById('myChart');
+  const ctx = document.getElementById('donutChart');
 
 
   const statistics = {
@@ -211,10 +225,10 @@ const updateDonut = (groupedExenses) => {
       {
         data: prices,
         backgroundColor: [
-          'rgb(255, 99, 132)',
-          'rgb(0, 122, 251)',
-          'rgb(255, 205, 86)',
-          'rgb(240, 240, 240)',
+          'rgba(255, 99, 132, 0.5)',
+          'rgba(0, 122, 251, 0.5)',
+          'rgba(255, 205, 86, 0.5)',
+          'rgba(240, 240, 240, 0.5)',
         ],
       }
     ]
