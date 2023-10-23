@@ -273,4 +273,6 @@ button {
   width: 30px;
   height: 30px;
   padding: 2px;
+  color: #585858;
+  background-color: white
 }

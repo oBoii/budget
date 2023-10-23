@@ -170,7 +170,6 @@ const updateBar = (groupedExenses, indivualExpenses) => {
           'rgba(255, 99, 132, 0.5)',
           'rgba(0, 122, 251, 0.5)',
           'rgba(255, 205, 86, 0.5)',
-          'rgba(240, 240, 240, 0.5)',
         ],
       }
     ]
