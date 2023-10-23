@@ -9,6 +9,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <!-- refreshing icon -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
   <link rel="icon" type="image/png" href="fav.png" />
   <link rel="stylesheet" href="style.css?version=3">
@@ -17,11 +19,10 @@
 
 <body>
   <div id="main">
-    <div id="div_debts" style="background-color: #78f0338a; ; ">
+    <div id="div_debts">
       <!-- Shows debt for Fabian and Elisa  -->
-      <br>
       <span id="lbl_name_has_debt">##</span> moet <span id="lbl_name_no_debt">##</span> <span id="lbl_debt">##</span>
-      EUR. <br> <br>
+      EUR.
     </div>
 
     <div id="div_price" class="margin">
@@ -103,13 +104,29 @@
       <div>
         <canvas id="barChart"></canvas>
       </div>
+    </div>
+
+    <div class="side-by-side">
+      <div class="left-div">
+        <!-- Day: 12/31 -->
+        Day: <span id="lbl_day">##</span> / <span id="lbl_month">##</span> <br>
+      </div>
+      <button class="refreshExpensesButton btn-secondary" onclick="clearExpensesFilter()">
+        <i class="fa">&#xf021;</i>
+      </button>
+    </div>
+
+    <div id="div_expenses">
+      <ul id="ul_expenses_all" class="expenseHistory">
+      </ul>
+    </div>
 
 
+    <div id="div_expenses">
+      <ul id="ul_expenses_all" class="expenseHistory">
+      </ul>
     </div>
-    <div>
-      <!-- Day: 12/31 -->
-      Day: <span id="lbl_day">##</span> / <span id="lbl_month">##</span> <br>
-    </div>
+
 
     <div id="div_expenses">
       <ul id="ul_expenses_all" class="expenseHistory">

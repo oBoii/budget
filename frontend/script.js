@@ -10,6 +10,8 @@ const inp_price_other = document.getElementById('inp_price_other');
 const lbl_name = document.getElementById('lbl_name');
 const btn_submit = document.getElementById('btn_submit');
 
+let EXPENSES_ALL = null;
+
 
 const FABIAN = 'Fabian';
 const ELISA = 'Elisa';
@@ -85,6 +87,8 @@ const updateDebtsAndExpensesAll = (maxTrials = 3) => {
 
       updateDonut(groupedExenses);
       updateBar(groupedExenses, expenses);
+
+      ALL_EXPENSES = expenses;
     })
     .catch(e => {
       if (maxTrials > 0)
@@ -214,7 +218,7 @@ const updateBar = (groupedExenses, indivualExpenses) => {
                 const myPrice = getName() == FABIAN ? priceFabian : priceElisa;
 
                 lst_expenses.innerHTML += getExepenseListItem(day, monthNumeric, category, description, myPrice, priceFabian + priceElisa);
-               
+
               });
 
               return `€${price.toFixed(2)}`;
@@ -363,10 +367,11 @@ const getPriceText = (myPrice, total) => {
   </span>`
 }
 
-// &frasl;
 
 const updateExpensesAll = (expenses) => {
   const lst_expenses = document.getElementById('ul_expenses_all');
+  lst_expenses.innerHTML = '';
+
   expenses.forEach(expense => {
     // const date = expense.date; // eg: dd-mm
     // convert to dd/mm
@@ -381,7 +386,7 @@ const updateExpensesAll = (expenses) => {
     const myPrice = getName() == FABIAN ? priceFabian : priceElisa;
     const day = date.split('/')[1];
     const monthNumeric = date.split('/')[0];
-  
+
 
     lst_expenses.innerHTML += getExepenseListItem(day, monthNumeric, category, description, myPrice, priceFabian + priceElisa);
 
@@ -490,6 +495,10 @@ const deleteExpense = (id) => {
       location.reload();
     })
     .catch(e => handleError(e))
+}
+
+const clearExpensesFilter = () => {
+  updateExpensesAll(ALL_EXPENSES);
 }
 
 

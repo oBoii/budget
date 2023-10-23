@@ -16,6 +16,12 @@ body {
   margin: 40px 20px;
 }
 
+#div_debts {
+  /* background-color: rgba(255, 99, 132, 0.5); */
+  background-color: rgba(255, 205, 86, 0.5);
+  padding: 0.5em;
+}
+
 button,
 .button {
   font-size: 16px;
@@ -241,4 +247,30 @@ td button {
 #div_expenses {
   text-align: left;
   width: 100%;
+}
+
+.side-by-side {
+  display: flex;
+  align-items: center;
+  /* Center vertically within the flex container */
+}
+
+.left-div {
+  flex: 1;
+  /* Takes up 100% width by default */
+  max-width: 80%;
+  /* Restricts it to a maximum of 80% */
+}
+
+button {
+  flex: 0 0 auto;
+  /* Prevent the button from growing */
+  margin-left: 10px;
+  /* Add some space between the two elements */
+}
+
+.refreshExpensesButton {
+  width: 30px;
+  height: 30px;
+  padding: 2px;
 }
