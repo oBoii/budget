@@ -207,6 +207,7 @@ const updateBar = (groupedExenses, indivualExpenses) => {
 
               lst_expenses.innerHTML = '';
               expenses.forEach(expense => {
+                const id = expense.id;
                 const date = expense.date; // eg: dd-mm
                 const day = date.split('-')[0];
                 const monthNumeric = date.split('-')[1];
@@ -216,7 +217,7 @@ const updateBar = (groupedExenses, indivualExpenses) => {
 
                 const myPrice = getName() == FABIAN ? priceFabian : priceElisa;
 
-                lst_expenses.innerHTML += getExepenseListItem(day, monthNumeric, category, description, myPrice, priceFabian + priceElisa);
+                lst_expenses.innerHTML += getExepenseListItem(id, day, monthNumeric, category, description, myPrice, priceFabian + priceElisa);
 
               });
 
@@ -332,11 +333,28 @@ const updateDebts = (fabian, elisa) => {
   }
 }
 
-const getExepenseListItem = (day, monthNumeric, category, description, myPrice, priceBoth) => {
+const getExepenseListItem = (id, day, monthNumeric, category, description, myPrice, priceBoth) => {
   const month = monthNumeric == '01' ? 'Jan' : monthNumeric == '02' ? 'Feb' : monthNumeric == '03' ? 'Mar' : monthNumeric == '04' ? 'Apr' : monthNumeric == '05' ? 'May' : monthNumeric == '06' ? 'Jun' : monthNumeric == '07' ? 'Jul' : monthNumeric == '08' ? 'Aug' : monthNumeric == '09' ? 'Sep' : monthNumeric == '10' ? 'Oct' : monthNumeric == '11' ? 'Nov' : 'Dec';
 
+  // return `
+  //   <li class="expenseItem">
+  //     <span class="leftSpan">
+  //       <span class="expenseItemTop expenseItemDay">${day}</span> <br>
+  //       <span class="expenseItemBot">${month}</span>
+  //     </span>
+  //     <span class="centerSpan">
+  //       <span class="expenseItemTop">${category}</span> <br>
+  //       <span class="expenseItemBot">${description}</span>
+  //     </span>
+  //     <span class="rightSpan">
+  //       ${getPriceText(myPrice, priceBoth)}
+  //     </span>
+  //   </li>
+  //   `
+
+  // add onhold event to open modal
   return `
-    <li class="expenseItem">
+    <li class="expenseItem" onclick="openModal(${id})">
       <span class="leftSpan">
         <span class="expenseItemTop expenseItemDay">${day}</span> <br>
         <span class="expenseItemBot">${month}</span>
@@ -350,6 +368,7 @@ const getExepenseListItem = (day, monthNumeric, category, description, myPrice, 
       </span>
     </li>
     `
+
 }
 
 const getPriceText = (myPrice, total) => {
@@ -378,6 +397,7 @@ const updateExpensesAll = (expenses) => {
     const priceFabian = expense.price_fabian;
     const priceElisa = expense.price_elisa;
     const category = expense.category;
+    const id = expense.id;
 
     // capitalize first letter of description, if not null or ''
     const description = expense.description == null || expense.description == '' ? '' : expense.description.charAt(0).toUpperCase() + expense.description.slice(1);
@@ -387,7 +407,7 @@ const updateExpensesAll = (expenses) => {
     const monthNumeric = date.split('/')[0];
 
 
-    lst_expenses.innerHTML += getExepenseListItem(day, monthNumeric, category, description, myPrice, priceFabian + priceElisa);
+    lst_expenses.innerHTML += getExepenseListItem(id, day, monthNumeric, category, description, myPrice, priceFabian + priceElisa);
 
   });
 }
