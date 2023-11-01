@@ -11,7 +11,7 @@ def param(name):
 
 
 def append_expense(
-    price_fabian, price_elisa, paid_by, category, description, subcategory, now
+        price_fabian, price_elisa, paid_by, category, description, subcategory, now
 ):
     # Connect to the SQLite database
     conn = sqlite3.connect(f"{ROOT}/expenses.db")
@@ -68,19 +68,20 @@ def get_debt_per_person():
     conn.close()
     return fabian, elisa
 
-def get_total_expenses_grouped_by_category_this_month():
+
+def get_total_expenses_grouped_by_category(nb_months_ago):  # eg -1 = last month
     # Connect to the SQLite database
     conn = sqlite3.connect(f"{ROOT}/expenses.db")
     cursor = conn.cursor()
 
     # Query the expenses for calculations
-    cursor.execute(
-        """
+    cursor.execute(f"""
         SELECT category, sum(price_fabian), sum(price_elisa) FROM expenses
-        WHERE date >= date('now', 'start of month')
+        --WHERE date >= date('now', 'start of month')
+        WHERE strftime('%Y-%m', date) = strftime('%Y-%m', 'now', '{nb_months_ago} months')
         GROUP BY category
         """
-    )
+                   )
     rows = cursor.fetchall()
 
     # Perform debt calculations based on fetched data
@@ -99,80 +100,41 @@ def get_total_expenses_grouped_by_category_this_month():
     return data
 
 
-
-
-def get_expenses(name, grouped):
-    assert (name in ["fabian", "elisa"] and grouped) or (name is None and not grouped)
-
+def get_expenses(nb_months_ago):  # nb_months_ago: 0 = current month, -1 = last month, etc.
     # Connect to the SQLite database
     conn = sqlite3.connect(f"{ROOT}/expenses.db")
     cursor = conn.cursor()
 
-    query_group = f"""
-            SELECT max(id) as id, date, sum(price_{name}) as price, sum(price_{name}) as price2, sum(price_{name}) as price3, category, group_concat(subcategory, ', ') as subcategories, group_concat(description, ', ') as descriptions
-            FROM expenses
-            WHERE price_{name} > 0 AND price_{name} IS NOT NULL
-            group by date, category
-            ORDER by date DESC"""
-
-    # only expenses of the current month
-    query_indiv = """
+    # Expenses of `nb_months_ago` months ago
+    query_indiv = f"""
             SELECT id, date, price_fabian, price_elisa, paid_by, category, subcategory, description
             FROM expenses
-            WHERE date >= date('now', 'start of month')
+            WHERE strftime('%Y-%m', date) = strftime('%Y-%m', 'now', '{nb_months_ago} months')
             ORDER by date DESC, id DESC
             """
 
-    cursor.execute(
-        query_group if grouped else query_indiv,
-        (),  # (name,),
-    )
+    cursor.execute(query_indiv, ())
     rows = cursor.fetchall()
 
     # Perform expense calculations based on fetched data
     data = []
     for row in rows:
-        (
-            id,
-            date,
-            price_person,
-            price_other,
-            paid_by,
-            category,
-            subcategories,
-            descriptions,
-        ) = row
+        (id, date, price_person, price_other, paid_by, category, subcategories, descriptions) = row
 
-        if grouped:
-            # remove 'null, ' from subcategories and descriptions
-            subcategories = subcategories.replace("null, ", "")
-            descriptions = descriptions.replace("null, ", "")
-            subcategories = subcategories.replace("null", "")
-            descriptions = descriptions.replace("null", "")
+        category = category.replace("null", "")
+        subcategories = subcategories.replace("null", "")
+        descriptions = descriptions.replace("null", "")
 
-            individual_cost = {
-                "id": id,
-                "date": datetime.strptime(date, "%Y-%m-%d").strftime("%d-%m"),
-                "price": price_person,
-                "category": category,
-                "description": descriptions,
-                "subcategory": subcategories,
-            }
-        else:
-            category = category.replace("null", "")
-            subcategories = subcategories.replace("null", "")
-            descriptions = descriptions.replace("null", "")
-
-            individual_cost = {
-                "id": id,
-                "date": datetime.strptime(date, "%Y-%m-%d").strftime("%d-%m"),
-                "price_fabian": price_person,
-                "price_elisa": price_other,
-                "paid_by": paid_by,
-                "category": category,
-                "subcategory": subcategories,
-                "description": descriptions,
-            }
+        individual_cost = {
+            "id": id,
+            "date": datetime.strptime(date, "%Y-%m-%d").strftime("%d-%m"),
+            "price_fabian": price_person,
+            "price_elisa": price_other,
+            "paid_by": paid_by,
+            "category": category,
+            "subcategory": subcategories,
+            "description": descriptions,
+        }
 
         data.append(individual_cost)
     conn.close()

@@ -9,7 +9,7 @@ from library import (
     get_debt_per_person,
     get_expenses,
     param,
-    delete_expense, get_total_expenses_grouped_by_category_this_month,
+    delete_expense, get_total_expenses_grouped_by_category,
 )
 
 sns.set_theme()
@@ -29,6 +29,8 @@ def verify_password(username, password):
 @app.route("/")
 @auth.login_required
 def page_index():
+    nb_months_ago = int(request.args.get("month"))  # 0 = current month, -1 = last month, etc.
+
     # get debt per person
     fabian, elisa = get_debt_per_person()
     # round to 2 decimals
@@ -36,10 +38,10 @@ def page_index():
     elisa = round(elisa, 2)
 
     # get all expenses
-    expenses = get_expenses(None, False)
+    expenses = get_expenses(nb_months_ago)
 
     # get debts per category from current month
-    grouped_expenses = get_total_expenses_grouped_by_category_this_month()
+    grouped_expenses = get_total_expenses_grouped_by_category(nb_months_ago)
 
     return json.dumps({"fabian": fabian, "elisa": elisa, "expenses": expenses, "grouped_expenses": grouped_expenses})
 
