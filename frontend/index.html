@@ -2,182 +2,158 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Budget</title>
-  <link rel="preconnect" href="https://fonts.gstatic.com">
-  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-  <!-- refreshing icon -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Budget</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <!-- refreshing icon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-  <link rel="icon" type="image/png" href="fav.png" />
-  <link rel="stylesheet" href="style.css?version=4">
+    <link rel="icon" type="image/png" href="fav.png"/>
+    <link rel="stylesheet" href="style.css?version=4">
 
 </head>
 
 <body>
-  <!-- Button trigger modal -->
-  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
-    Launch demo modal
-  </button>
-
-  <!-- Modal -->
-  <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
-    aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalCenterTitle">Modal title</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          ...
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary">Save changes</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div id="main">
+<div id="main">
     <div id="div_debts">
-      <!-- Shows debt for Fabian and Elisa  -->
-      <span id="lbl_name_has_debt">##</span> moet <span id="lbl_name_no_debt">##</span> <span id="lbl_debt">##</span>
-      EUR.
+        <!-- Shows debt for Fabian and Elisa  -->
+        <span id="lbl_name_has_debt">##</span> moet <span id="lbl_name_no_debt">##</span> <span id="lbl_debt">##</span>
+        EUR.
     </div>
 
     <div id="div_price" class="margin">
-      <!-- round up to 2 decimals -->
-      <span>€</span> <input type="number" name="inp_price" id="inp_price" autofocus placeholder="0,00">
+        <!-- round up to 2 decimals -->
+        <span>€</span> <input type="number" name="inp_price" id="inp_price" autofocus placeholder="0,00">
     </div>
 
     <div class="margin">
-      <span id="lbl_percent" style="vertical-align: top">##</span>
-      <input type="range" name="inp_ratio" id="inp_ratio" min="0" max="100" value="100" step="10">
+        <span id="lbl_percent" style="vertical-align: top">##</span>
+        <input type="range" name="inp_ratio" id="inp_ratio" min="0" max="100" value="100" step="10">
     </div>
     <div class="margin">
-      <label for="inp_price_me"></label>
-      <input type="number" name="inp_price_me" id="inp_price_me" min="0" placeholder="Me">
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-      <label for="inp_price_other"></label>
-      <input type="number" name="inp_price_other" id="inp_price_other" min="0" placeholder="Other">
+        <label for="inp_price_me"></label>
+        <input type="number" name="inp_price_me" id="inp_price_me" min="0" placeholder="Me">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <label for="inp_price_other"></label>
+        <input type="number" name="inp_price_other" id="inp_price_other" min="0" placeholder="Other">
     </div>
 
 
     <div id="div_categories" class="margin">
 
-      <!-- Categories: Boodschappen, Restaurants, Ontspanning & Entertainment, 
-        Transport, Vakantie, Infrequent periodiek, Gezondheid, Shopping, Uitzonderlijk & Overige -->
-      <div class="btn-group">
-        <!-- Dropdown 1 -->
+        <!-- Categories: Boodschappen, Restaurants, Ontspanning & Entertainment,
+          Transport, Vakantie, Infrequent periodiek, Gezondheid, Shopping, Uitzonderlijk & Overige -->
         <div class="btn-group">
-          <button type="button" class="btn btn-secondary dropdown-toggle custom-dropdown" data-toggle="dropdown"
-            aria-haspopup="true" aria-expanded="false">
-            Basics
-            <!-- Basisbehoeften -->
-          </button>
-          <div id="lst_categories_basics" class="dropdown-menu">
-          </div>
-        </div>
+            <!-- Dropdown 1 -->
+            <div class="btn-group">
+                <button type="button" class="btn btn-secondary dropdown-toggle custom-dropdown" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                    Basics
+                    <!-- Basisbehoeften -->
+                </button>
+                <div id="lst_categories_basics" class="dropdown-menu">
+                </div>
+            </div>
 
-        <!-- Dropdown 2 -->
-        <div class="btn-group">
-          <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
-            aria-expanded="false">
-            Fun
-            <!-- Lifestyle en vrijetijdsuitgaven -->
-          </button>
-          <div id="lst_categories_fun" class="dropdown-menu">
-          </div>
-        </div>
+            <!-- Dropdown 2 -->
+            <div class="btn-group">
+                <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false">
+                    Fun
+                    <!-- Lifestyle en vrijetijdsuitgaven -->
+                </button>
+                <div id="lst_categories_fun" class="dropdown-menu">
+                </div>
+            </div>
 
-        <!-- Infrequent -->
-        <div class="btn-group">
-          <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
-            aria-expanded="false">
-            Infreq
-            <!-- Langere termijn en speciale uitgaven -->
-          </button>
-          <div id="lst_categories_infreq" class="dropdown-menu">
-          </div>
+            <!-- Infrequent -->
+            <div class="btn-group">
+                <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false">
+                    Infreq
+                    <!-- Langere termijn en speciale uitgaven -->
+                </button>
+                <div id="lst_categories_infreq" class="dropdown-menu">
+                </div>
+            </div>
+            <br>
         </div>
-        <br>
-      </div>
     </div>
 
     <div class="margin">
-      <input type="text" name="inp_description" id="inp_description" placeholder="Beschrijving">
+        <input type="text" name="inp_description" id="inp_description" placeholder="Beschrijving">
     </div>
 
     <div id="div_submit" class="margin">
-      <button name="btn_submit" id="btn_submit" onclick="submit()">Submit</button>
+        <button name="btn_submit" id="btn_submit" onclick="submit()">Submit</button>
     </div>
 
     <div id="profile_name" class="margin" style="text-align: left;">
-      Betaald door <span id="lbl_name" onclick="editName()">##</span>.
+        Betaald door <span id="lbl_name" onclick="editName()">##</span>.
     </div>
 
     <div id="div_statistics" class="margin">
-      <div>
-        <canvas id="donutChart"></canvas>
-      </div>
-      <div>
-        <canvas id="barChart"></canvas>
-      </div>
+        <div>
+            <canvas id="donutChart"></canvas>
+        </div>
+        <div>
+            <canvas id="barChart"></canvas>
+        </div>
     </div>
 
     <div class="side-by-side">
-      <div class="left-div">
-        <!-- Day: 12/31 -->
-        Day: <span id="lbl_day">##</span> / <span id="lbl_month">##</span> <br>
-      </div>
-      <button class="refreshExpensesButton btn-secondary" onclick="clearExpensesFilter()">
-        <i class="fa">&#xf021;</i>
-      </button>
+        <div class="left-div">
+            <!-- Day: 12/31 -->
+            Day: <span id="lbl_day">##</span> / <span id="lbl_month">##</span> <br>
+        </div>
+        <button class="refreshExpensesButton btn-secondary" onclick="clearExpensesFilter()">
+            <i class="fa">&#xf021;</i>
+        </button>
     </div>
 
     <div id="div_expenses">
-      <ul id="ul_expenses_all" class="expenseHistory">
-      </ul>
-    </div>
-
-
-    <div id="div_expenses">
-      <ul id="ul_expenses_all" class="expenseHistory">
-      </ul>
+        <ul id="ul_expenses_all" class="expenseHistory">
+        </ul>
     </div>
 
 
     <div id="div_expenses">
-      <ul id="ul_expenses_all" class="expenseHistory">
-      </ul>
+        <ul id="ul_expenses_all" class="expenseHistory">
+        </ul>
     </div>
 
 
-  </div>
-  <!-- Optional JavaScript -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <div id="div_expenses">
+        <ul id="ul_expenses_all" class="expenseHistory">
+        </ul>
+    </div>
 
-  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-    integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-    crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
-    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-    crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
-    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-    crossorigin="anonymous"></script>
 
-  <script src="slip.js"></script>
-  <script src="script.js?version=4"></script>
+</div>
+<!-- Optional JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-  <script>
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+
+<script src="slip.js"></script>
+<script src="script.js?version=4"></script>
+
+<script>
     const categories_basics_keys = ['Boodschappen', 'Bakker', 'Gezondheid en verzorging', 'Openbaar vervoer', 'Auto',]
     const categories_basics_names = ['Boodschappen', 'Bakker', 'Gezondheid & verzorging', 'Openbaar vervoer', 'Auto']
 
@@ -188,63 +164,63 @@
     const categories_infreq_names = ['Abonnementen', 'Kleding', 'Schoenen', 'Kapper', 'Gifts', 'Reizen', 'Meubels & Interieur', 'Zelfontwikkeling', 'ICT', 'Uitzonderlijk']
 
     const fillCategoriesList = () => {
-      const lst_categories_basics = document.getElementById('lst_categories_basics');
-      const lst_categories_fun = document.getElementById('lst_categories_fun');
-      const lst_categories_infreq = document.getElementById('lst_categories_infreq');
+        const lst_categories_basics = document.getElementById('lst_categories_basics');
+        const lst_categories_fun = document.getElementById('lst_categories_fun');
+        const lst_categories_infreq = document.getElementById('lst_categories_infreq');
 
-      for (let i = 0; i < categories_basics_keys.length; i++) {
-        const key = categories_basics_keys[i];
-        const name = categories_basics_names[i];
-        const a = document.createElement('a');
-        a.classList.add('dropdown-item');
-        a.setAttribute('onclick', `chooseCategory(this, '${key}')`);
-        a.innerHTML = name;
-        lst_categories_basics.appendChild(a);
-      }
+        for (let i = 0; i < categories_basics_keys.length; i++) {
+            const key = categories_basics_keys[i];
+            const name = categories_basics_names[i];
+            const a = document.createElement('a');
+            a.classList.add('dropdown-item');
+            a.setAttribute('onclick', `chooseCategory(this, '${key}')`);
+            a.innerHTML = name;
+            lst_categories_basics.appendChild(a);
+        }
 
-      for (let i = 0; i < categories_fun_keys.length; i++) {
-        const key = categories_fun_keys[i];
-        const name = categories_fun_names[i];
-        const a = document.createElement('a');
-        a.classList.add('dropdown-item');
-        a.setAttribute('onclick', `chooseCategory(this, '${key}')`);
-        a.innerHTML = name;
-        lst_categories_fun.appendChild(a);
-      }
+        for (let i = 0; i < categories_fun_keys.length; i++) {
+            const key = categories_fun_keys[i];
+            const name = categories_fun_names[i];
+            const a = document.createElement('a');
+            a.classList.add('dropdown-item');
+            a.setAttribute('onclick', `chooseCategory(this, '${key}')`);
+            a.innerHTML = name;
+            lst_categories_fun.appendChild(a);
+        }
 
-      for (let i = 0; i < categories_infreq_keys.length; i++) {
-        const key = categories_infreq_keys[i];
-        const name = categories_infreq_names[i];
-        const a = document.createElement('a');
-        a.classList.add('dropdown-item');
-        a.setAttribute('onclick', `chooseCategory(this, '${key}')`);
-        a.innerHTML = name;
-        lst_categories_infreq.appendChild(a);
-      }
+        for (let i = 0; i < categories_infreq_keys.length; i++) {
+            const key = categories_infreq_keys[i];
+            const name = categories_infreq_names[i];
+            const a = document.createElement('a');
+            a.classList.add('dropdown-item');
+            a.setAttribute('onclick', `chooseCategory(this, '${key}')`);
+            a.innerHTML = name;
+            lst_categories_infreq.appendChild(a);
+        }
 
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-      // default input ratio: 100 for Fabian, 50 for Elisa
-      if (getName() == FABIAN) {
-        inp_ratio.value = 100;
-      } else {
-        inp_ratio.value = 50;
-      }
+        // default input ratio: 100 for Fabian, 50 for Elisa
+        if (getName() == FABIAN) {
+            inp_ratio.value = 100;
+        } else {
+            inp_ratio.value = 50;
+        }
 
-      fillCategoriesList();
+        fillCategoriesList();
 
-      lbl_percent.innerHTML = inp_ratio.value + '%';
-      readName();
-      updateDebtsAndExpensesAll();
-      checkSubmit();
-      printCurrentDayAndMonth();
+        lbl_percent.innerHTML = inp_ratio.value + '%';
+        readName();
+        updateDebtsAndExpensesAll();
+        checkSubmit();
+        printCurrentDayAndMonth();
 
 
-      // submit button enabled when all fields are filled in
-      btn_submit.disabled = true;
+        // submit button enabled when all fields are filled in
+        btn_submit.disabled = true;
     });
-  </script>
+</script>
 
 </body>
 

@@ -77,7 +77,7 @@ const update = () => {
 const getMonthFromUrlParam = () => { // returns 0, -1, ... indicating how many months ago
     const urlParams = new URLSearchParams(window.location.search);
     const month = parseInt(urlParams.get('month'));
-    return month == null ? 0 : month;
+    return isNaN(month) ? 0 : month;
 }
 
 const updateDebtsAndExpensesAll = (maxTrials = 3) => {
@@ -162,7 +162,9 @@ const updateBar = (groupedExenses, indivualExpenses) => {
     // eg [{category: "Groceries", price_fabian: 10, price_elisa: 20}, ... ]
     const ctx = document.getElementById('barChart');
 
-    const labels = groupedExenses.map(expense => expense.category);
+    // const labels = groupedExenses.map(expense => expense.category);
+    // substring
+    const labels = groupedExenses.map(expense => expense.category.length > 10 ? expense.category.substring(0, 10) + '...' : expense.category);
     const prices = groupedExenses.map(expense => getName() == FABIAN ? expense.price_fabian : expense.price_elisa);
 
     ctx.height = 350;
@@ -172,7 +174,6 @@ const updateBar = (groupedExenses, indivualExpenses) => {
         datasets: [
             {
                 label: 'Expenses per category, current month',
-
                 data: prices,
                 backgroundColor: [
                     'rgba(255, 99, 132, 0.5)',
@@ -192,6 +193,8 @@ const updateBar = (groupedExenses, indivualExpenses) => {
         options: {
             responsive: true,
             maintainAspectRatio: false,
+            indexAxis: 'y',
+
             plugins: {
                 legend: {},
                 title: {},
@@ -338,28 +341,16 @@ const updateDebts = (fabian, elisa) => {
     }
 }
 
+const expensePrompt = (id) => {
+    confirm(`Delete expense with id ${id}?`) ? deleteExpense(id) : null;
+}
+
 const getExepenseListItem = (id, day, monthNumeric, category, description, myPrice, priceBoth) => {
     const month = monthNumeric == '01' ? 'Jan' : monthNumeric == '02' ? 'Feb' : monthNumeric == '03' ? 'Mar' : monthNumeric == '04' ? 'Apr' : monthNumeric == '05' ? 'May' : monthNumeric == '06' ? 'Jun' : monthNumeric == '07' ? 'Jul' : monthNumeric == '08' ? 'Aug' : monthNumeric == '09' ? 'Sep' : monthNumeric == '10' ? 'Oct' : monthNumeric == '11' ? 'Nov' : 'Dec';
 
-    // return `
-    //   <li class="expenseItem">
-    //     <span class="leftSpan">
-    //       <span class="expenseItemTop expenseItemDay">${day}</span> <br>
-    //       <span class="expenseItemBot">${month}</span>
-    //     </span>
-    //     <span class="centerSpan">
-    //       <span class="expenseItemTop">${category}</span> <br>
-    //       <span class="expenseItemBot">${description}</span>
-    //     </span>
-    //     <span class="rightSpan">
-    //       ${getPriceText(myPrice, priceBoth)}
-    //     </span>
-    //   </li>
-    //   `
-
     // add onhold event to open modal
     return `
-    <li class="expenseItem" onclick="openModal(${id})">
+    <li class="expenseItem" onclick="expensePrompt(${id})">
       <span class="leftSpan">
         <span class="expenseItemTop expenseItemDay">${day}</span> <br>
         <span class="expenseItemBot">${month}</span>
