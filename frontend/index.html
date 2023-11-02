@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
     <link rel="icon" type="image/png" href="fav.png"/>
-    <link rel="stylesheet" href="style.css?version=4">
+    <link rel="stylesheet" href="style.css?version=5">
 
 </head>
 
@@ -105,7 +105,22 @@
         <div>
             <canvas id="barChart"></canvas>
         </div>
+
+        <div>
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-center pagination-sm">
+                    <li id="paginationPrev" class="page-item"><a id="paginationPrevChild" class="page-link">&laquo;</a>
+                    </li>
+                    <li id="paginationCurr" class="page-item active"><a id="paginationCurrChild"
+                                                                        class="page-link">##</a></li>
+                    <li id="paginationNext" class="page-item disabled"><a id="paginationNextChild" class="page-link">&raquo</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
     </div>
+
 
     <div class="side-by-side">
         <div class="left-div">
@@ -116,18 +131,6 @@
             <i class="fa">&#xf021;</i>
         </button>
     </div>
-
-    <div id="div_expenses">
-        <ul id="ul_expenses_all" class="expenseHistory">
-        </ul>
-    </div>
-
-
-    <div id="div_expenses">
-        <ul id="ul_expenses_all" class="expenseHistory">
-        </ul>
-    </div>
-
 
     <div id="div_expenses">
         <ul id="ul_expenses_all" class="expenseHistory">
@@ -151,7 +154,7 @@
         crossorigin="anonymous"></script>
 
 <script src="slip.js"></script>
-<script src="script.js?version=4"></script>
+<script src="script.js?version=5"></script>
 
 <script>
     const categories_basics_keys = ['Boodschappen', 'Bakker', 'Gezondheid en verzorging', 'Openbaar vervoer', 'Auto',]
@@ -200,6 +203,36 @@
 
     }
 
+    // page navigation: calls getMonthFromUrlParam() and updates the navigation buttons
+    const updateNavigationButtons = () => {
+        // get current month from url param
+        const month = getMonthFromUrlParam();
+
+        const prev = document.getElementById('paginationPrev');
+        const curr = document.getElementById('paginationCurr');
+        const next = document.getElementById('paginationNext');
+
+        const prevChild = document.getElementById('paginationPrevChild');
+        const currChild = document.getElementById('paginationCurrChild');
+        const nextChild = document.getElementById('paginationNextChild');
+
+
+        // update current page buttons
+        prevChild.setAttribute('href', `?month=${month - 1}`);
+        currChild.innerHTML = month;
+        nextChild.setAttribute('href', `?month=${month + 1}`);
+
+        // update disabled buttons
+        if (month == 0) {
+            next.classList.add('disabled');
+        } else {
+            next.classList.remove('disabled');
+        }
+
+
+    }
+
+
     document.addEventListener('DOMContentLoaded', () => {
         // default input ratio: 100 for Fabian, 50 for Elisa
         if (getName() == FABIAN) {
@@ -215,6 +248,7 @@
         updateDebtsAndExpensesAll();
         checkSubmit();
         printCurrentDayAndMonth();
+        updateNavigationButtons()
 
 
         // submit button enabled when all fields are filled in
