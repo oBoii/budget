@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
     <link rel="icon" type="image/png" href="fav.png"/>
-    <link rel="stylesheet" href="style.css?version=7">
+    <link rel="stylesheet" href="style.css?version=8">
 
 </head>
 
@@ -105,29 +105,28 @@
         <div>
             <canvas id="barChart"></canvas>
         </div>
-
     </div>
 
 
     <div class="side-by-side margin-side">
-        <div class="left-div">
+        <div class="left-div" style="font-size: 1.1em;">
             <span id="selected_month_msg"></span>
         </div>
         <div class="middle-div">
 
-
-            <div>
-                <button class="refreshExpensesButton btn-secondary" onclick="clearExpensesFilter()">
-                    <i class="fa">&#xf021;</i>
-                </button> &emsp;
-            </div>
-
             <div style="position: relative; top: 8px;">
                 <nav aria-label="Page navigation example">
-                    <ul class="pagination justify-content-center pagination-sm">
-                        <li id="paginationPrev" class="page-item"><a id="paginationPrevChild"
-                                                                     class="page-link">&laquo;</a></li>
-                        <li id="paginationCurr" class="page-item active"><a id="paginationCurrChild" class="page-link">##</a>
+                    <ul class="pagination justify-content-center pagination">
+                        <li class="page-item"> <!-- remove filters on expense list -->
+                            <a class="page-link" onclick="clearExpensesFilter()">
+                                <i class="fa" style="color: #3e3e3e; font-weight: lighter">&#xf021;</i>
+                            </a>
+                        </li>
+                        <li id="paginationPrev" class="page-item">
+                            <a id="paginationPrevChild" class="page-link">&laquo;</a>
+                        </li>
+                        <li id="paginationCurr" class="page-item active">
+                            <a id="paginationCurrChild" class="page-link">##</a>
                         </li>
                         <li id="paginationNext" class="page-item disabled"><a id="paginationNextChild"
                                                                               class="page-link">&raquo;</a></li>
@@ -160,7 +159,7 @@
         crossorigin="anonymous"></script>
 
 <script src="slip.js"></script>
-<script src="script.js?version=7"></script>
+<script src="script.js?version=8"></script>
 
 <script>
     const categories_basics_keys = ['Boodschappen', 'Bakker', 'Gezondheid en verzorging', 'Openbaar vervoer', 'Auto',]
@@ -171,72 +170,6 @@
 
     const categories_infreq_keys = ['Abonnementen', 'Kleding', 'Schoenen', 'Kapper', 'Gifts', 'Reizen', 'Meubels en Interieur', 'Zelfontwikkeling', 'ICT', 'Uitzonderlijk']
     const categories_infreq_names = ['Abonnementen', 'Kleding', 'Schoenen', 'Kapper', 'Gifts', 'Reizen', 'Meubels & Interieur', 'Zelfontwikkeling', 'ICT', 'Uitzonderlijk']
-
-    const fillCategoriesList = () => {
-        const lst_categories_basics = document.getElementById('lst_categories_basics');
-        const lst_categories_fun = document.getElementById('lst_categories_fun');
-        const lst_categories_infreq = document.getElementById('lst_categories_infreq');
-
-        for (let i = 0; i < categories_basics_keys.length; i++) {
-            const key = categories_basics_keys[i];
-            const name = categories_basics_names[i];
-            const a = document.createElement('a');
-            a.classList.add('dropdown-item');
-            a.setAttribute('onclick', `chooseCategory(this, '${key}')`);
-            a.innerHTML = name;
-            lst_categories_basics.appendChild(a);
-        }
-
-        for (let i = 0; i < categories_fun_keys.length; i++) {
-            const key = categories_fun_keys[i];
-            const name = categories_fun_names[i];
-            const a = document.createElement('a');
-            a.classList.add('dropdown-item');
-            a.setAttribute('onclick', `chooseCategory(this, '${key}')`);
-            a.innerHTML = name;
-            lst_categories_fun.appendChild(a);
-        }
-
-        for (let i = 0; i < categories_infreq_keys.length; i++) {
-            const key = categories_infreq_keys[i];
-            const name = categories_infreq_names[i];
-            const a = document.createElement('a');
-            a.classList.add('dropdown-item');
-            a.setAttribute('onclick', `chooseCategory(this, '${key}')`);
-            a.innerHTML = name;
-            lst_categories_infreq.appendChild(a);
-        }
-
-    }
-
-    // page navigation: calls getMonthFromUrlParam() and updates the navigation buttons
-    const updateNavigationButtons = () => {
-        // get current month from url param
-        const month = getMonthFromUrlParam();
-
-        const prev = document.getElementById('paginationPrev');
-        const curr = document.getElementById('paginationCurr');
-        const next = document.getElementById('paginationNext');
-
-        const prevChild = document.getElementById('paginationPrevChild');
-        const currChild = document.getElementById('paginationCurrChild');
-        const nextChild = document.getElementById('paginationNextChild');
-
-
-        // update current page buttons
-        prevChild.setAttribute('href', `?month=${month - 1}`);
-        currChild.innerHTML = month;
-        nextChild.setAttribute('href', `?month=${month + 1}`);
-
-        // update disabled buttons
-        if (month == 0) {
-            next.classList.add('disabled');
-        } else {
-            next.classList.remove('disabled');
-        }
-
-    }
-
 
     document.addEventListener('DOMContentLoaded', () => {
         // default input ratio: 100 for Fabian, 50 for Elisa

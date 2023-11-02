@@ -124,7 +124,7 @@ const printCurrentDayAndMonth = () => {
     const monthExplicit = date.toLocaleString('default', {month: 'long'});
 
     <!-- Oct - Day: 12/31 -->
-    const msg = nbMonthsAgo < 0 ? `${monthShort}` : `${monthExplicit} &emsp; ${day}/${daysInMonth}`
+    const msg = nbMonthsAgo < 0 ? `${monthExplicit}` : `${monthExplicit} &emsp; ${day}/${daysInMonth}`
 
     document.getElementById('selected_month_msg').innerHTML = msg
 }
@@ -518,6 +518,71 @@ const deleteExpense = (id) => {
 
 const clearExpensesFilter = () => {
     updateExpensesAll(ALL_EXPENSES);
+}
+
+const fillCategoriesList = () => {
+    const lst_categories_basics = document.getElementById('lst_categories_basics');
+    const lst_categories_fun = document.getElementById('lst_categories_fun');
+    const lst_categories_infreq = document.getElementById('lst_categories_infreq');
+
+    for (let i = 0; i < categories_basics_keys.length; i++) {
+        const key = categories_basics_keys[i];
+        const name = categories_basics_names[i];
+        const a = document.createElement('a');
+        a.classList.add('dropdown-item');
+        a.setAttribute('onclick', `chooseCategory(this, '${key}')`);
+        a.innerHTML = name;
+        lst_categories_basics.appendChild(a);
+    }
+
+    for (let i = 0; i < categories_fun_keys.length; i++) {
+        const key = categories_fun_keys[i];
+        const name = categories_fun_names[i];
+        const a = document.createElement('a');
+        a.classList.add('dropdown-item');
+        a.setAttribute('onclick', `chooseCategory(this, '${key}')`);
+        a.innerHTML = name;
+        lst_categories_fun.appendChild(a);
+    }
+
+    for (let i = 0; i < categories_infreq_keys.length; i++) {
+        const key = categories_infreq_keys[i];
+        const name = categories_infreq_names[i];
+        const a = document.createElement('a');
+        a.classList.add('dropdown-item');
+        a.setAttribute('onclick', `chooseCategory(this, '${key}')`);
+        a.innerHTML = name;
+        lst_categories_infreq.appendChild(a);
+    }
+
+}
+
+const updateNavigationButtons = () => {
+    // page navigation: calls getMonthFromUrlParam() and updates the navigation buttons
+    // get current month from url param
+    const month = getMonthFromUrlParam();
+
+    const prev = document.getElementById('paginationPrev');
+    const curr = document.getElementById('paginationCurr');
+    const next = document.getElementById('paginationNext');
+
+    const prevChild = document.getElementById('paginationPrevChild');
+    const currChild = document.getElementById('paginationCurrChild');
+    const nextChild = document.getElementById('paginationNextChild');
+
+
+    // update current page buttons
+    prevChild.setAttribute('href', `?month=${month - 1}`);
+    currChild.innerHTML = month;
+    nextChild.setAttribute('href', `?month=${month + 1}`);
+
+    // update disabled buttons
+    if (month == 0) {
+        next.classList.add('disabled');
+    } else {
+        next.classList.remove('disabled');
+    }
+
 }
 
 

@@ -6,3 +6,4 @@ frontend/.vscode/settings.json
 *.db
 backend/.idea/workspace.xml
 *.xml
+*.iml
