@@ -121,10 +121,10 @@ const printCurrentDayAndMonth = () => {
     const lbl_total_days_in_month = document.getElementById('lbl_total_days_in_month');
     const lbl_month = document.getElementById('lbl_month');
 
-    const monthShort = date.toLocaleString('default', {month: 'short'});
+    const monthExplicit = date.toLocaleString('default', {month: 'long'});
 
     <!-- Oct - Day: 12/31 -->
-    const msg = nbMonthsAgo < 0 ? `${monthShort}` : `${day}/${daysInMonth} - ${monthShort}`
+    const msg = nbMonthsAgo < 0 ? `${monthShort}` : `${monthExplicit} &emsp; ${day}/${daysInMonth}`
 
     document.getElementById('selected_month_msg').innerHTML = msg
 }

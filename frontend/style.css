@@ -16,6 +16,10 @@ body {
     margin: 40px 20px;
 }
 
+.margin-side {
+    margin: 0 20px;
+}
+
 #div_debts {
     /* background-color: rgba(255, 99, 132, 0.5); */
     background-color: rgba(255, 205, 86, 0.5);
@@ -224,18 +228,24 @@ td button {
     width: 100%;
 }
 
+
+
 .side-by-side {
-    display: flex;
-    align-items: center;
-    /* Center vertically within the flex container */
+    display: flex; /* Use flexbox to arrange the divs side by side */
+    justify-content: space-between; /* Distribute the space between the divs */
+    align-items: center; /* Vertically center the content */
 }
 
 .left-div {
-    flex: 1;
-    /* Takes up 100% width by default */
-    max-width: 80%;
-    /* Restricts it to a maximum of 80% */
+    /* Optional styles for the left div */
+    margin-right: 10px; /* Add some spacing to the right of the left div */
 }
+
+.middle-div {
+    display: flex; /* Use flexbox to arrange the content inside the middle div */
+    align-items: center; /* Vertically center the content within the middle div */
+}
+
 
 button {
     flex: 0 0 auto;
