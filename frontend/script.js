@@ -108,16 +108,25 @@ const updateDebtsAndExpensesAll = (maxTrials = 3) => {
 }
 
 const printCurrentDayAndMonth = () => {
-    const date = new Date();
+    const nbMonthsAgo = getMonthFromUrlParam();
+
+    // get date of nbMonthsAgo months ago
+    const currentDate = new Date();
+    const date = new Date(currentDate.getFullYear(), currentDate.getMonth() - nbMonthsAgo, 1);
     const day = date.getDate();
     const daysInMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
 
 
-    const lbl_day = document.getElementById('lbl_day');
+    const lbl_day_progress_of_month = document.getElementById('lbl_day_progress_of_month');
+    const lbl_total_days_in_month = document.getElementById('lbl_total_days_in_month');
     const lbl_month = document.getElementById('lbl_month');
 
-    lbl_day.innerHTML = day;
-    lbl_month.innerHTML = daysInMonth;
+    const monthShort = date.toLocaleString('default', {month: 'short'});
+
+    <!-- Oct - Day: 12/31 -->
+    const msg = nbMonthsAgo < 0 ? `${monthShort}` : `${day}/${daysInMonth} - ${monthShort}`
+
+    document.getElementById('selected_month_msg').innerHTML = msg
 }
 
 const getExpenesPerMainCategory = (expenses) => {
@@ -368,14 +377,14 @@ const getExepenseListItem = (id, day, monthNumeric, category, description, myPri
 
 const getPriceText = (myPrice, total) => {
     if (myPrice == total) {
-        return `<span class="expenseItemTop blue" style="font-size: 0.9em;">${myPrice}</span> <br>
+        return `<span class="expenseItemTop blue" style="font-size: 0.9em;">${myPrice.toFixed(2)}</span> <br>
     <span class="expenseItemBot"></span>`
         // return `<span class="blue" style="font-size: 0.8em;">${myPrice} <br> </span>`;
     } else if (myPrice == 0) {
         return `&frasl;`;
     }
     return `<span style="font-size: 1.2em; position: relative; top: 10px;">
-  <sup><span class="blue">${myPrice}</span></sup>&frasl;<sub><span class="expenseTotal">${total}</span></sub>
+  <sup><span class="blue">${myPrice}</span></sup>&frasl;<sub><span class="expenseTotal">${total.toFixed(2)}</span></sub>
   </span>`
 }
 

@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
     <link rel="icon" type="image/png" href="fav.png"/>
-    <link rel="stylesheet" href="style.css?version=5">
+    <link rel="stylesheet" href="style.css?version=7">
 
 </head>
 
@@ -124,8 +124,7 @@
 
     <div class="side-by-side">
         <div class="left-div">
-            <!-- Day: 12/31 -->
-            Day: <span id="lbl_day">##</span> / <span id="lbl_month">##</span> <br>
+            <span id="selected_month_msg"></span>
         </div>
         <button class="refreshExpensesButton btn-secondary" onclick="clearExpensesFilter()">
             <i class="fa">&#xf021;</i>
@@ -154,7 +153,7 @@
         crossorigin="anonymous"></script>
 
 <script src="slip.js"></script>
-<script src="script.js?version=5"></script>
+<script src="script.js?version=7"></script>
 
 <script>
     const categories_basics_keys = ['Boodschappen', 'Bakker', 'Gezondheid en verzorging', 'Openbaar vervoer', 'Auto',]
@@ -228,7 +227,6 @@
         } else {
             next.classList.remove('disabled');
         }
-
 
     }
 

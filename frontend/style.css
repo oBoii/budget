@@ -1,254 +1,258 @@
 body {
-  font-family: 'Roboto', sans-serif;
-  color: #3e3e3e;
+    font-family: 'Roboto', sans-serif;
+    color: #3e3e3e;
 
-  /* disable horizontal scrolling */
-  max-width: 100%;
-  overflow-x: hidden;
+    /* disable horizontal scrolling */
+    max-width: 100%;
+    overflow-x: hidden;
 }
 
 #main {
-  text-align: center;
-  /* margin-top: 5em; */
+    text-align: center;
+    /* margin-top: 5em; */
 }
 
 .margin {
-  margin: 40px 20px;
+    margin: 40px 20px;
 }
 
 #div_debts {
-  /* background-color: rgba(255, 99, 132, 0.5); */
-  background-color: rgba(255, 205, 86, 0.5);
-  padding: 0.5em;
+    /* background-color: rgba(255, 99, 132, 0.5); */
+    background-color: rgba(255, 205, 86, 0.5);
+    padding: 0.5em;
 }
 
 button,
 .button {
-  font-size: 16px;
-  display: inline-block;
-  height: 35px;
-  background-color: #007AFB;
-  color: white;
-  padding-left: 1em;
-  padding-right: 1em;
-  border: 0;
-  border-radius: 4px;
-  cursor: pointer;
+    font-size: 16px;
+    display: inline-block;
+    height: 35px;
+    background-color: #007AFB;
+    color: white;
+    padding-left: 1em;
+    padding-right: 1em;
+    border: 0;
+    border-radius: 4px;
+    cursor: pointer;
 }
 
 #div_submit button:hover {
-  background-color: #007AFB;
-  transition: 0.15s;
+    background-color: #007AFB;
+    transition: 0.15s;
 }
 
 #div_submit button:active {
-  background-color: #034286;
-  transition: 0.15s;
+    background-color: #034286;
+    transition: 0.15s;
 }
 
 #div_submit button:disabled {
-  background-color: #707070;
-  cursor: not-allowed;
+    background-color: #707070;
+    cursor: not-allowed;
 }
 
 input[type=text],
 input[type=date],
 input[type=number] {
-  padding: 10px;
-  border: solid 1px #dcdcdc;
-  transition: box-shadow 0.3s, border 0.3s;
-  height: 2.5em;
-  width: 5em;
-  text-align: center;
-  color: #3e3e3e;
+    padding: 10px;
+    border: solid 1px #dcdcdc;
+    transition: box-shadow 0.3s, border 0.3s;
+    height: 2.5em;
+    width: 5em;
+    text-align: center;
+    color: #3e3e3e;
 }
 
 input[type=text] {
-  width: 80%;
-  text-align: left;
+    width: 80%;
+    text-align: left;
 }
 
 #inp_price {
-  width: 80%;
-  height: 2em;
+    width: 80%;
+    height: 2em;
 }
-
 
 
 input[type=text]:focus,
 select:focus,
 input[type=date]:focus,
 input[type=number]:focus {
-  outline-width: 0;
-  border: solid 1px #707070;
-  box-shadow: 0 0 5px 1px #969696;
+    outline-width: 0;
+    border: solid 1px #707070;
+    box-shadow: 0 0 5px 1px #969696;
 }
 
 input[type=text]:hover,
 select:hover,
 input[type=date]:hover {
-  border: solid 1px #707070;
+    border: solid 1px #707070;
 }
 
 #div_price {
-  font-size: 4em;
-  text-align: center;
+    font-size: 4em;
+    text-align: center;
 }
 
 #inp_price {
-  font-size: 1em;
-  text-align: center;
+    font-size: 1em;
+    text-align: center;
 }
 
 #inp_ratio {
-  width: 80%;
+    width: 80%;
 }
 
 #div_categories {
-  text-align: center;
+    text-align: center;
 }
 
 
 #lbl_name {
-  /* underline */
-  text-decoration: underline;
-  cursor: pointer;
-  color: #007AFB;
+    /* underline */
+    text-decoration: underline;
+    cursor: pointer;
+    color: #007AFB;
 }
 
 
 /* ol: remove numbering */
 ol {
-  list-style-type: none;
-  padding-left: 0;
+    list-style-type: none;
+    padding-left: 0;
 }
 
 .expensesHead {
-  font-weight: bold;
+    font-weight: bold;
 }
 
 ol span {
-  width: 4em;
-  display: inline-flex;
-  height: 1em;
-  margin: .05em 0 .05em 0;
+    width: 4em;
+    display: inline-flex;
+    height: 1em;
+    margin: .05em 0 .05em 0;
 }
 
 
 .slip-swiping-container {
-  overflow-x: hidden;
+    overflow-x: hidden;
 }
 
 .slip-reordering {
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.45);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.45);
 }
 
 td button {
-  border: none;
-  background-color: transparent;
-  cursor: pointer;
-  /* color: #3e3e3e; */
-  color: #007AFB;
-  text-decoration: underline;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    /* color: #3e3e3e; */
+    color: #007AFB;
+    text-decoration: underline;
 }
 
 .btn-group {
-  display: inline-flex;
-  width: 16em;
-  justify-content: space-between;
+    display: inline-flex;
+    width: 16em;
+    justify-content: space-between;
 }
 
 #inp_description {
-  width: 15.6em;
-  text-align: left;
+    width: 15.6em;
+    text-align: left;
 }
 
 /* show spans side by side */
 .expenseHistory {
-  list-style-type: none;
-  border: none;
-  padding: 0;
-  /* margin: 0.5em; */
-  margin: 0;
+    list-style-type: none;
+    border: none;
+    padding: 0;
+    /* margin: 0.5em; */
+    margin: 0;
 }
 
 .expenseItem {
-  display: flex;
-  border: none;
-  padding: 0.5em;
-  /* margin: 0.5em; */
+    display: flex;
+    border: none;
+    padding: 0.5em;
+    /* margin: 0.5em; */
 }
 
 .leftSpan {
-  flex: 0 0 10%;
-  text-align: center;
-  margin-right: 1em;
-  /* Fixed width for left span */
+    flex: 0 0 10%;
+    text-align: center;
+    margin-right: 1em;
+    /* Fixed width for left span */
 }
 
 .centerSpan {
-  flex-grow: 1;
-  /* Takes up remaining space */
+    flex-grow: 1;
+    /* Takes up remaining space */
 }
 
 .rightSpan {
-  flex: 0 0 28%;
-  text-align: center;
+    flex: 0 0 28%;
+    text-align: center;
 }
 
 .expenseItemDay {
-  /* position: relative; */
-  /* left: 3px; */
+    /* position: relative; */
+    /* left: 3px; */
 }
 
 .expenseItemBot,
 .expenseTotal {
-  font-size: 0.8em;
-  color: #0000009c;
+    font-size: 0.8em;
+    color: #0000009c;
 }
 
 .blue {
-  color: rgb(0, 122, 251);
+    color: rgb(0, 122, 251);
 }
 
 .donut-inner {
-  height: 0;
-  width: 0;
-  position: relative;
-  top: -50vw;
-  left: 20vw;
+    height: 0;
+    width: 0;
+    position: relative;
+    top: -50vw;
+    left: 20vw;
 }
 
 
 #div_expenses {
-  text-align: left;
-  width: 100%;
+    text-align: left;
+    width: 100%;
 }
 
 .side-by-side {
-  display: flex;
-  align-items: center;
-  /* Center vertically within the flex container */
+    display: flex;
+    align-items: center;
+    /* Center vertically within the flex container */
 }
 
 .left-div {
-  flex: 1;
-  /* Takes up 100% width by default */
-  max-width: 80%;
-  /* Restricts it to a maximum of 80% */
+    flex: 1;
+    /* Takes up 100% width by default */
+    max-width: 80%;
+    /* Restricts it to a maximum of 80% */
 }
 
 button {
-  flex: 0 0 auto;
-  /* Prevent the button from growing */
-  margin-left: 10px;
-  /* Add some space between the two elements */
+    flex: 0 0 auto;
+    /* Prevent the button from growing */
+    margin-left: 10px;
+    /* Add some space between the two elements */
 }
 
 .refreshExpensesButton {
-  width: 30px;
-  height: 30px;
-  padding: 2px;
-  color: #585858;
-  background-color: white
+    width: 30px;
+    height: 30px;
+    padding: 2px;
+    color: #585858;
+    background-color: white
+}
+
+#lbl_month {
+    font-weight: bold;
+    color: #007AFB;
 }
