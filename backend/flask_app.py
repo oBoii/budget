@@ -9,7 +9,7 @@ from library import (
     get_debt_per_person,
     get_expenses,
     param,
-    delete_expense, get_total_expenses_grouped_by_category,
+    delete_expense, get_total_expenses_grouped_by_category, get_historic_descriptions
 )
 
 sns.set_theme()
@@ -43,7 +43,9 @@ def page_index():
     # get debts per category from current month
     grouped_expenses = get_total_expenses_grouped_by_category(nb_months_ago)
 
-    return json.dumps({"fabian": fabian, "elisa": elisa, "expenses": expenses, "grouped_expenses": grouped_expenses})
+    historic_descriptions = get_historic_descriptions()
+
+    return json.dumps({"fabian": fabian, "elisa": elisa, "expenses": expenses, "grouped_expenses": grouped_expenses, "historic_descriptions": historic_descriptions})
 
 
 @app.route("/get_debts")

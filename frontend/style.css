@@ -55,6 +55,7 @@ button,
     cursor: not-allowed;
 }
 
+input[name="inp_description"],
 input[type=text],
 input[type=date],
 input[type=number] {
@@ -67,6 +68,7 @@ input[type=number] {
     color: #3e3e3e;
 }
 
+input[name="inp_description"],
 input[type=text] {
     width: 80%;
     text-align: left;
@@ -77,16 +79,16 @@ input[type=text] {
     height: 2em;
 }
 
-
+input[name="inp_description"]:focus,
 input[type=text]:focus,
 select:focus,
 input[type=date]:focus,
 input[type=number]:focus {
     outline-width: 0;
     border: solid 1px #707070;
-    box-shadow: 0 0 5px 1px #969696;
 }
 
+input[name="inp_description"]:hover,
 input[type=text]:hover,
 select:hover,
 input[type=date]:hover {
@@ -227,7 +229,6 @@ td button {
     text-align: left;
     width: 100%;
 }
-
 
 
 .side-by-side {

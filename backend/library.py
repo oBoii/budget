@@ -160,3 +160,22 @@ def delete_expense(id):
     conn.close()
 
     return True
+
+
+def get_historic_descriptions():
+    # Connect to the SQLite database
+    conn = sqlite3.connect(f"{ROOT}/expenses.db")
+    cursor = conn.cursor()
+
+    # Query the UNIQ list
+    cursor.execute(
+        """
+        SELECT DISTINCT description FROM expenses
+        WHERE description IS NOT NULL
+        """
+    )
+    rows = cursor.fetchall()
+    categories = [row[0] for row in rows]
+    # remove `null` from the list
+    categories = [c for c in categories if c != "null"]
+    return categories

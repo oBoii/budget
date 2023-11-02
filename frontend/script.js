@@ -1,5 +1,5 @@
-// const url = "http://127.0.0.1:5000"
-const url = "http://ofabian.pythonanywhere.com"
+const url = "http://127.0.0.1:5000"
+// const url = "http://ofabian.pythonanywhere.com"
 const key = authenticate()
 
 const inp_price = document.getElementById('inp_price');
@@ -80,6 +80,16 @@ const getMonthFromUrlParam = () => { // returns 0, -1, ... indicating how many m
     return isNaN(month) ? 0 : month;
 }
 
+const fillDescriptions = (descriptions) => {
+    console.log(descriptions)
+    const descriptionshtml = document.getElementById('descriptions')
+    for (let i = 0; i < descriptions.length; i++) {
+        const option = document.createElement('option')
+        option.value = descriptions[i]
+        descriptionshtml.appendChild(option)
+    }
+}
+
 const updateDebtsAndExpensesAll = (maxTrials = 3) => {
     const nbMonthsAgo = getMonthFromUrlParam();
 
@@ -91,6 +101,10 @@ const updateDebtsAndExpensesAll = (maxTrials = 3) => {
             const elisa = data.elisa; // eg: +12.00
             const expenses = data.expenses;
             const groupedExenses = data.grouped_expenses;
+            const historicDescriptions = data.historic_descriptions;
+
+            fillDescriptions(historicDescriptions);
+
             updateDebts(fabian, elisa);
             updateExpensesAll(expenses);
 
