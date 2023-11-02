@@ -205,7 +205,7 @@ const updateBar = (groupedExenses, indivualExpenses) => {
         keys: keys,
         datasets: [
             {
-                label: 'Expenses per category, current month',
+                label: '',
                 data: prices,
                 backgroundColor: [
                     'rgba(255, 99, 132, 0.5)',
@@ -223,12 +223,15 @@ const updateBar = (groupedExenses, indivualExpenses) => {
         type: 'bar',
         data: statistics,
         options: {
+
             responsive: true,
             maintainAspectRatio: false,
             indexAxis: 'y',
 
             plugins: {
-                legend: {},
+                legend: {
+                    display: false // hide dataset label
+                },
                 title: {},
                 labels: {
                     render: 'label+value',
