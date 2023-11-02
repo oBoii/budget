@@ -1,5 +1,5 @@
-// const url = "http://127.0.0.1:5000"
-const url = "http://ofabian.pythonanywhere.com"
+const url = "http://127.0.0.1:5000"
+// const url = "http://ofabian.pythonanywhere.com"
 const key = authenticate()
 
 const inp_price = document.getElementById('inp_price');
@@ -166,20 +166,29 @@ const getExpenesPerMainCategory = (expenses) => {
     return [expensesBasics, expensesFun, expensesInfreq, leftOver];
 }
 
+const stringSubstr = (str, maxLen) => {
+    // expense.category.length > 10 ? expense.category.substring(0, 10) + '...' : expense.category
+    return str.length > maxLen ? str.substring(0, maxLen) + '...' : str
+}
+
 const updateBar = (groupedExenses, indivualExpenses) => {
     // groupedExenses:
     // eg [{category: "Groceries", price_fabian: 10, price_elisa: 20}, ... ]
     const ctx = document.getElementById('barChart');
 
-    // const labels = groupedExenses.map(expense => expense.category);
+    const keys = groupedExenses.map(expense => expense.category);
+
+    const maxLen = 10;
     // substring
-    const labels = groupedExenses.map(expense => expense.category.length > 10 ? expense.category.substring(0, 10) + '...' : expense.category);
+    const labels = groupedExenses.map(expense => stringSubstr(expense.category, maxLen));
     const prices = groupedExenses.map(expense => getName() == FABIAN ? expense.price_fabian : expense.price_elisa);
+
 
     ctx.height = 350;
 
     const statistics = {
         labels: labels,
+        keys: keys,
         datasets: [
             {
                 label: 'Expenses per category, current month',
@@ -218,7 +227,7 @@ const updateBar = (groupedExenses, indivualExpenses) => {
                         label: function (context) {
                             const price = context.dataset.data[context.dataIndex];
                             const category = context.label;
-                            const expenses = indivualExpenses.filter(expense => expense.category == category);
+                            const expenses = indivualExpenses.filter(expense => stringSubstr(expense.category, maxLen) == category); // some category may be displayed as Zelfontwik...
 
                             // filter div_expenses to only show expenses of this category
                             const lst_expenses = document.getElementById('ul_expenses_all');
