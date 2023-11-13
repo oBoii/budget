@@ -1,5 +1,5 @@
-const url = "http://127.0.0.1:5000"
-// const url = "http://ofabian.pythonanywhere.com"
+// const url = "http://127.0.0.1:5000"
+const url = "http://ofabian.pythonanywhere.com"
 const key = authenticate()
 
 const inp_price = document.getElementById('inp_price');
@@ -81,7 +81,6 @@ const getMonthFromUrlParam = () => { // returns 0, -1, ... indicating how many m
 }
 
 const fillDescriptions = (descriptions) => {
-    console.log(descriptions)
     const descriptionshtml = document.getElementById('descriptions')
     for (let i = 0; i < descriptions.length; i++) {
         const option = document.createElement('option')
@@ -185,6 +184,21 @@ const stringSubstr = (str, maxLen) => {
     return str.length > maxLen ? str.substring(0, maxLen) + '...' : str
 }
 
+const filterZip = (arr1, arr2, predicate) => {
+    // keep only elements where predicate is true
+
+    const result1 = [];
+    const result2 = [];
+    for (let i = 0; i < arr1.length; i++) {
+        if (predicate(arr1[i])) {
+            result1.push(arr1[i]);
+            result2.push(arr2[i]);
+        }
+    }
+
+    return [result1, result2];
+}
+
 const updateBar = (groupedExenses, indivualExpenses) => {
     // groupedExenses:
     // eg [{category: "Groceries", price_fabian: 10, price_elisa: 20}, ... ]
@@ -194,8 +208,10 @@ const updateBar = (groupedExenses, indivualExpenses) => {
 
     const maxLen = 10;
     // substring
-    const labels = groupedExenses.map(expense => stringSubstr(expense.category, maxLen));
-    const prices = groupedExenses.map(expense => getName() == FABIAN ? expense.price_fabian : expense.price_elisa);
+    let labels = groupedExenses.map(expense => stringSubstr(expense.category, maxLen));
+    let prices = groupedExenses.map(expense => getName() == FABIAN ? expense.price_fabian : expense.price_elisa);
+
+    [prices, labels] = filterZip(prices, labels, (price) => price != 0);
 
 
     ctx.height = 350;
