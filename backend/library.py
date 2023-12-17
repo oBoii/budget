@@ -77,7 +77,6 @@ def get_total_expenses_grouped_by_category(nb_months_ago):  # eg -1 = last month
     # Query the expenses for calculations
     cursor.execute(f"""
         SELECT category, sum(price_fabian), sum(price_elisa) FROM expenses
-        --WHERE date >= date('now', 'start of month')
         WHERE strftime('%Y-%m', date) = strftime('%Y-%m', 'now', '{nb_months_ago} months')
         GROUP BY category
         """
