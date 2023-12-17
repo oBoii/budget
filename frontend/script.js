@@ -1,5 +1,5 @@
-const url = "http://127.0.0.1:5000"
-// const url = "http://ofabian.pythonanywhere.com"
+// const url = "http://127.0.0.1:5000"
+const url = "http://ofabian.pythonanywhere.com"
 const key = authenticate()
 
 const inp_price = document.getElementById('inp_price');
@@ -174,7 +174,8 @@ const getExpenesPerMainCategory = (expenses) => {
         }
     });
 
-    const leftOver = 1000 - expensesBasics - expensesFun - expensesInfreq;
+    const cap = 750;
+    const leftOver = cap - expensesBasics - expensesFun - expensesInfreq;
 
     return [expensesBasics, expensesFun, expensesInfreq, leftOver];
 }
