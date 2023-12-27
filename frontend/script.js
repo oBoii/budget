@@ -484,7 +484,7 @@ const expensePrompt = (id) => {
 
 const getExepenseListItem = (id, day, monthNumeric, category, description, myPrice, priceBoth) => {
     const month = monthNumeric == '01' ? 'Jan' : monthNumeric == '02' ? 'Feb' : monthNumeric == '03' ? 'Mar' : monthNumeric == '04' ? 'Apr' : monthNumeric == '05' ? 'May' : monthNumeric == '06' ? 'Jun' : monthNumeric == '07' ? 'Jul' : monthNumeric == '08' ? 'Aug' : monthNumeric == '09' ? 'Sep' : monthNumeric == '10' ? 'Oct' : monthNumeric == '11' ? 'Nov' : 'Dec';
-
+    const colour = category == "Inkomst" ? "green" : "blue";
     return `
     <li class="expenseItem" onclick="expensePrompt(${id})">
       <span class="leftSpan">
@@ -496,23 +496,22 @@ const getExepenseListItem = (id, day, monthNumeric, category, description, myPri
         <span class="expenseItemBot">${description}</span>
       </span>
       <span class="rightSpan">
-        ${getPriceText(myPrice, priceBoth)}
+        ${getPriceText(myPrice, priceBoth, colour)}
       </span>
     </li>
     `
 
 }
 
-const getPriceText = (myPrice, total) => {
+const getPriceText = (myPrice, total, color="blue") => {
     if (myPrice == total) {
-        return `<span class="expenseItemTop blue" style="font-size: 0.9em;">${myPrice.toFixed(2)}</span> <br>
+        return `<span class="expenseItemTop ${color}" style="font-size: 0.9em;">${myPrice.toFixed(2)}</span> <br>
     <span class="expenseItemBot"></span>`
-        // return `<span class="blue" style="font-size: 0.8em;">${myPrice} <br> </span>`;
     } else if (myPrice == 0) {
         return `&frasl;`;
     }
     return `<span style="font-size: 1.2em; position: relative; top: 10px;">
-  <sup><span class="blue">${myPrice}</span></sup>&frasl;<sub><span class="expenseTotal">${total.toFixed(2)}</span></sub>
+  <sup><span class="${color}">${myPrice}</span></sup>&frasl;<sub><span class="expenseTotal">${total.toFixed(2)}</span></sub>
   </span>`
 }
 
@@ -525,8 +524,8 @@ const updateExpensesAll = (expenses) => {
         // const date = expense.date; // eg: dd-mm
         // convert to dd/mm
         const date = expense.date.split('-').reverse().join('/');
-        const priceFabian = expense.price_fabian;
-        const priceElisa = expense.price_elisa;
+        const priceFabian = Math.abs(expense.price_fabian);
+        const priceElisa = Math.abs(expense.price_elisa);
         const category = expense.category;
         const id = expense.id;
 

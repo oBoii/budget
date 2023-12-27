@@ -38,16 +38,23 @@ def append_expense(
     conn.commit()
     conn.close()
 
-
 def get_debt_per_person():
+    fabian1, elisa1 = _get_debt_per_person()
+    fabian2, elisa2 = _get_debt_per_person(monthly=True)
+    fabian = fabian1 + fabian2
+    elisa = elisa1 + elisa2
+
+    return fabian, elisa
+
+def _get_debt_per_person(monthly=False):
     # Connect to the SQLite database
     conn = sqlite3.connect(f"{ROOT}/expenses.db")
     cursor = conn.cursor()
 
     # Query the expenses for calculations
     cursor.execute(
-        """
-        SELECT price_fabian, price_elisa, paid_by FROM expenses
+        f"""
+        SELECT price_fabian, price_elisa, paid_by FROM {"expenses" if not monthly else "monthly_expenses"}
         """
     )
     rows = cursor.fetchall()
