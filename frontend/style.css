@@ -20,8 +20,7 @@ body {
     margin: 0 20px;
 }
 
-#div_debts {
-    /* background-color: rgba(255, 99, 132, 0.5); */
+#div_debts, #div_budget_statistics {
     background-color: rgba(255, 205, 86, 0.5);
     padding: 0.5em;
 }

@@ -1,5 +1,5 @@
-// const url = "http://127.0.0.1:5000"
-const url = "http://ofabian.pythonanywhere.com"
+const url = "http://127.0.0.1:5000"
+// const url = "http://ofabian.pythonanywhere.com"
 const key = authenticate()
 
 const inp_price = document.getElementById('inp_price');
@@ -51,7 +51,7 @@ function handleError(err) {
 }
 
 function betterFetch(url, options = {}) {
-    options.headers = {'Authorization': 'Basic ' + btoa(getKey())}
+    options.headers = { 'Authorization': 'Basic ' + btoa(getKey()) }
     return fetch(url, options)
 }
 
@@ -134,20 +134,25 @@ const printCurrentDayAndMonth = () => {
     const lbl_total_days_in_month = document.getElementById('lbl_total_days_in_month');
     const lbl_month = document.getElementById('lbl_month');
 
-    const monthExplicit = date.toLocaleString('default', {month: 'long'});
+    const monthExplicit = date.toLocaleString('default', { month: 'long' });
 
-    <!-- Oct - Day: 12/31 -->
+    // <!-- Oct - Day: 12/31 -->
     const msg = nbMonthsAgo < 0 ? `${monthExplicit}` : `${monthExplicit} &emsp; ${day}/${daysInMonth}`
 
     document.getElementById('selected_month_msg').innerHTML = msg
 }
 
-const getExpenesPerMainCategory = (expenses) => {
+const getExpenesPerMainCategory = (expenses, incomeCategory) => {
     // expense: eg [{category: "Groceries", price_fabian: 10, price_elisa: 20}, ... ]
 
     let expensesBasics = 0;
     let expensesFun = 0;
     let expensesInfreq = 0;
+
+    // exclude Income
+    const incomeSum = expenses.filter(expense => expense.category == incomeCategory).reduce((a, b) => a + b.price_fabian + b.price_elisa, 0);
+    console.log("incomeSum", incomeSum);
+    expenses = expenses.filter(expense => expense.category != incomeCategory);
 
     expenses.forEach(expense => {
         const category = expense.category.toLowerCase();
@@ -174,10 +179,7 @@ const getExpenesPerMainCategory = (expenses) => {
         }
     });
 
-    const cap = 750;
-    const leftOver = cap - expensesBasics - expensesFun - expensesInfreq;
-
-    return [expensesBasics, expensesFun, expensesInfreq, leftOver];
+    return [expensesBasics, expensesFun, expensesInfreq, Math.abs(incomeSum)];
 }
 
 const stringSubstr = (str, maxLen) => {
@@ -214,6 +216,15 @@ const updateBar = (groupedExenses, indivualExpenses) => {
 
     [prices, labels] = filterZip(prices, labels, (price) => price != 0);
 
+    // make label "Inkomst" last
+    const incomeIndex = labels.indexOf("Inkomst");
+    if (incomeIndex != -1) {
+        labels.push(labels.splice(incomeIndex, 1)[0]);
+        prices.push(prices.splice(incomeIndex, 1)[0]);
+    }
+
+    // make its value positive divide by 100
+    prices[prices.length - 1] = Math.abs(prices[prices.length - 1]) / 100;
 
     ctx.height = 350;
 
@@ -294,22 +305,54 @@ const updateBar = (groupedExenses, indivualExpenses) => {
     new Chart(ctx, config);
 }
 
+const updateMonthlyBudgetStatistics = (income, cap, rent, longterm, invest) => {
+    // 💲<span id="lbl_income">##</span> =  🍞<span id="lbl_cap"></span> + 🏠<span id="lbl_rent">##</span> + ✈️<span id="lbl_longterm_savings">##</span> + 💸<span id="lbl_invest"></span>
+    const lbl_income = document.getElementById('lbl_income');
+    const lbl_cap = document.getElementById('lbl_cap');
+    const lbl_rent = document.getElementById('lbl_rent');
+    const lbl_longterm_savings = document.getElementById('lbl_longterm_savings');
+    const lbl_invest = document.getElementById('lbl_invest');
+
+    lbl_income.innerHTML = income.toFixed(0);
+    lbl_cap.innerHTML = cap.toFixed(0);
+    lbl_rent.innerHTML = rent.toFixed(0);
+    lbl_longterm_savings.innerHTML = longterm.toFixed(0);
+    lbl_invest.innerHTML = invest.toFixed(0);
+
+}
+
 const updateDonut = (groupedExenses) => {
     // eg prices = [400, 300, 700, 500]
-    const prices = getExpenesPerMainCategory(groupedExenses)
+    console.log("group", groupedExenses)
+    const prices = getExpenesPerMainCategory(groupedExenses, incomeCategory = "Inkomst")
     const ctx = document.getElementById('donutChart');
+
+    const expensesBasics = prices[0];
+    const expensesFun = prices[1];
+    const expensesInfreq = prices[2];
+    const income = prices[3];
+
+    // eg: 2500 salary,
+    const rent = 455
+    const cap = (income - rent) * 0.35 // cap typical expenses
+    const longterm = (income - rent) * 0.2 // longterm savings
+    const invest = (income - rent) * 0.45 // invest
+
+    const leftOver = cap - expensesBasics - expensesFun - expensesInfreq;
+
+    updateMonthlyBudgetStatistics(income, cap, rent, longterm, invest);
 
 
     const statistics = {
         labels: [
-            `🍎 €${prices[0].toFixed(2)}`,
-            `🎉 €${prices[1].toFixed(2)}`,
-            `📎 €${prices[2].toFixed(2)}`,
-            `⬜ €${prices[3].toFixed(2)}`
+            `🍎 €${expensesBasics.toFixed(2)}`,
+            `🎉 €${expensesFun.toFixed(2)}`,
+            `📎 €${expensesInfreq.toFixed(2)}`,
+            `⬜ €${leftOver.toFixed(2)}`
         ],
         datasets: [
             {
-                data: prices,
+                data: [expensesBasics, expensesFun, expensesInfreq, leftOver],
                 backgroundColor: [
                     'rgba(255, 99, 132, 0.5)',
                     'rgba(0, 122, 251, 0.5)',
@@ -513,13 +556,19 @@ const chooseCategory = (button, category) => {
 
 const submit = () => {
     // send data to server
-    const price_me = inp_price_me.value;
-    const price_other = inp_price_other.value;
+    const category = data.category;
+
+    let price_me = inp_price_me.value;
+    let price_other = inp_price_other.value;
+    if (category == 'Inkomst') { // make negative
+        price_me = -Math.abs(price_me);
+        price_other = -Math.abs(price_other);
+    }
 
     const price_fabian = getName() == FABIAN ? price_me : price_other;
     const price_elisa = getName() == FABIAN ? price_other : price_me;
     const paidBy = getName().toLowerCase();
-    const category = data.category;
+
     const subcategory = null;
     const description = document.getElementById('inp_description').value;
 
