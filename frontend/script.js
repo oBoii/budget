@@ -150,8 +150,12 @@ const getExpenesPerMainCategory = (expenses, incomeCategory) => {
     let expensesInfreq = 0;
 
     // exclude Income
-    const incomeSum = expenses.filter(expense => expense.category == incomeCategory).reduce((a, b) => a + b.price_fabian + b.price_elisa, 0);
+    const incomeSum = getName() == FABIAN ?
+        expenses.filter(expense => expense.category == incomeCategory).reduce((a, b) => { return a + b.price_fabian }, 0) :
+        expenses.filter(expense => expense.category == incomeCategory).reduce((a, b) => { return a + b.price_elisa }, 0);
+
     console.log("incomeSum", incomeSum);
+    console.log(expenses);
     expenses = expenses.filter(expense => expense.category != incomeCategory);
 
     expenses.forEach(expense => {
@@ -213,6 +217,8 @@ const updateBar = (groupedExenses, indivualExpenses) => {
     // substring
     let labels = groupedExenses.map(expense => stringSubstr(expense.category, maxLen));
     let prices = groupedExenses.map(expense => getName() == FABIAN ? expense.price_fabian : expense.price_elisa);
+
+    // console.log(prices, labels)
 
     [prices, labels] = filterZip(prices, labels, (price) => price != 0);
 
@@ -340,8 +346,8 @@ const updateDonut = (groupedExenses) => {
     // eg: 2500 salary,
     const rent = 455
     const cap = (income - rent) * 0.35 // cap typical expenses
-    const longterm = (income - rent) * 0.2 // longterm savings
-    const invest = (income - rent) * 0.45 // invest
+    const longterm = (income - rent) * 0.18 // longterm savings
+    const invest = (income - rent) * 0.47 // invest
 
     const leftOver = cap - expensesBasics - expensesFun - expensesInfreq;
 
