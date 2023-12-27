@@ -330,7 +330,12 @@ const updateDonut = (groupedExenses) => {
     const expensesBasics = prices[0];
     const expensesFun = prices[1];
     const expensesInfreq = prices[2];
-    const income = prices[3];
+    let income = prices[3];
+
+    // income is 2500 or higher
+    income = income < 2500 ? 2500 : income;
+
+
 
     // eg: 2500 salary,
     const rent = 455
