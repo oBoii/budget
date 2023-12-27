@@ -121,7 +121,7 @@ const updateDebtsAndExpensesAll = (maxTrials = 3) => {
                 if (monthlyExpense) {
                     expense.price_fabian += monthlyExpense.price_fabian;
                     expense.price_elisa += monthlyExpense.price_elisa;
-                    console.log("adding monthly expense", expense)
+                    console.log("adding monthly expense", monthlyExpense)
                 }
             });
 

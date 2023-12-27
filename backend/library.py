@@ -138,7 +138,7 @@ def get_expenses(nb_months_ago, monthly=False):  # nb_months_ago: 0 = current mo
         (id, date, price_person, price_other, paid_by, category, subcategories, descriptions) = row
 
         category = category.replace("null", "")
-        subcategories = subcategories.replace("null", "")
+        subcategories = subcategories.replace("null", "") if subcategories else ""
         descriptions = descriptions.replace("null", "")
 
         individual_cost = {
