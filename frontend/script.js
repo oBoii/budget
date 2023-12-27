@@ -51,7 +51,7 @@ function handleError(err) {
 }
 
 function betterFetch(url, options = {}) {
-    options.headers = { 'Authorization': 'Basic ' + btoa(getKey()) }
+    options.headers = {'Authorization': 'Basic ' + btoa(getKey())}
     return fetch(url, options)
 }
 
@@ -99,8 +99,37 @@ const updateDebtsAndExpensesAll = (maxTrials = 3) => {
             const fabian = data.fabian; // eg: +14.00
             const elisa = data.elisa; // eg: +12.00
             const expenses = data.expenses;
+            const monthlyExpenses = data.monthly_expenses;
+
+            // append monthlyExpenses to expenses
+            monthlyExpenses.forEach(expense => {
+                expenses.push(expense);
+                expense.id = -1; // mark as monthly expense
+            });
+
             const groupedExenses = data.grouped_expenses;
+            const groupedMonthlyExenses = data.monthly_grouped_expenses;
+
+            // merge groupedExenses and groupedMonthlyExenses. If category is in both, add prices
+            groupedExenses.forEach(expense => {
+                const category = expense.category;
+                const priceFabian = expense.price_fabian;
+                const priceElisa = expense.price_elisa;
+
+                const monthlyExpense = groupedMonthlyExenses.find(expense => expense.category == category);
+
+                if (monthlyExpense) {
+                    expense.price_fabian += monthlyExpense.price_fabian;
+                    expense.price_elisa += monthlyExpense.price_elisa;
+                    console.log("adding monthly expense", expense)
+                }
+            });
+
+
             const historicDescriptions = data.historic_descriptions;
+
+            // console.log("expenses", expenses)
+            // console.log("monthlyExpenses", monthlyExpenses)
 
             fillDescriptions(historicDescriptions);
 
@@ -134,7 +163,7 @@ const printCurrentDayAndMonth = () => {
     const lbl_total_days_in_month = document.getElementById('lbl_total_days_in_month');
     const lbl_month = document.getElementById('lbl_month');
 
-    const monthExplicit = date.toLocaleString('default', { month: 'long' });
+    const monthExplicit = date.toLocaleString('default', {month: 'long'});
 
     // <!-- Oct - Day: 12/31 -->
     const msg = nbMonthsAgo < 0 ? `${monthExplicit}` : `${monthExplicit} &emsp; ${day}/${daysInMonth}`
@@ -151,11 +180,13 @@ const getExpenesPerMainCategory = (expenses, incomeCategory) => {
 
     // exclude Income
     const incomeSum = getName() == FABIAN ?
-        expenses.filter(expense => expense.category == incomeCategory).reduce((a, b) => { return a + b.price_fabian }, 0) :
-        expenses.filter(expense => expense.category == incomeCategory).reduce((a, b) => { return a + b.price_elisa }, 0);
+        expenses.filter(expense => expense.category == incomeCategory).reduce((a, b) => {
+            return a + b.price_fabian
+        }, 0) :
+        expenses.filter(expense => expense.category == incomeCategory).reduce((a, b) => {
+            return a + b.price_elisa
+        }, 0);
 
-    console.log("incomeSum", incomeSum);
-    console.log(expenses);
     expenses = expenses.filter(expense => expense.category != incomeCategory);
 
     expenses.forEach(expense => {
@@ -217,8 +248,6 @@ const updateBar = (groupedExenses, indivualExpenses) => {
     // substring
     let labels = groupedExenses.map(expense => stringSubstr(expense.category, maxLen));
     let prices = groupedExenses.map(expense => getName() == FABIAN ? expense.price_fabian : expense.price_elisa);
-
-    // console.log(prices, labels)
 
     [prices, labels] = filterZip(prices, labels, (price) => price != 0);
 
@@ -329,7 +358,6 @@ const updateMonthlyBudgetStatistics = (income, cap, rent, longterm, invest) => {
 
 const updateDonut = (groupedExenses) => {
     // eg prices = [400, 300, 700, 500]
-    console.log("group", groupedExenses)
     const prices = getExpenesPerMainCategory(groupedExenses, incomeCategory = "Inkomst")
     const ctx = document.getElementById('donutChart');
 
@@ -340,7 +368,6 @@ const updateDonut = (groupedExenses) => {
 
     // income is 2500 or higher
     income = income < 2500 ? 2500 : income;
-
 
 
     // eg: 2500 salary,
@@ -448,6 +475,10 @@ const updateDebts = (fabian, elisa) => {
 }
 
 const expensePrompt = (id) => {
+    if (id === -1) {
+        alert('Monthly expenses cannot be edited')
+        return;
+    }
     confirm(`Delete expense with id ${id}?`) ? deleteExpense(id) : null;
 }
 
@@ -510,35 +541,6 @@ const updateExpensesAll = (expenses) => {
         lst_expenses.innerHTML += getExepenseListItem(id, day, monthNumeric, category, description, myPrice, priceFabian + priceElisa);
 
     });
-}
-
-
-const listExpensesSummarized = () => {
-    const fullUrl = `${url}/get_expenses?name=${getName()}`;
-    betterFetch(fullUrl)
-        .then(response => response.json())
-        .then(data => {
-            data = data.expenses;
-
-            const tbl_expenses = document.getElementById('tbl_expenses');
-            data.forEach(expense => {
-                date = expense.date;
-                price = expense.price;
-                category = expense.category;
-                subcategory = expense.subcategory;
-                description = expense.description;
-                id = expense.id;
-
-
-                // final row is subcategories, if subcategories is null, set to empty string
-                tbl_expenses.innerHTML +=
-                    `<li id="${id}">
-          <span>${date}</span> <span>${price}</span> <span>${category}</span> <span>${subcategory == null ? '' : subcategory}</span> <span>${description == null ? '' : description}</span>  
-          </li>
-        `
-            });
-        })
-        .catch(e => handleError(e))
 }
 
 

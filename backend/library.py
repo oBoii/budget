@@ -69,18 +69,25 @@ def get_debt_per_person():
     return fabian, elisa
 
 
-def get_total_expenses_grouped_by_category(nb_months_ago):  # eg -1 = last month
+def get_total_expenses_grouped_by_category(nb_months_ago, monthly=False):  # eg -1 = last month
     # Connect to the SQLite database
     conn = sqlite3.connect(f"{ROOT}/expenses.db")
     cursor = conn.cursor()
 
     # Query the expenses for calculations
-    cursor.execute(f"""
-        SELECT category, sum(price_fabian), sum(price_elisa) FROM expenses
-        WHERE strftime('%Y-%m', date) = strftime('%Y-%m', 'now', '{nb_months_ago} months')
-        GROUP BY category
-        """
-                   )
+    if not monthly:
+        cursor.execute(f"""
+            SELECT category, sum(price_fabian), sum(price_elisa) FROM expenses
+            WHERE strftime('%Y-%m', date) = strftime('%Y-%m', 'now', '{nb_months_ago} months')
+            GROUP BY category
+            """)
+    else:
+        cursor.execute(f"""
+            SELECT category, sum(price_fabian), sum(price_elisa) FROM monthly_expenses
+            WHERE strftime('%Y-%m', start_date) <= strftime('%Y-%m', 'now', '{nb_months_ago} months') and
+            (strftime('%Y-%m', end_date) >= strftime('%Y-%m', 'now', '{nb_months_ago} months') OR end_date IS NULL OR end_date = '')
+            GROUP BY category
+            """)
     rows = cursor.fetchall()
 
     # Perform debt calculations based on fetched data
@@ -99,18 +106,28 @@ def get_total_expenses_grouped_by_category(nb_months_ago):  # eg -1 = last month
     return data
 
 
-def get_expenses(nb_months_ago):  # nb_months_ago: 0 = current month, -1 = last month, etc.
+def get_expenses(nb_months_ago, monthly=False):  # nb_months_ago: 0 = current month, -1 = last month, etc.
     # Connect to the SQLite database
     conn = sqlite3.connect(f"{ROOT}/expenses.db")
     cursor = conn.cursor()
 
-    # Expenses of `nb_months_ago` months ago
-    query_indiv = f"""
-            SELECT id, date, price_fabian, price_elisa, paid_by, category, subcategory, description
-            FROM expenses
-            WHERE strftime('%Y-%m', date) = strftime('%Y-%m', 'now', '{nb_months_ago} months')
-            ORDER by date DESC, id DESC
-            """
+    if not monthly:
+        # Expenses of `nb_months_ago` months ago
+        query_indiv = f"""
+                SELECT id, date, price_fabian, price_elisa, paid_by, category, subcategory, description
+                FROM expenses
+                WHERE strftime('%Y-%m', date) = strftime('%Y-%m', 'now', '{nb_months_ago} months')
+                ORDER by date DESC, id DESC
+                """
+    else:
+        # Expenses of `nb_months_ago` months ago. (records don't have date, but instead start_date and end_date)
+        query_indiv = f"""
+                SELECT id, null as date, price_fabian, price_elisa, paid_by, category, subcategory, description
+                FROM monthly_expenses
+                WHERE strftime('%Y-%m', start_date) <= strftime('%Y-%m', 'now', '{nb_months_ago} months') and
+                (strftime('%Y-%m', end_date) >= strftime('%Y-%m', 'now', '{nb_months_ago} months') OR end_date IS NULL OR end_date = '')
+                ORDER by start_date DESC, id DESC
+                """
 
     cursor.execute(query_indiv, ())
     rows = cursor.fetchall()
@@ -126,7 +143,7 @@ def get_expenses(nb_months_ago):  # nb_months_ago: 0 = current month, -1 = last 
 
         individual_cost = {
             "id": id,
-            "date": datetime.strptime(date, "%Y-%m-%d").strftime("%d-%m"),
+            "date": datetime.strptime(date, "%Y-%m-%d").strftime("%d-%m") if date else "00-00",
             "price_fabian": price_person,
             "price_elisa": price_other,
             "paid_by": paid_by,
