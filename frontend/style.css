@@ -69,13 +69,17 @@ input[type=number] {
 
 input[name="inp_description"],
 input[type=text] {
-    width: 80%;
+    /*width: 80%;*/
+    /*width: 100%;*/
+    width: 20em;
     text-align: left;
 }
 
 #inp_price {
     width: 80%;
     height: 2em;
+    /*    inline */
+    display: inline-block;
 }
 
 input[name="inp_description"]:focus,
@@ -91,7 +95,7 @@ input[name="inp_description"]:hover,
 input[type=text]:hover,
 select:hover,
 input[type=date]:hover {
-    border: solid 1px #707070;
+    /*border: solid 1px #707070;*/
 }
 
 #div_price {
@@ -104,9 +108,6 @@ input[type=date]:hover {
     text-align: center;
 }
 
-#inp_ratio {
-    width: 80%;
-}
 
 #div_categories {
     text-align: center;
@@ -158,12 +159,13 @@ td button {
 
 .btn-group {
     display: inline-flex;
-    width: 16em;
-    justify-content: space-between;
+    /*width: 16em;*/
+    /*justify-content: space-between;*/
 }
 
 #inp_description {
-    width: 15.6em;
+    /*width: 15.6em;*/
+    width: 100%;
     text-align: left;
 }
 
@@ -269,4 +271,31 @@ button {
 
 .green {
     color: #00b300;
+}
+
+.put_selects_side_by_side {
+    display: flex;
+    justify-content: space-between;
+}
+
+.put_textsboxes_side_by_side {
+    display: flex;
+    justify-content: space-between;
+}
+
+.put_textsboxes_side_by_side input {
+    width: 100%;
+}
+
+.put_slider_and_label_side_by_side {
+    display: flex;
+    justify-content: space-between;
+}
+
+.put_slider_and_label_side_by_side input {
+    width: 100%;
+}
+
+.vert-margin-sm {
+    margin: 0.8em 0 0.8em 0;
 }

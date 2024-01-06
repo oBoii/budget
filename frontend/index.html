@@ -8,201 +8,254 @@
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <!-- refreshing icon -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-    <link rel="icon" type="image/png" href="fav.png" />
-    <link rel="stylesheet" href="style.css?version=22">
+    <link rel="icon" type="image/png" href="fav.png"/>
+    <link rel="stylesheet" href="style.css?version=23">
 
 </head>
 
 <body>
-    <div id="main">
-        <div id="div_debts">
-            <!-- Shows debt for Fabian and Elisa  -->
-            <span id="lbl_name_has_debt">##</span> moet <span id="lbl_name_no_debt">##</span> <span
-                id="lbl_debt">##</span>
-            EUR.
-        </div>
+<div id="main">
+    <div id="div_debts">
+        <!-- Shows debt for Fabian and Elisa  -->
+        <span id="lbl_name_has_debt">##</span> moet <span id="lbl_name_no_debt">##</span> <span
+            id="lbl_debt">##</span>
+        EUR.
+    </div>
 
-        <div id="div_price" class="margin">
-            <!-- round up to 2 decimals -->
-            <span>€</span> <input type="number" name="inp_price" id="inp_price" autofocus placeholder="0,00">
-        </div>
+    <div id="div_price" class="margin">
+        <!-- round up to 2 decimals -->
+        <span>€</span> <input type="number" name="inp_price" id="inp_price" autofocus placeholder="0,00"
+                              class="form-control">
+    </div>
 
-        <div class="margin">
-            <span id="lbl_percent" style="vertical-align: top">##</span>
+    <div class="margin">
+        <div class="put_slider_and_label_side_by_side vert-margin-sm">
+            <span id="lbl_percent" style="vertical-align: top">##</span> &nbsp;
             <input type="range" name="inp_ratio" id="inp_ratio" min="0" max="100" value="100" step="10">
         </div>
-        <div class="margin">
-            <label for="inp_price_me"></label>
-            <input type="number" name="inp_price_me" id="inp_price_me" min="0" placeholder="Me">
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <label for="inp_price_other"></label>
-            <input type="number" name="inp_price_other" id="inp_price_other" min="0" placeholder="Other">
+
+        <div class="put_textsboxes_side_by_side vert-margin-sm">
+            <input type="number" name="inp_price_me" id="inp_price_me" min="0" placeholder="Me" class="form-control">
+            &nbsp;
+            <input type="number" name="inp_price_other" id="inp_price_other" min="0" placeholder="Other"
+                   class="form-control">
+        </div>
+    </div>
+
+
+    <!--Categories-->
+    <div id="div_categories" class="margin">
+
+        <!--        <div class="btn-group">-->
+        <!--            &lt;!&ndash; Dropdown 1 &ndash;&gt;-->
+        <!--            <div class="btn-group" style="width: 33%">-->
+        <!--                <button type="button" class="btn btn-secondary dropdown-toggle custom-dropdown"-->
+        <!--                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="width: 100%;">-->
+        <!--                    Basics-->
+        <!--                </button>-->
+        <!--                <div id="lst_categories_basics" class="dropdown-menu">-->
+        <!--                </div>-->
+        <!--            </div>-->
+        <!--            &lt;!&ndash; Dropdown 2 &ndash;&gt;-->
+        <!--            <div class="btn-group" style="width: 33%">-->
+        <!--                <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown"-->
+        <!--                        aria-haspopup="true" aria-expanded="false" style="width: 30vw;">-->
+        <!--                    Fun-->
+        <!--                </button>-->
+        <!--                <div id="lst_categories_fun" class="dropdown-menu">-->
+        <!--                </div>-->
+        <!--            </div>-->
+
+        <!--            &lt;!&ndash; Infrequent &ndash;&gt;-->
+        <!--            <div class="btn-group" style="width: 33%">-->
+        <!--                <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown"-->
+        <!--                        aria-haspopup="true" aria-expanded="false" style="width: 30vw;">-->
+        <!--                    Infreq-->
+        <!--                </button>-->
+        <!--                <div id="lst_categories_infreq" class="dropdown-menu">-->
+        <!--                </div>-->
+        <!--            </div>-->
+
+        <!--            <br>-->
+        <!--        </div>-->
+
+        <div class="put_selects_side_by_side vert-margin-sm">
+            <!-- USE HTML SELECT-TAG INSTEAD (A select tag for `Basics`, `Fun` and `Infrequent`) all items automatically added to the list using javascript -->
+            <!-- Basics -->
+            <select class="form-select" id="lst_categories_basics" style="width: 33%;">
+                <option selected disabled>🍎 Basics</option>
+                <option value="Boodschappen">Boodschappen</option>
+                <option value="Bakker">Bakker</option>
+                <option value="Gezondheid en verzorging">Gezondheid & verzorging</option>
+                <option value="Transport">Openbaar vervoer</option>
+                <option value="Auto">Auto</option>
+            </select>
+
+            <!-- Fun -->
+            <select class="form-select" id="lst_categories_fun" style="width: 33%">
+                <option selected disabled>🎉 Fun</option>
+                <option value="Restaurant">Restaurant</option>
+                <option value="Café en Drinks">Café & Drinks</option>
+                <option value="Amusement">Amusement</option>
+                <option value="Sport">Sport</option>
+                <option value="Shopping">Shopping</option>
+                <option value="Inkomst">Inkomst</option>
+            </select>
+
+            <!-- Infrequent -->
+            <select class="form-select" id="lst_categories_infreq" style="width: 33%">
+                <option selected disabled>📎 Infreq</option>
+                <option value="Abonnementen">Abonnementen</option>
+                <option value="Kleding">Kleding</option>
+                <option value="Schoenen">Schoenen</option>
+                <option value="Kapper">Kapper</option>
+                <option value="Gifts">Gifts</option>
+                <option value="Reizen">Reizen</option>
+                <option value="Meubels en Interieur">Meubels & Interieur</option>
+                <option value="Zelfontwikkeling">Zelfontwikkeling</option>
+                <option value="ICT">ICT</option>
+                <option value="Maandelijks">Maandelijks</option>
+                <option value="Uitzonderlijk">Uitzonderlijk</option>
+            </select>
         </div>
 
-
-        <div id="div_categories" class="margin">
-
-            <div class="btn-group">
-                <!-- Dropdown 1 -->
-                <div class="btn-group">
-                    <button type="button" class="btn btn-secondary dropdown-toggle custom-dropdown"
-                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Basics
-                        <!-- Basisbehoeften -->
-                    </button>
-                    <div id="lst_categories_basics" class="dropdown-menu">
-                    </div>
-                </div>
-
-                <!-- Dropdown 2 -->
-                <div class="btn-group">
-                    <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown"
-                        aria-haspopup="true" aria-expanded="false">
-                        Fun
-                        <!-- Lifestyle en vrijetijdsuitgaven -->
-                    </button>
-                    <div id="lst_categories_fun" class="dropdown-menu">
-                    </div>
-                </div>
-
-                <!-- Infrequent -->
-                <div class="btn-group">
-                    <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown"
-                        aria-haspopup="true" aria-expanded="false">
-                        Infreq
-                        <!-- Langere termijn en speciale uitgaven -->
-                    </button>
-                    <div id="lst_categories_infreq" class="dropdown-menu">
-                    </div>
-                </div>
-                <br>
-            </div>
-        </div>
-
-        <div class="margin">
-            <input list="descriptions" name="inp_description" id="inp_description" placeholder="Beschrijving">
+        <div class="vert-margin-sm">
+            <input list="descriptions" name="inp_description" id="inp_description" placeholder="Beschrijving"
+                   class="form-select">
             <!--filled using javascript-->
-            <datalist id="descriptions">
-                <!--            <option value="Albert Heijn">-->
-            </datalist>
+            <datalist id="descriptions"></datalist>
         </div>
 
-        <div id="div_submit" class="margin">
-            <button name="btn_submit" id="btn_submit" onclick="submit()">Submit</button>
-        </div>
-
-        <div id="profile_name" class="margin" style="text-align: left;">
-            Betaald door <span id="lbl_name" onclick="editName()">##</span>.
-        </div>
-
-
-
-        <div id="div_statistics" class="margin">
-            <div style="margin-bottom: -2em;">
-                <canvas id="donutChart"></canvas>
-            </div>
-
-            <div id="div_budget_statistics" style="margin-bottom: 0.5em;">
-                    <!-- 💲2730 =  🍞750 + 🏠550 + ✈️1000 +  💸1200 -->
-                    💲<span id="lbl_income">##</span> = 🍞<span id="lbl_cap"></span> + 🏠<span id="lbl_rent">##</span> +
-                    ✈️<span id="lbl_longterm_savings">##</span> + 💸<span id="lbl_invest">##</span>
-            </div>
-            <div>
-                <canvas id="barChart"></canvas>
-            </div>
-        </div>
-
-
-
-        <div class="side-by-side margin-side">
-            <div class="left-div" style="font-size: 1.1em;">
-                <span id="selected_month_msg"></span>
-            </div>
-            <div class="middle-div">
-
-                <div style="position: relative; top: 8px;">
-                    <nav aria-label="Page navigation example">
-                        <ul class="pagination justify-content-center pagination">
-                            <li class="page-item"> <!-- remove filters on expense list -->
-                                <a class="page-link" onclick="clearExpensesFilter()">
-                                    <i class="fa" style="color: #3e3e3e; font-weight: lighter">&#xf021;</i>
-                                </a>
-                            </li>
-                            <li id="paginationPrev" class="page-item">
-                                <a id="paginationPrevChild" class="page-link">&laquo;</a>
-                            </li>
-                            <li id="paginationCurr" class="page-item active">
-                                <a id="paginationCurrChild" class="page-link">##</a>
-                            </li>
-                            <li id="paginationNext" class="page-item disabled"><a id="paginationNextChild"
-                                    class="page-link">&raquo;</a></li>
-                        </ul>
-                    </nav>
-                </div>
-            </div>
-        </div>
-
-
-        <div id="div_expenses">
-            <ul id="ul_expenses_all" class="expenseHistory">
-            </ul>
+        <div class="vert-margin-sm">
+            <!-- Every month a fixed value is saved to each bucket. At certain points money can then be taken from these buckets. -->
+            <!-- select-tag to select from which "money bucket" we must subtract (eg "typical" or "holiday" -->
+            <!-- default: "typical" -->
+            <select class="form-select">
+                <option selected value="typical">🍞</option>
+                <option value="holiday">✈️</option>
+                <!-- Exceptional costs -->
+                <option value="exceptional">💥</option>
+            </select>
         </div>
 
 
     </div>
-    <!-- Optional JavaScript -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+
+    <div id="div_submit" class="margin">
+        <button name="btn_submit" id="btn_submit" onclick="submit()">Submit</button>
+    </div>
+
+    <div id="profile_name" class="margin" style="text-align: left;">
+        Betaald door <span id="lbl_name" onclick="editName()">##</span>.
+    </div>
+
+
+    <div id="div_statistics" class="margin">
+        <div style="margin-bottom: -2em;">
+            <canvas id="donutChart"></canvas>
+        </div>
+
+        <div id="div_budget_statistics" style="margin-bottom: 0.5em;">
+            <!-- 💲2730 =  🍞750 + 🏠550 + ✈️1000 +  💸1200 -->
+            💲<span id="lbl_income">##</span> = 🍞<span id="lbl_cap"></span> + 🏠<span id="lbl_rent">##</span> +
+            ✈️<span id="lbl_longterm_savings">##</span> + 💸<span id="lbl_invest">##</span>
+        </div>
+        <div>
+            <canvas id="barChart"></canvas>
+        </div>
+    </div>
+
+
+    <div class="side-by-side margin-side">
+        <div class="left-div" style="font-size: 1.1em;">
+            <span id="selected_month_msg"></span>
+        </div>
+        <div class="middle-div">
+
+            <div style="position: relative; top: 8px;">
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination justify-content-center pagination">
+                        <li class="page-item"> <!-- remove filters on expense list -->
+                            <a class="page-link" onclick="clearExpensesFilter()">
+                                <i class="fa" style="color: #3e3e3e; font-weight: lighter">&#xf021;</i>
+                            </a>
+                        </li>
+                        <li id="paginationPrev" class="page-item">
+                            <a id="paginationPrevChild" class="page-link">&laquo;</a>
+                        </li>
+                        <li id="paginationCurr" class="page-item active">
+                            <a id="paginationCurrChild" class="page-link">##</a>
+                        </li>
+                        <li id="paginationNext" class="page-item disabled"><a id="paginationNextChild"
+                                                                              class="page-link">&raquo;</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="div_expenses">
+        <ul id="ul_expenses_all" class="expenseHistory">
+        </ul>
+    </div>
+
+
+</div>
+<!-- Optional JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
         integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
         crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
         integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
         crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
         integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
         crossorigin="anonymous"></script>
 
-    <script src="slip.js"></script>
-    <script src="script.js?version=22"></script>
+<script src="slip.js"></script>
+<script src="script.js?version=23"></script>
 
-    <script>
-        const categories_basics_keys = ['Boodschappen', 'Bakker', 'Gezondheid en verzorging', 'Transport', 'Auto']
-        const categories_basics_names = ['Boodschappen', 'Bakker', 'Gezondheid & verzorging', 'Openbaar vervoer', 'Auto']
+<script>
+    const categories_basics_keys = ['Boodschappen', 'Bakker', 'Gezondheid en verzorging', 'Transport', 'Auto']
+    const categories_basics_names = ['Boodschappen', 'Bakker', 'Gezondheid & verzorging', 'Openbaar vervoer', 'Auto']
 
-        const categories_fun_keys = ['Restaurant', 'Café en Drinks', 'Amusement', 'Sport', 'Shopping', 'Inkomst']
-        const categories_fun_names = ['Restaurant', 'Café & Drinks', 'Amusement', 'Sport', 'Shopping', 'Inkomst']
+    const categories_fun_keys = ['Restaurant', 'Café en Drinks', 'Amusement', 'Sport', 'Shopping', 'Inkomst']
+    const categories_fun_names = ['Restaurant', 'Café & Drinks', 'Amusement', 'Sport', 'Shopping', 'Inkomst']
 
-        const categories_infreq_keys = ['Abonnementen', 'Kleding', 'Schoenen', 'Kapper', 'Gifts', 'Reizen', 'Meubels en Interieur', 'Zelfontwikkeling', 'ICT', 'Maandelijks', 'Uitzonderlijk']
-        const categories_infreq_names = ['Abonnementen', 'Kleding', 'Schoenen', 'Kapper', 'Gifts', 'Reizen', 'Meubels & Interieur', 'Zelfontwikkeling', 'ICT', 'Maandelijks', 'Uitzonderlijk']
+    const categories_infreq_keys = ['Abonnementen', 'Kleding', 'Schoenen', 'Kapper', 'Gifts', 'Reizen', 'Meubels en Interieur', 'Zelfontwikkeling', 'ICT', 'Maandelijks', 'Uitzonderlijk']
+    const categories_infreq_names = ['Abonnementen', 'Kleding', 'Schoenen', 'Kapper', 'Gifts', 'Reizen', 'Meubels & Interieur', 'Zelfontwikkeling', 'ICT', 'Maandelijks', 'Uitzonderlijk']
 
-        document.addEventListener('DOMContentLoaded', () => {
-            // default input ratio: 100 for Fabian, 50 for Elisa
-            if (getName() == FABIAN) {
-                inp_ratio.value = 100;
-            } else {
-                inp_ratio.value = 50;
-            }
+    document.addEventListener('DOMContentLoaded', () => {
+        // default input ratio: 100 for Fabian, 50 for Elisa
+        if (getName() == FABIAN) {
+            inp_ratio.value = 100;
+        } else {
+            inp_ratio.value = 50;
+        }
 
-            fillCategoriesList();
+        fillCategoriesList();
 
-            lbl_percent.innerHTML = inp_ratio.value + '%';
-            readName();
-            updateDebtsAndExpensesAll();
-            checkSubmit();
-            printCurrentDayAndMonth();
-            updateNavigationButtons()
+        lbl_percent.innerHTML = inp_ratio.value + '%';
+        readName();
+        updateDebtsAndExpensesAll();
+        checkSubmit();
+        printCurrentDayAndMonth();
+        updateNavigationButtons()
 
 
-            // submit button enabled when all fields are filled in
-            btn_submit.disabled = true;
-        });
-    </script>
+        // submit button enabled when all fields are filled in
+        btn_submit.disabled = true;
+    });
+</script>
 
 </body>
 
