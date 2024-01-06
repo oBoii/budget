@@ -17,10 +17,7 @@ const FABIAN = 'Fabian';
 const ELISA = 'Elisa';
 
 const data = {
-    price: 0,
-    ratio: 100,
-    category: '',
-    description: '',
+    price: 0, ratio: 100, category: '', description: '',
 }
 
 // *** authentication ***
@@ -157,10 +154,7 @@ const updateDebtsAndExpensesAll = (maxTrials = 3) => {
             ALL_EXPENSES = expenses;
         })
         .catch(e => {
-            if (maxTrials > 0)
-                updateDebtsAndExpensesAll(maxTrials - 1)
-            else
-                handleError(e)
+            maxTrials > 0 ? updateDebtsAndExpensesAll(maxTrials - 1) : handleError(e)
         })
 }
 
@@ -194,13 +188,11 @@ const getExpenesPerMainCategory = (expenses, incomeCategory) => {
     let expensesInfreq = 0;
 
     // exclude Income
-    const incomeSum = getName() == FABIAN ?
-        expenses.filter(expense => expense.category == incomeCategory).reduce((a, b) => {
-            return a + b.price_fabian
-        }, 0) :
-        expenses.filter(expense => expense.category == incomeCategory).reduce((a, b) => {
-            return a + b.price_elisa
-        }, 0);
+    const incomeSum = getName() == FABIAN ? expenses.filter(expense => expense.category == incomeCategory).reduce((a, b) => {
+        return a + b.price_fabian
+    }, 0) : expenses.filter(expense => expense.category == incomeCategory).reduce((a, b) => {
+        return a + b.price_elisa
+    }, 0);
 
     expenses = expenses.filter(expense => expense.category != incomeCategory);
 
@@ -280,45 +272,28 @@ const updateBar = (groupedExenses, indivualExpenses) => {
     ctx.height = 350;
 
     const statistics = {
-        labels: labels,
-        keys: keys,
-        datasets: [
-            {
-                label: '',
-                data: prices,
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.5)',
-                    'rgba(0, 122, 251, 0.5)',
-                    'rgba(255, 205, 86, 0.5)',
-                ],
-            }
-        ]
+        labels: labels, keys: keys, datasets: [{
+            label: '',
+            data: prices,
+            backgroundColor: ['rgba(255, 99, 132, 0.5)', 'rgba(0, 122, 251, 0.5)', 'rgba(255, 205, 86, 0.5)',],
+        }]
     };
 
 
     let clicked = new Map();
 
     const config = {
-        type: 'bar',
-        data: statistics,
-        options: {
+        type: 'bar', data: statistics, options: {
 
-            responsive: true,
-            maintainAspectRatio: false,
-            indexAxis: 'y',
+            responsive: true, maintainAspectRatio: false, indexAxis: 'y',
 
             plugins: {
                 legend: {
                     display: false // hide dataset label
-                },
-                title: {},
-                labels: {
-                    render: 'label+value',
-                    fontSize: 14,
-                    position: 'border', // outside, border
+                }, title: {}, labels: {
+                    render: 'label+value', fontSize: 14, position: 'border', // outside, border
                     fontColor: '#FFFFFF',
-                },
-                tooltip: {
+                }, tooltip: {
                     callbacks: {
                         label: function (context) {
                             const price = context.dataset.data[context.dataIndex];
@@ -399,28 +374,15 @@ const updateDonut = (groupedExenses) => {
 
 
     const statistics = {
-        labels: [
-            `🍎 €${expensesBasics.toFixed(2)}`,
-            `🎉 €${expensesFun.toFixed(2)}`,
-            `📎 €${expensesInfreq.toFixed(2)}`,
-            `⬜ €${leftOver.toFixed(2)}`
-        ],
-        datasets: [
-            {
-                data: [expensesBasics, expensesFun, expensesInfreq, leftOver],
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.5)',
-                    'rgba(0, 122, 251, 0.5)',
-                    'rgba(255, 205, 86, 0.5)',
-                    'rgba(240, 240, 240, 0.5)',
-                ],
-            }
-        ]
+        labels: [`🍎 €${expensesBasics.toFixed(2)}`, `🎉 €${expensesFun.toFixed(2)}`, `📎 €${expensesInfreq.toFixed(2)}`, `⬜ €${leftOver.toFixed(2)}`],
+        datasets: [{
+            data: [expensesBasics, expensesFun, expensesInfreq, leftOver],
+            backgroundColor: ['rgba(255, 99, 132, 0.5)', 'rgba(0, 122, 251, 0.5)', 'rgba(255, 205, 86, 0.5)', 'rgba(240, 240, 240, 0.5)',],
+        }]
     };
 
     const plugin = {
-        id: 'my-plugin',
-        beforeDraw: (chart, args, options) => {
+        id: 'my-plugin', beforeDraw: (chart, args, options) => {
             const data = chart.data.datasets[0].data;
             // exclude last element, round to 2 decimals
             const sum = data.slice(0, data.length - 1).reduce((a, b) => a + b, 0).toFixed(2);
@@ -445,27 +407,18 @@ const updateDonut = (groupedExenses) => {
     }
 
     const config = {
-        type: 'doughnut',
-        data: statistics,
-        options: {
-            responsive: true,
-            plugins: {
+        type: 'doughnut', data: statistics, options: {
+            responsive: true, plugins: {
                 legend: {
-                    position: 'right',
-                    labels: {
+                    position: 'right', labels: {
                         boxWidth: 10,
                     }
-                },
-                title: {},
-                labels: {
-                    render: 'label+value',
-                    fontSize: 14,
-                    position: 'border', // outside, border
+                }, title: {}, labels: {
+                    render: 'label+value', fontSize: 14, position: 'border', // outside, border
                     fontColor: '#FFFFFF',
                 },
             }
-        },
-        plugins: [plugin]
+        }, plugins: [plugin]
     };
 
     new Chart(ctx, config);
@@ -520,7 +473,7 @@ const getExepenseListItem = (id, day, monthNumeric, category, description, myPri
 
 }
 
-const getPriceText = (myPrice, total, color="blue") => {
+const getPriceText = (myPrice, total, color = "blue") => {
     if (myPrice == total) {
         return `<span class="expenseItemTop ${color}" style="font-size: 0.9em;">${myPrice.toFixed(2)}</span> <br>
     <span class="expenseItemBot"></span>`
@@ -568,20 +521,34 @@ const checkSubmit = () => {
     }
 }
 
-const chooseCategory = (button, category) => {
-    // clear all other buttons back to original and set this button to active (#034286;)
-    // buttons in div: div_categories
-    const buttons = document.querySelectorAll('#div_categories a');
-
-    buttons.forEach((btn) => {
-        btn.style.backgroundColor = '#FFFFFF';
-    });
-
-    button.style.backgroundColor = '#8ac3ff';
+const chooseCategory = (selectTag) => {
+    const options = selectTag.options;
+    const selectedOption = options[options.selectedIndex];
+    const category = selectedOption.value;
 
     data.category = category;
     checkSubmit();
+
+    // Set background colour of selectTag
+    const selectTagId = selectTag.id;
+
+    const selectTags = [
+        document.getElementById('lst_categories_basics'),
+        document.getElementById('lst_categories_fun'),
+        document.getElementById('lst_categories_infreq')];
+
+    const otherSelectTags = selectTags.filter(tag => tag.id != selectTagId)
+    const currentSelectTag = document.getElementById(selectTagId);
+
+    currentSelectTag.style.borderColor = '#034286';
+    otherSelectTags.forEach(tag => tag.style.borderColor = '#dcdcdc');
+
+    // Set other selectTag back to default
+    otherSelectTags.forEach(tag => tag.selectedIndex = 0);
+
+
 }
+
 
 const submit = () => {
     // send data to server
@@ -641,6 +608,7 @@ const clearExpensesFilter = () => {
     updateExpensesAll(ALL_EXPENSES);
 }
 
+// for select tags
 const fillCategoriesList = () => {
     const lst_categories_basics = document.getElementById('lst_categories_basics');
     const lst_categories_fun = document.getElementById('lst_categories_fun');
@@ -649,34 +617,31 @@ const fillCategoriesList = () => {
     for (let i = 0; i < categories_basics_keys.length; i++) {
         const key = categories_basics_keys[i];
         const name = categories_basics_names[i];
-        const a = document.createElement('a');
-        a.classList.add('dropdown-item');
-        a.setAttribute('onclick', `chooseCategory(this, '${key}')`);
-        a.innerHTML = name;
-        lst_categories_basics.appendChild(a);
+        const option = document.createElement('option');
+        option.value = key;
+        option.innerHTML = name;
+        lst_categories_basics.appendChild(option);
     }
 
     for (let i = 0; i < categories_fun_keys.length; i++) {
         const key = categories_fun_keys[i];
         const name = categories_fun_names[i];
-        const a = document.createElement('a');
-        a.classList.add('dropdown-item');
-        a.setAttribute('onclick', `chooseCategory(this, '${key}')`);
-        a.innerHTML = name;
-        lst_categories_fun.appendChild(a);
+        const option = document.createElement('option');
+        option.value = key;
+        option.innerHTML = name;
+        lst_categories_fun.appendChild(option);
     }
 
     for (let i = 0; i < categories_infreq_keys.length; i++) {
         const key = categories_infreq_keys[i];
         const name = categories_infreq_names[i];
-        const a = document.createElement('a');
-        a.classList.add('dropdown-item');
-        a.setAttribute('onclick', `chooseCategory(this, '${key}')`);
-        a.innerHTML = name;
-        lst_categories_infreq.appendChild(a);
+        const option = document.createElement('option');
+        option.value = key;
+        option.innerHTML = name;
+        lst_categories_infreq.appendChild(option);
     }
-
 }
+
 
 const updateNavigationButtons = () => {
     // page navigation: calls getMonthFromUrlParam() and updates the navigation buttons

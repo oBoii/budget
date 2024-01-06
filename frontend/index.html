@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
     <link rel="icon" type="image/png" href="fav.png"/>
-    <link rel="stylesheet" href="style.css?version=23">
+    <link rel="stylesheet" href="style.css?version=24">
 
 </head>
 
@@ -49,77 +49,21 @@
 
     <!--Categories-->
     <div id="div_categories" class="margin">
-
-        <!--        <div class="btn-group">-->
-        <!--            &lt;!&ndash; Dropdown 1 &ndash;&gt;-->
-        <!--            <div class="btn-group" style="width: 33%">-->
-        <!--                <button type="button" class="btn btn-secondary dropdown-toggle custom-dropdown"-->
-        <!--                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="width: 100%;">-->
-        <!--                    Basics-->
-        <!--                </button>-->
-        <!--                <div id="lst_categories_basics" class="dropdown-menu">-->
-        <!--                </div>-->
-        <!--            </div>-->
-        <!--            &lt;!&ndash; Dropdown 2 &ndash;&gt;-->
-        <!--            <div class="btn-group" style="width: 33%">-->
-        <!--                <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown"-->
-        <!--                        aria-haspopup="true" aria-expanded="false" style="width: 30vw;">-->
-        <!--                    Fun-->
-        <!--                </button>-->
-        <!--                <div id="lst_categories_fun" class="dropdown-menu">-->
-        <!--                </div>-->
-        <!--            </div>-->
-
-        <!--            &lt;!&ndash; Infrequent &ndash;&gt;-->
-        <!--            <div class="btn-group" style="width: 33%">-->
-        <!--                <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown"-->
-        <!--                        aria-haspopup="true" aria-expanded="false" style="width: 30vw;">-->
-        <!--                    Infreq-->
-        <!--                </button>-->
-        <!--                <div id="lst_categories_infreq" class="dropdown-menu">-->
-        <!--                </div>-->
-        <!--            </div>-->
-
-        <!--            <br>-->
-        <!--        </div>-->
-
         <div class="put_selects_side_by_side vert-margin-sm">
             <!-- USE HTML SELECT-TAG INSTEAD (A select tag for `Basics`, `Fun` and `Infrequent`) all items automatically added to the list using javascript -->
             <!-- Basics -->
-            <select class="form-select" id="lst_categories_basics" style="width: 33%;">
+            <select class="form-select" id="lst_categories_basics" style="width: 33%;" onchange="chooseCategory(this)">
                 <option selected disabled>🍎 Basics</option>
-                <option value="Boodschappen">Boodschappen</option>
-                <option value="Bakker">Bakker</option>
-                <option value="Gezondheid en verzorging">Gezondheid & verzorging</option>
-                <option value="Transport">Openbaar vervoer</option>
-                <option value="Auto">Auto</option>
             </select>
 
             <!-- Fun -->
-            <select class="form-select" id="lst_categories_fun" style="width: 33%">
+            <select class="form-select" id="lst_categories_fun" style="width: 33%" onchange="chooseCategory(this)">
                 <option selected disabled>🎉 Fun</option>
-                <option value="Restaurant">Restaurant</option>
-                <option value="Café en Drinks">Café & Drinks</option>
-                <option value="Amusement">Amusement</option>
-                <option value="Sport">Sport</option>
-                <option value="Shopping">Shopping</option>
-                <option value="Inkomst">Inkomst</option>
             </select>
 
             <!-- Infrequent -->
-            <select class="form-select" id="lst_categories_infreq" style="width: 33%">
+            <select class="form-select" id="lst_categories_infreq" style="width: 33%" onchange="chooseCategory(this)">
                 <option selected disabled>📎 Infreq</option>
-                <option value="Abonnementen">Abonnementen</option>
-                <option value="Kleding">Kleding</option>
-                <option value="Schoenen">Schoenen</option>
-                <option value="Kapper">Kapper</option>
-                <option value="Gifts">Gifts</option>
-                <option value="Reizen">Reizen</option>
-                <option value="Meubels en Interieur">Meubels & Interieur</option>
-                <option value="Zelfontwikkeling">Zelfontwikkeling</option>
-                <option value="ICT">ICT</option>
-                <option value="Maandelijks">Maandelijks</option>
-                <option value="Uitzonderlijk">Uitzonderlijk</option>
             </select>
         </div>
 
@@ -130,17 +74,17 @@
             <datalist id="descriptions"></datalist>
         </div>
 
-        <div class="vert-margin-sm">
-            <!-- Every month a fixed value is saved to each bucket. At certain points money can then be taken from these buckets. -->
-            <!-- select-tag to select from which "money bucket" we must subtract (eg "typical" or "holiday" -->
-            <!-- default: "typical" -->
-            <select class="form-select">
-                <option selected value="typical">🍞</option>
-                <option value="holiday">✈️</option>
-                <!-- Exceptional costs -->
-                <option value="exceptional">💥</option>
-            </select>
-        </div>
+<!--        <div class="vert-margin-sm">-->
+<!--            &lt;!&ndash; Every month a fixed value is saved to each bucket. At certain points money can then be taken from these buckets. &ndash;&gt;-->
+<!--            &lt;!&ndash; select-tag to select from which "money bucket" we must subtract (eg "typical" or "holiday" &ndash;&gt;-->
+<!--            &lt;!&ndash; default: "typical" &ndash;&gt;-->
+<!--            <select class="form-select">-->
+<!--                <option selected value="typical">🍞</option>-->
+<!--                <option value="holiday">✈️</option>-->
+<!--                &lt;!&ndash; Exceptional costs &ndash;&gt;-->
+<!--                <option value="exceptional">💥</option>-->
+<!--            </select>-->
+<!--        </div>-->
 
 
     </div>
@@ -222,7 +166,7 @@
         crossorigin="anonymous"></script>
 
 <script src="slip.js"></script>
-<script src="script.js?version=23"></script>
+<script src="script.js?version=24"></script>
 
 <script>
     const categories_basics_keys = ['Boodschappen', 'Bakker', 'Gezondheid en verzorging', 'Transport', 'Auto']
