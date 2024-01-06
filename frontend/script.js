@@ -124,7 +124,19 @@ const updateDebtsAndExpensesAll = (maxTrials = 3) => {
                     console.log("adding monthly expense", monthlyExpense)
                 }
             });
+            // add all monthly expenses that are not in groupedExenses
+            groupedMonthlyExenses.forEach(expense => {
+                const category = expense.category;
+                const priceFabian = expense.price_fabian;
+                const priceElisa = expense.price_elisa;
 
+                const monthlyExpense = groupedExenses.find(expense => expense.category == category);
+
+                if (!monthlyExpense) {
+                    groupedExenses.push(expense);
+                    console.log("adding monthly expense", monthlyExpense)
+                }
+            });
 
             const historicDescriptions = data.historic_descriptions;
 
@@ -135,6 +147,9 @@ const updateDebtsAndExpensesAll = (maxTrials = 3) => {
 
             updateDebts(fabian, elisa);
             updateExpensesAll(expenses);
+
+            console.log("groupedExenses", groupedExenses)
+            console.log("monthly_grouped_expenses", groupedMonthlyExenses)
 
             updateDonut(groupedExenses);
             updateBar(groupedExenses, expenses);
@@ -256,10 +271,11 @@ const updateBar = (groupedExenses, indivualExpenses) => {
     if (incomeIndex != -1) {
         labels.push(labels.splice(incomeIndex, 1)[0]);
         prices.push(prices.splice(incomeIndex, 1)[0]);
+
+        // make its value positive divide by 100
+        prices[prices.length - 1] = Math.abs(prices[prices.length - 1]) / 100;
     }
 
-    // make its value positive divide by 100
-    prices[prices.length - 1] = Math.abs(prices[prices.length - 1]) / 100;
 
     ctx.height = 350;
 
@@ -367,15 +383,16 @@ const updateDonut = (groupedExenses) => {
     let income = prices[3];
 
     // income is 2500 or higher
-    income = income < 2500 ? 2500 : income;
+    income = income < 2600 ? 2600 : income;
 
 
     // eg: 2500 salary,
     const rent = 455
-    const cap = (income - rent) * 0.35 // cap typical expenses
-    const longterm = (income - rent) * 0.18 // longterm savings
-    const invest = (income - rent) * 0.47 // invest
+    const cap = 850
+    const longterm = 300
+    const invest = income - rent - cap - longterm;
 
+    // eg 2600 - 455 - 850 - 300 = 1000
     const leftOver = cap - expensesBasics - expensesFun - expensesInfreq;
 
     updateMonthlyBudgetStatistics(income, cap, rent, longterm, invest);
