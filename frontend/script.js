@@ -358,14 +358,16 @@ const updateDonut = (groupedExenses) => {
     let income = prices[3];
 
     // income is 2500 or higher
-    income = income < 2600 ? 2600 : income;
+    income = income < 2500 ? 2500 : income;
 
 
     // eg: 2500 salary,
     const rent = 455
     const cap = 850
-    const longterm = 300
-    const invest = income - rent - cap - longterm;
+    // const longterm = 300
+    // const invest = income - rent - cap - longterm;
+    const invest = 1000
+    const longterm = income - rent - cap - invest;
 
     // eg 2600 - 455 - 850 - 300 = 1000
     const leftOver = cap - expensesBasics - expensesFun - expensesInfreq;
