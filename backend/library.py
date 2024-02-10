@@ -2,6 +2,7 @@ import json
 import sqlite3
 from datetime import datetime
 from root import ROOT
+import numpy as np
 
 
 def param(name):
@@ -38,15 +39,67 @@ def append_expense(
     conn.commit()
     conn.close()
 
+
 def get_debt_per_person():
     fabian1, elisa1 = _get_debt_per_person()
-    fabian2, elisa2 = _get_debt_per_person(monthly=True)
+    fabian2, elisa2 = _get_debt_per_person_monthly()
     fabian = fabian1 + fabian2
     elisa = elisa1 + elisa2
 
     return fabian, elisa
 
+
+def _get_active_months(start_date, end_date):
+    # don't consider the day
+    start_date = start_date[:-2] + "01" # eg: '2023-12-25' -> '2023-12-01'
+    now = f"{datetime.now().strftime('%Y-%m')}-01"
+    end_date = end_date[:-2] + "-01" if end_date else None
+
+    if end_date is None or end_date == "":
+        days = (datetime.strptime(now, "%Y-%m-%d") - datetime.strptime(start_date, "%Y-%m-%d")).days / 30
+    else:
+        days = (datetime.strptime(end_date, "%Y-%m-%d") - datetime.strptime(start_date, "%Y-%m-%d")).days / 30
+
+    return np.ceil(days)
+
+
+def _get_debt_per_person_monthly():
+    # other function `_get_debt_per_person` only works if cost is only once. as soon as it's monthly, it doesn't work anymore as only counted once.
+    # So needs to multiply by the number of months
+    conn = sqlite3.connect(f"{ROOT}/expenses.db")
+    cursor = conn.cursor()
+
+    cursor.execute(
+        f"""
+        SELECT price_fabian, price_elisa, paid_by, start_date, end_date FROM monthly_expenses
+        WHERE strftime('%Y-%m', start_date) <= strftime('%Y-%m', 'now') and 
+        (strftime('%Y-%m', end_date) >= strftime('%Y-%m', 'now') OR end_date IS NULL OR end_date = '')
+        """
+    )
+    rows = cursor.fetchall()
+
+    # for each row multiply by the number of months it has been active
+    fabian = 0
+    elisa = 0
+    for row in rows:
+        price_fabian, price_elisa, paid_by, start_date, end_date = row
+        if paid_by.lower() == "fabian":
+            # fabian paid `price_elisa` for elisa so Elisa has debt
+            elisa += price_elisa * _get_active_months(start_date, end_date)
+        elif paid_by.lower() == "elisa":
+            fabian += price_fabian * _get_active_months(start_date, end_date)
+        else:
+            raise ValueError("Invalid value for `paid_by`")
+        print(
+            f"nb_months: {_get_active_months(start_date, end_date)} paid by: {paid_by} price_fabian: {price_fabian} price_elisa: {price_elisa}")
+
+        conn.close()
+
+    return fabian, elisa
+
+
 def _get_debt_per_person(monthly=False):
+    assert not monthly, "This function is not longer implemented for monthly expenses"
     # Connect to the SQLite database
     conn = sqlite3.connect(f"{ROOT}/expenses.db")
     cursor = conn.cursor()
@@ -73,6 +126,7 @@ def _get_debt_per_person(monthly=False):
             raise ValueError("Invalid value for `paid_by`")
 
     conn.close()
+
     return fabian, elisa
 
 

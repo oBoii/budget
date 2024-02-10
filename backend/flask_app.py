@@ -45,24 +45,14 @@ def page_index():
     grouped_expenses = get_total_expenses_grouped_by_category(nb_months_ago)
     monthly_grouped_expenses = get_total_expenses_grouped_by_category(nb_months_ago, monthly=True)
 
-    historic_descriptions = get_historic_descriptions()
+    historic_descriptions = get_historic_descriptions()  # eg: ["colruyt", "aldi", "carrefour", ...]
 
     return json.dumps({"fabian": fabian, "elisa": elisa,
-                       "expenses": expenses, "grouped_expenses": grouped_expenses,
-                       "monthly_expenses": monthly_expenses, "monthly_grouped_expenses": monthly_grouped_expenses,
+                       "expenses": expenses,
+                       "grouped_expenses": grouped_expenses,
+                       "monthly_expenses": monthly_expenses,
+                       "monthly_grouped_expenses": monthly_grouped_expenses,
                        "historic_descriptions": historic_descriptions})
-
-
-@app.route("/get_debts")
-@auth.login_required
-def page_get_debts():
-    # get debt per person
-    fabian, elisa = get_debt_per_person()
-    # round to 2 decimals
-    fabian = round(fabian, 2)
-    elisa = round(elisa, 2)
-
-    return json.dumps({"fabian": fabian, "elisa": elisa})
 
 
 @auth.login_required
