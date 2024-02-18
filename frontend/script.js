@@ -172,6 +172,11 @@ const printMonthlySaved = (monthlySaved) => {
     // Prepare the data (last 12 months or less)
     const data = monthlySaved.slice(Math.max(0, monthlySaved.length - 12));
 
+    // hard cap of 1,000
+    for (let i = 0; i < data.length; i++) {
+        data[i] = Math.min(data[i], 800);
+    }
+
     // Prepare the target data (a constant value of 343)
     const targetData = new Array(data.length).fill(343);
 
