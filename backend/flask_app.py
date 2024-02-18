@@ -1,15 +1,20 @@
 import json
 from datetime import datetime
+from typing import List
+
 import seaborn as sns
 from flask_httpauth import HTTPBasicAuth
 from flask import Flask, request
 from flask_cors import CORS
+
+from expense import Expense
+from grouped_expense import GroupedExpense
 from library import (
     add_expense,
     get_debt_per_person,
     get_expenses,
     param,
-    delete_expense, get_total_expenses_grouped_by_category, get_historic_descriptions,
+    delete_expense, get_total_expenses_grouped_by_category, get_historic_descriptions, _get_all_expenses,
 )
 
 sns.set_theme()
@@ -26,6 +31,30 @@ def verify_password(username, password):
 
 
 # returns bot debts and all expenses
+class IndexResponse:
+    def __init__(self, fabian: float, elisa: float, expenses: List[Expense], grouped_expenses: List[GroupedExpense],
+                 monthly_expenses: List[Expense], monthly_grouped_expenses: List[GroupedExpense],
+                 historic_descriptions: List[str]):
+        self.fabian = fabian
+        self.elisa = elisa
+        self.expenses = expenses
+        self.grouped_expenses = grouped_expenses
+        self.monthly_expenses = monthly_expenses
+        self.monthly_grouped_expenses = monthly_grouped_expenses
+        self.historic_descriptions = historic_descriptions
+
+    def serialize(self) -> dict:
+        return {
+            "fabian": self.fabian,
+            "elisa": self.elisa,
+            "expenses": [e.serialize() for e in self.expenses],
+            "grouped_expenses": [e.serialize() for e in self.grouped_expenses],
+            "monthly_expenses": [e.serialize() for e in self.monthly_expenses],
+            "monthly_grouped_expenses": [e.serialize() for e in self.monthly_grouped_expenses],
+            "historic_descriptions": self.historic_descriptions
+        }
+
+
 @app.route("/")
 @auth.login_required
 def page_index():
@@ -38,21 +67,24 @@ def page_index():
     elisa = round(elisa, 2)
 
     # get all expenses
-    expenses = get_expenses(nb_months_ago)
-    monthly_expenses = get_expenses(nb_months_ago, monthly=True)
+    expenses: List[Expense] = get_expenses(nb_months_ago, monthly=False)
+    monthly_expenses: List[Expense] = get_expenses(nb_months_ago, monthly=True)
 
     # get debts per category from current month
-    grouped_expenses = get_total_expenses_grouped_by_category(nb_months_ago, monthly=False)
-    monthly_grouped_expenses = get_total_expenses_grouped_by_category(nb_months_ago, monthly=True)
+    grouped_expenses: List[GroupedExpense] = get_total_expenses_grouped_by_category(nb_months_ago, monthly=False)
+    monthly_grouped_expenses: List[GroupedExpense] = get_total_expenses_grouped_by_category(nb_months_ago, monthly=True)
 
-    historic_descriptions = get_historic_descriptions()  # eg: ["colruyt", "aldi", "carrefour", ...]
+    historic_descriptions: List[str] = get_historic_descriptions()  # eg: ["colruyt", "aldi", "carrefour", ...]
 
-    return json.dumps({"fabian": fabian, "elisa": elisa,
-                       "expenses": expenses,
-                       "grouped_expenses": grouped_expenses,
-                       "monthly_expenses": monthly_expenses,
-                       "monthly_grouped_expenses": monthly_grouped_expenses,
-                       "historic_descriptions": historic_descriptions})
+    expenses_of_lifetime_fabian = _get_all_expenses("fabian")
+    expenses_of_lifetime_elisa = _get_all_expenses("elisa")
+
+
+    return_data = IndexResponse(fabian, elisa, expenses, grouped_expenses,
+                                monthly_expenses, monthly_grouped_expenses,
+                                historic_descriptions)
+
+    return json.dumps(return_data.serialize())
 
 
 @auth.login_required

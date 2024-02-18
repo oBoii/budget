@@ -495,6 +495,10 @@ const updateExpensesAll = (expenses) => {
     expenses.forEach(expense => {
         // const date = expense.date; // eg: dd-mm
         // convert to dd/mm
+
+        if (expense.date == null)
+            expense.date = "00-00"
+
         const date = expense.date.split('-').reverse().join('/');
         const priceFabian = Math.abs(expense.price_fabian);
         const priceElisa = Math.abs(expense.price_elisa);

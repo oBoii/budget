@@ -1,8 +1,12 @@
 import json
 import sqlite3
 from datetime import datetime
+
+from expense import Expense
+from grouped_expense import GroupedExpense
 from root import ROOT
 import numpy as np
+from typing import List
 
 
 def param(name):
@@ -101,8 +105,8 @@ def _get_debt_per_person():
     return fabian, elisa
 
 
-def get_total_expenses_grouped_by_category(nb_months_ago: int, monthly: bool):  # eg -1 = last month
-    # Query the expenses for calculations
+def get_total_expenses_grouped_by_category(nb_months_ago: int, monthly: bool) -> List[GroupedExpense]:
+    # eg -1 = last month
     if not monthly:
         query = (f"""
             SELECT category, sum(price_fabian), sum(price_elisa) FROM expenses
@@ -119,21 +123,16 @@ def get_total_expenses_grouped_by_category(nb_months_ago: int, monthly: bool):  
 
     rows = execute_sql_query(query)
     # Perform debt calculations based on fetched data
-    data = []
+    data: List[GroupedExpense] = []
     for row in rows:
         category, price_fabian, price_elisa = row
-        data.append(
-            {
-                "category": category,
-                "price_fabian": price_fabian,
-                "price_elisa": price_elisa,
-            }
-        )
+        data.append(GroupedExpense(category, price_fabian, price_elisa))
 
     return data
 
 
-def get_expenses(nb_months_ago, monthly=False):  # nb_months_ago: 0 = current month, -1 = last month, etc.
+def get_expenses(nb_months_ago, monthly=False) -> List[Expense]:
+    # nb_months_ago: 0 = current month, -1 = last month, etc.
 
     if not monthly:
         # Expenses of `nb_months_ago` months ago
@@ -156,7 +155,7 @@ def get_expenses(nb_months_ago, monthly=False):  # nb_months_ago: 0 = current mo
     rows = execute_sql_query(query_indiv)
 
     # Perform expense calculations based on fetched data
-    data = []
+    data: List[Expense] = []
     for row in rows:
         (id, date, price_person, price_other, paid_by, category, subcategories, descriptions) = row
 
@@ -164,17 +163,7 @@ def get_expenses(nb_months_ago, monthly=False):  # nb_months_ago: 0 = current mo
         subcategories = subcategories.replace("null", "") if subcategories else ""
         descriptions = descriptions.replace("null", "")
 
-        individual_cost = {
-            "id": id,
-            "date": datetime.strptime(date, "%Y-%m-%d").strftime("%d-%m") if date else "00-00",
-            "price_fabian": price_person,
-            "price_elisa": price_other,
-            "paid_by": paid_by,
-            "category": category,
-            "subcategory": subcategories,
-            "description": descriptions,
-        }
-
+        individual_cost = Expense(id, date, price_person, price_other, paid_by, category, subcategories, descriptions)
         data.append(individual_cost)
 
     return data
@@ -191,7 +180,7 @@ def delete_expense(id):
     return True
 
 
-def get_historic_descriptions() -> list:
+def get_historic_descriptions() -> List[str]:
     # Query the UNIQ list
     query = """
         SELECT DISTINCT description FROM expenses
@@ -204,3 +193,18 @@ def get_historic_descriptions() -> list:
     # remove `null` from the list
     categories = [c for c in categories if c != "null"]
     return categories
+
+
+def _get_all_expenses(who: str):
+    # call get_expenses with nb_months_ago = 0, -1 ... until no more expenses are found
+    sum_expenses: int = 0
+    nb_months_ago = 0
+    while True:
+        # maybe includes income as well? but marked as negative?
+        expenses: List[Expense] = get_expenses(nb_months_ago)
+        if len(expenses) == 0:
+            break
+        sum_expenses += sum([e.price_fabian if e.paid_by == who else e.price_elisa for e in expenses])
+        nb_months_ago -= 1
+
+    return sum_expenses
