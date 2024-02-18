@@ -5,11 +5,11 @@ from flask_httpauth import HTTPBasicAuth
 from flask import Flask, request
 from flask_cors import CORS
 from library import (
-    append_expense,
+    add_expense,
     get_debt_per_person,
     get_expenses,
     param,
-    delete_expense, get_total_expenses_grouped_by_category, get_historic_descriptions
+    delete_expense, get_total_expenses_grouped_by_category, get_historic_descriptions,
 )
 
 sns.set_theme()
@@ -42,7 +42,7 @@ def page_index():
     monthly_expenses = get_expenses(nb_months_ago, monthly=True)
 
     # get debts per category from current month
-    grouped_expenses = get_total_expenses_grouped_by_category(nb_months_ago)
+    grouped_expenses = get_total_expenses_grouped_by_category(nb_months_ago, monthly=False)
     monthly_grouped_expenses = get_total_expenses_grouped_by_category(nb_months_ago, monthly=True)
 
     historic_descriptions = get_historic_descriptions()  # eg: ["colruyt", "aldi", "carrefour", ...]
@@ -68,7 +68,7 @@ def page_add_expense():
     description = r.args.get("description")
     now = datetime.now()
 
-    append_expense(
+    add_expense(
         price_fabian, price_elisa, paid_by, category, description, subcategory, now
     )
     return json.dumps({"message": "Expense added"})

@@ -11,33 +11,20 @@ def param(name):
         return data[name]
 
 
-def append_expense(
-        price_fabian, price_elisa, paid_by, category, description, subcategory, now
-):
-    # Connect to the SQLite database
-    conn = sqlite3.connect(f"{ROOT}/expenses.db")
-    cursor = conn.cursor()
+def execute_sql_query(query, params=()):
+    with sqlite3.connect(f"{ROOT}/expenses.db") as conn:
+        cursor = conn.cursor()
+        cursor.execute(query, params)
+        return cursor.fetchall()
 
-    # Insert the expense into the expenses table
-    cursor.execute(
-        """
+
+def add_expense(price_fabian, price_elisa, paid_by, category, description, subcategory, now):
+    query = """
         INSERT INTO expenses (date, price_fabian, price_elisa, paid_by, category, description, subcategory)
         VALUES (?, ?, ?, ?, ?, ?, ?)
-        """,
-        (
-            now.strftime("%Y-%m-%d"),
-            price_fabian,
-            price_elisa,
-            paid_by.lower(),
-            category,
-            description,
-            subcategory,
-        ),
-    )
-
-    # Commit the changes and close the connection
-    conn.commit()
-    conn.close()
+        """
+    params = (now.strftime("%Y-%m-%d"), price_fabian, price_elisa, paid_by.lower(), category, description, subcategory)
+    execute_sql_query(query, params)
 
 
 def get_debt_per_person():
@@ -51,7 +38,7 @@ def get_debt_per_person():
 
 def _get_active_months(start_date, end_date):
     # don't consider the day
-    start_date = start_date[:-2] + "01" # eg: '2023-12-25' -> '2023-12-01'
+    start_date = start_date[:-2] + "01"  # eg: '2023-12-25' -> '2023-12-01'
     now = f"{datetime.now().strftime('%Y-%m')}-01"
     end_date = end_date[:-2] + "-01" if end_date else None
 
@@ -66,17 +53,13 @@ def _get_active_months(start_date, end_date):
 def _get_debt_per_person_monthly():
     # other function `_get_debt_per_person` only works if cost is only once. as soon as it's monthly, it doesn't work anymore as only counted once.
     # So needs to multiply by the number of months
-    conn = sqlite3.connect(f"{ROOT}/expenses.db")
-    cursor = conn.cursor()
 
-    cursor.execute(
-        f"""
+    query = f"""
         SELECT price_fabian, price_elisa, paid_by, start_date, end_date FROM monthly_expenses
         WHERE strftime('%Y-%m', start_date) <= strftime('%Y-%m', 'now') and 
         (strftime('%Y-%m', end_date) >= strftime('%Y-%m', 'now') OR end_date IS NULL OR end_date = '')
         """
-    )
-    rows = cursor.fetchall()
+    rows = execute_sql_query(query)
 
     # for each row multiply by the number of months it has been active
     fabian = 0
@@ -93,24 +76,14 @@ def _get_debt_per_person_monthly():
         print(
             f"nb_months: {_get_active_months(start_date, end_date)} paid by: {paid_by} price_fabian: {price_fabian} price_elisa: {price_elisa}")
 
-        conn.close()
-
     return fabian, elisa
 
 
-def _get_debt_per_person(monthly=False):
-    assert not monthly, "This function is not longer implemented for monthly expenses"
-    # Connect to the SQLite database
-    conn = sqlite3.connect(f"{ROOT}/expenses.db")
-    cursor = conn.cursor()
-
-    # Query the expenses for calculations
-    cursor.execute(
-        f"""
-        SELECT price_fabian, price_elisa, paid_by FROM {"expenses" if not monthly else "monthly_expenses"}
+def _get_debt_per_person():
+    query = f"""
+        SELECT price_fabian, price_elisa, paid_by FROM expenses
         """
-    )
-    rows = cursor.fetchall()
+    rows = execute_sql_query(query)
 
     # Perform debt calculations based on fetched data
     fabian = 0
@@ -125,32 +98,26 @@ def _get_debt_per_person(monthly=False):
         else:
             raise ValueError("Invalid value for `paid_by`")
 
-    conn.close()
-
     return fabian, elisa
 
 
-def get_total_expenses_grouped_by_category(nb_months_ago, monthly=False):  # eg -1 = last month
-    # Connect to the SQLite database
-    conn = sqlite3.connect(f"{ROOT}/expenses.db")
-    cursor = conn.cursor()
-
+def get_total_expenses_grouped_by_category(nb_months_ago: int, monthly: bool):  # eg -1 = last month
     # Query the expenses for calculations
     if not monthly:
-        cursor.execute(f"""
+        query = (f"""
             SELECT category, sum(price_fabian), sum(price_elisa) FROM expenses
             WHERE strftime('%Y-%m', date) = strftime('%Y-%m', 'now', '{nb_months_ago} months')
             GROUP BY category
             """)
     else:
-        cursor.execute(f"""
+        query = (f"""
             SELECT category, sum(price_fabian), sum(price_elisa) FROM monthly_expenses
             WHERE strftime('%Y-%m', start_date) <= strftime('%Y-%m', 'now', '{nb_months_ago} months') and
             (strftime('%Y-%m', end_date) >= strftime('%Y-%m', 'now', '{nb_months_ago} months') OR end_date IS NULL OR end_date = '')
             GROUP BY category
             """)
-    rows = cursor.fetchall()
 
+    rows = execute_sql_query(query)
     # Perform debt calculations based on fetched data
     data = []
     for row in rows:
@@ -163,14 +130,10 @@ def get_total_expenses_grouped_by_category(nb_months_ago, monthly=False):  # eg 
             }
         )
 
-    conn.close()
     return data
 
 
 def get_expenses(nb_months_ago, monthly=False):  # nb_months_ago: 0 = current month, -1 = last month, etc.
-    # Connect to the SQLite database
-    conn = sqlite3.connect(f"{ROOT}/expenses.db")
-    cursor = conn.cursor()
 
     if not monthly:
         # Expenses of `nb_months_ago` months ago
@@ -190,8 +153,7 @@ def get_expenses(nb_months_ago, monthly=False):  # nb_months_ago: 0 = current mo
                 ORDER by start_date DESC, id DESC
                 """
 
-    cursor.execute(query_indiv, ())
-    rows = cursor.fetchall()
+    rows = execute_sql_query(query_indiv)
 
     # Perform expense calculations based on fetched data
     data = []
@@ -214,45 +176,31 @@ def get_expenses(nb_months_ago, monthly=False):  # nb_months_ago: 0 = current mo
         }
 
         data.append(individual_cost)
-    conn.close()
 
     return data
 
 
 def delete_expense(id):
-    # Connect to the SQLite database
-    conn = sqlite3.connect(f"{ROOT}/expenses.db")
-    cursor = conn.cursor()
-
     # group: id: take the maximum
-    cursor.execute(
-        """
+    query = """
         DELETE FROM expenses
         WHERE id = ?
         """,
-        (id,),
-    )
-
-    conn.commit()
-    conn.close()
+    execute_sql_query(query, (id,))
 
     return True
 
 
-def get_historic_descriptions():
-    # Connect to the SQLite database
-    conn = sqlite3.connect(f"{ROOT}/expenses.db")
-    cursor = conn.cursor()
-
+def get_historic_descriptions() -> list:
     # Query the UNIQ list
-    cursor.execute(
-        """
+    query = """
         SELECT DISTINCT description FROM expenses
         WHERE description IS NOT NULL
         """
-    )
-    rows = cursor.fetchall()
+
+    rows = execute_sql_query(query)
     categories = [row[0] for row in rows]
+
     # remove `null` from the list
     categories = [c for c in categories if c != "null"]
     return categories
