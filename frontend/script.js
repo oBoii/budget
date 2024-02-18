@@ -98,6 +98,9 @@ const updateDebtsAndExpensesAll = (maxTrials = 3) => {
             const expenses = data.expenses;
             const monthlyExpenses = data.monthly_expenses;
 
+            // list of how much saved at month 0, 1, 2, 3, ... (last element is current month)
+            const monthlySaved = getName() === FABIAN ? data.savings_of_lifetime_fabian : data.savings_of_lifetime_elisa;
+
             // append monthlyExpenses to expenses
             monthlyExpenses.forEach(expense => {
                 expenses.push(expense);
@@ -137,25 +140,36 @@ const updateDebtsAndExpensesAll = (maxTrials = 3) => {
 
             const historicDescriptions = data.historic_descriptions;
 
-            // console.log("expenses", expenses)
-            // console.log("monthlyExpenses", monthlyExpenses)
-
             fillDescriptions(historicDescriptions);
 
             updateDebts(fabian, elisa);
             updateExpensesAll(expenses);
 
-            console.log("groupedExenses", groupedExenses)
-            console.log("monthly_grouped_expenses", groupedMonthlyExenses)
-
             updateDonut(groupedExenses);
             updateBar(groupedExenses, expenses);
+
+            printMonthlySaved(monthlySaved);
 
             ALL_EXPENSES = expenses;
         })
         .catch(e => {
             maxTrials > 0 ? updateDebtsAndExpensesAll(maxTrials - 1) : handleError(e)
         })
+}
+
+const printMonthlySaved = (monthlySaved) => {
+    // a list of how much saved at month 0, 1, 2, 3, ... (last element is current month)
+
+    const div = document.getElementById('savings_per_month')
+    div.innerHTML = '';
+    for (let i = 0; i < monthlySaved.length; i++) {
+        const month = i;
+        const amount = monthlySaved[i].toFixed(2);
+        const sign = amount > 0 ? '+' : '';
+        const color = amount > 0 ? 'green' : 'red';
+        const html = `<span style="color: ${color}">${sign}${amount}</span> &emsp;`
+        div.innerHTML += html;
+    }
 }
 
 const printCurrentDayAndMonth = () => {
@@ -371,7 +385,6 @@ const updateDonut = (groupedExenses) => {
 
     // eg 2600 - 455 - 850 - 300 = 1000
     const leftOver = cap - expensesBasics - expensesFun - expensesInfreq;
-
     updateMonthlyBudgetStatistics(income, cap, rent, longterm, invest);
 
 
