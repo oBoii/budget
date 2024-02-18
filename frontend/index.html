@@ -12,13 +12,19 @@
     <!-- refreshing icon -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
+    <!-- swiper -->
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css"/>
+    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+
+
     <link rel="icon" type="image/png" href="fav.png"/>
-    <link rel="stylesheet" href="style.css?version=25">
+    <link rel="stylesheet" href="style.css?version=26">
 
 </head>
 
 <body>
-<div id="main">
+<!--disable horizontal scroll-->
+<div id="main" style="overflow-x: hidden;">
     <div id="div_debts">
         <!-- Shows debt for Fabian and Elisa  -->
         <span id="lbl_name_has_debt">##</span> moet <span id="lbl_name_no_debt">##</span> <span
@@ -87,11 +93,19 @@
 
 
     <div id="div_statistics" class="margin">
-        <div id="savings_per_month">
-            <canvas id="savingsChart"></canvas>
-        </div>
-        <div style="margin-bottom: -2em;">
-            <canvas id="donutChart"></canvas>
+        <div class="swiper-container">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide">
+                    <div style="margin-bottom: -4em; position: relative; top: -3em;">
+                        <canvas id="donutChart"></canvas>
+                    </div>
+                </div>
+                <div class="swiper-slide">
+                    <div id="savings_per_month">
+                        <canvas id="savingsChart"></canvas>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div id="div_budget_statistics" style="margin-bottom: 0.5em;">
@@ -156,7 +170,7 @@
         crossorigin="anonymous"></script>
 
 <script src="slip.js"></script>
-<script src="script.js?version=25"></script>
+<script src="script.js?version=26"></script>
 
 <script>
     const categories_basics_keys = ['Boodschappen', 'Bakker', 'Gezondheid en verzorging', 'Transport', 'Auto']
@@ -169,6 +183,8 @@
     const categories_infreq_names = ['Abonnementen', 'Kleding', 'Schoenen', 'Kapper', 'Gifts', 'Reizen', 'Meubels & Interieur', 'Zelfontwikkeling', 'ICT', 'Maandelijks', 'Uitzonderlijk']
 
     document.addEventListener('DOMContentLoaded', () => {
+
+
         // default input ratio: 100 for Fabian, 50 for Elisa
         if (getName() == FABIAN) {
             inp_ratio.value = 100;
@@ -188,6 +204,12 @@
 
         // submit button enabled when all fields are filled in
         btn_submit.disabled = true;
+
+        // Initialize swiper
+        new Swiper('.swiper-container', {
+            direction: 'horizontal',
+            loop: false,
+        });
     });
 </script>
 
