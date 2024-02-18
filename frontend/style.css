@@ -21,7 +21,7 @@ body {
 }
 
 #div_debts, #div_budget_statistics {
-    background-color: rgba(255, 205, 86, 0.5);
+    /*background-color: rgba(255, 205, 86, 0.5);*/
     padding: 0.5em;
 }
 
@@ -298,4 +298,36 @@ button {
 
 .vert-margin-sm {
     margin: 0.8em 0 0.8em 0;
+}
+
+.stacked_bar_chart {
+    display: flex;
+    justify-content: space-between;
+}
+
+.legend_item {
+    display: flex;
+    margin: 0 .5em 0 .5em;
+}
+
+.legend {
+    display: flex;
+    justify-content: center;
+
+}
+
+.legend_item_front {
+    height: 0.8em;
+    width: 0.2em;
+    position: relative;
+    top: 0.4em;
+}
+
+.bucket_statistics {
+    display: flex;
+    justify-content: center;
+}
+
+.bucket_statistics div {
+    margin: 0 1em 0 1em;
 }

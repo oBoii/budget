@@ -74,17 +74,17 @@
             <datalist id="descriptions"></datalist>
         </div>
 
-<!--        <div class="vert-margin-sm">-->
-<!--            &lt;!&ndash; Every month a fixed value is saved to each bucket. At certain points money can then be taken from these buckets. &ndash;&gt;-->
-<!--            &lt;!&ndash; select-tag to select from which "money bucket" we must subtract (eg "typical" or "holiday" &ndash;&gt;-->
-<!--            &lt;!&ndash; default: "typical" &ndash;&gt;-->
-<!--            <select class="form-select">-->
-<!--                <option selected value="typical">🍞</option>-->
-<!--                <option value="holiday">✈️</option>-->
-<!--                &lt;!&ndash; Exceptional costs &ndash;&gt;-->
-<!--                <option value="exceptional">💥</option>-->
-<!--            </select>-->
-<!--        </div>-->
+        <!--        <div class="vert-margin-sm">-->
+        <!--            &lt;!&ndash; Every month a fixed value is saved to each bucket. At certain points money can then be taken from these buckets. &ndash;&gt;-->
+        <!--            &lt;!&ndash; select-tag to select from which "money bucket" we must subtract (eg "typical" or "holiday" &ndash;&gt;-->
+        <!--            &lt;!&ndash; default: "typical" &ndash;&gt;-->
+        <!--            <select class="form-select">-->
+        <!--                <option selected value="typical">🍞</option>-->
+        <!--                <option value="holiday">✈️</option>-->
+        <!--                &lt;!&ndash; Exceptional costs &ndash;&gt;-->
+        <!--                <option value="exceptional">💥</option>-->
+        <!--            </select>-->
+        <!--        </div>-->
 
 
     </div>
@@ -98,17 +98,85 @@
         Betaald door <span id="lbl_name" onclick="editName()">##</span>.
     </div>
 
+    <div class="margin">
+        <div>
+            <!-- Some statistics, including:
+            1) total spent this month,
+            2) Income statistics & how to spend it (850 bread, 455 rent, 300 longterm savings, 1000 invest)
+            3) How much money is left in each bucket (holiday, exceptional) (buckets are longterm savings, holiday, exceptional)
+            -->
 
-    <div id="div_statistics" class="margin">
-        <div style="margin-bottom: -2em;">
-            <canvas id="donutChart"></canvas>
+        </div>
+
+        <div style="font-size: 3em;">
+            <!--            position: relative; top: 10px;-->
+            <span style="font-size: 1em;">400</span>
+            <span class="expenseTotal" style="font-size: 0.8em; ">/ 850</span>
+        </div>
+        <div class="stacked_bar_chart" style="border: solid 1px #dcdcdc; border-radius: 5px;">
+            <div style="width: 20%; height: 2em; background: rgba(255, 99, 132, 0.5);"></div>
+            <div style="width: 30%; height: 2em; background: rgba(0, 122, 251, 0.5)"></div>
+            <div style="width: 10%; height: 2em; background: rgba(255, 205, 86, 0.5);"></div>
+            <div style="width: 50%; height: 2em; background: rgba(240, 240, 240, 0.5);"></div>
+        </div>
+        <div class="legend vert-margin-sm">
+            <div class="legend_item">
+                <div class="legend_item_front" style="background: rgba(255, 99, 132, 0.5);"></div>
+                <div>🍎</div>
+                <div id="basics_expenses">
+                    <span id="lbl_basics_expenses">##</span>
+                </div>
+            </div>
+            <div class="legend_item">
+                <div class="legend_item_front" style="background: rgba(0, 122, 251, 0.5);"></div>
+                <div>🎉</div>
+                <div id="fun_expenses">
+                    <span id="lbl_fun_expenses">##</span>
+                </div>
+            </div>
+            <div class="legend_item">
+                <div class="legend_item_front" style="background: rgba(255, 205, 86, 0.5);"></div>
+                <div>📎</div>
+                <div id="infreq_expenses">
+                    <span id="lbl_infreq_expenses">##</span>
+                </div>
+            </div>
+            <div class="legend_item">
+                <div class="legend_item_front" style="background: rgba(240, 240, 240, 0.5);"></div>
+                <div>⬜</div>
+                <div id="savings">
+                    <span id="lbl_savings">##</span>
+                </div>
+            </div>
         </div>
 
         <div id="div_budget_statistics" style="margin-bottom: 0.5em;">
-            <!-- 💲2730 =  🍞750 + 🏠550 + ✈️1000 +  💸1200 -->
-            💲<span id="lbl_income">##</span> = 🍞<span id="lbl_cap"></span> + 🏠<span id="lbl_rent">##</span> +
-            ✈️<span id="lbl_longterm_savings">##</span> + 💸<span id="lbl_invest">##</span>
+            <div class="income_statistics">
+                <!-- 💲2730 =  🍞750 + 🏠550 + ✈️1000 +  💸1200 -->
+                💲<span id="lbl_income">##</span> = 🍞<span id="lbl_cap"></span> + 🏠<span id="lbl_rent">##</span> +
+                ✈️<span id="lbl_longterm_savings">##</span> + 💸<span id="lbl_invest">##</span>
+            </div>
+
+            <div class="bucket_statistics">
+                <div>
+                    <!-- money saved up for holidays-->
+                    Holiday: <span id="lbl_holiday">##</span>
+                </div>
+                <div>
+                    <!-- money saved up for exceptional costs-->
+                    Exceptional: <span id="lbl_exceptional">##</span>
+                </div>
+            </div>
         </div>
+    </div>
+
+
+    <div id="div_statistics" class="margin">
+        <div style="margin-bottom: -2em;">
+            <!--            <canvas id="donutChart"></canvas>-->
+        </div>
+
+
         <div>
             <canvas id="barChart"></canvas>
         </div>

@@ -1,5 +1,5 @@
-// const url = "http://127.0.0.1:5000"
-const url = "http://ofabian.pythonanywhere.com"
+const url = "http://127.0.0.1:5000"
+// const url = "http://ofabian.pythonanywhere.com"
 const key = authenticate()
 
 const inp_price = document.getElementById('inp_price');
@@ -148,7 +148,7 @@ const updateDebtsAndExpensesAll = (maxTrials = 3) => {
             console.log("groupedExenses", groupedExenses)
             console.log("monthly_grouped_expenses", groupedMonthlyExenses)
 
-            updateDonut(groupedExenses);
+            // updateDonut(groupedExenses);
             updateBar(groupedExenses, expenses);
 
             ALL_EXPENSES = expenses;
