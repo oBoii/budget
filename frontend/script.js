@@ -158,20 +158,58 @@ const updateDebtsAndExpensesAll = (maxTrials = 3) => {
 }
 
 const printMonthlySaved = (monthlySaved) => {
-    // a list of how much saved at month 0, 1, 2, 3, ... (last element is current month)
+    // Get the canvas context
+    const ctx = document.getElementById('savingsChart').getContext('2d');
 
-    const div = document.getElementById('savings_per_month')
-    div.innerHTML = '';
-    for (let i = 0; i < monthlySaved.length; i++) {
-        const month = i;
-        const amount = monthlySaved[i].toFixed(2);
-        const sign = amount > 0 ? '+' : '';
-        const color = amount > 0 ? 'green' : 'red';
-        const html = `<span style="color: ${color}">${sign}${amount}</span> &emsp;`
-        div.innerHTML += html;
+    // Prepare the labels (last 12 months or less)
+    const labels = [];
+    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const currentMonth = new Date().getMonth();
+    for (let i = Math.max(0, monthlySaved.length - 12); i < monthlySaved.length; i++) {
+        labels.push(monthNames[(currentMonth - monthlySaved.length + i + 1 + 12) % 12]);
     }
-}
 
+    // Prepare the data (last 12 months or less)
+    const data = monthlySaved.slice(Math.max(0, monthlySaved.length - 12));
+
+    // Prepare the target data (a constant value of 343)
+    const targetData = new Array(data.length).fill(343);
+
+    // Create the chart
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Savings',
+                data: data,
+                fill: false,
+                borderColor: 'rgb(75, 192, 192)',
+                tension: 0.1
+            }, {
+                label: 'Target',
+                data: targetData,
+                fill: false,
+                borderColor: 'rgb(255, 99, 132)',
+                borderDash: [5, 5], // This will make the line dashed
+                tension: 0.1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false // This hides the "Savings" and "Target" buttons
+                }
+            }
+        }
+    });
+}
 const printCurrentDayAndMonth = () => {
     const nbMonthsAgo = getMonthFromUrlParam();
 
