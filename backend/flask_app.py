@@ -14,7 +14,7 @@ from library import (
     get_debt_per_person,
     get_expenses,
     param,
-    delete_expense, get_total_expenses_grouped_by_category, get_historic_descriptions, _get_all_expenses,
+    delete_expense, get_total_expenses_grouped_by_category, get_historic_descriptions, _get_all_savings_for_each_month,
 )
 
 sns.set_theme()
@@ -34,7 +34,8 @@ def verify_password(username, password):
 class IndexResponse:
     def __init__(self, fabian: float, elisa: float, expenses: List[Expense], grouped_expenses: List[GroupedExpense],
                  monthly_expenses: List[Expense], monthly_grouped_expenses: List[GroupedExpense],
-                 historic_descriptions: List[str]):
+                 historic_descriptions: List[str],
+                 savings_of_lifetime_fabian: List[float], savings_of_lifetime_elisa: List[float]):
         self.fabian = fabian
         self.elisa = elisa
         self.expenses = expenses
@@ -42,6 +43,8 @@ class IndexResponse:
         self.monthly_expenses = monthly_expenses
         self.monthly_grouped_expenses = monthly_grouped_expenses
         self.historic_descriptions = historic_descriptions
+        self.savings_of_lifetime_fabian = savings_of_lifetime_fabian
+        self.savings_of_lifetime_elisa = savings_of_lifetime_elisa
 
     def serialize(self) -> dict:
         return {
@@ -51,7 +54,9 @@ class IndexResponse:
             "grouped_expenses": [e.serialize() for e in self.grouped_expenses],
             "monthly_expenses": [e.serialize() for e in self.monthly_expenses],
             "monthly_grouped_expenses": [e.serialize() for e in self.monthly_grouped_expenses],
-            "historic_descriptions": self.historic_descriptions
+            "historic_descriptions": self.historic_descriptions,
+            "savings_of_lifetime_fabian": self.savings_of_lifetime_fabian,
+            "savings_of_lifetime_elisa": self.savings_of_lifetime_elisa
         }
 
 
@@ -76,13 +81,14 @@ def page_index():
 
     historic_descriptions: List[str] = get_historic_descriptions()  # eg: ["colruyt", "aldi", "carrefour", ...]
 
-    expenses_of_lifetime_fabian = _get_all_expenses("fabian")
-    expenses_of_lifetime_elisa = _get_all_expenses("elisa")
-
+    # A list st list[i] is all expenses for month i. Last record is the current month
+    savings_of_lifetime_fabian = _get_all_savings_for_each_month("fabian")
+    savings_of_lifetime_elisa = _get_all_savings_for_each_month("elisa")
 
     return_data = IndexResponse(fabian, elisa, expenses, grouped_expenses,
                                 monthly_expenses, monthly_grouped_expenses,
-                                historic_descriptions)
+                                historic_descriptions,
+                                savings_of_lifetime_fabian, savings_of_lifetime_elisa)
 
     return json.dumps(return_data.serialize())
 

@@ -195,16 +195,36 @@ def get_historic_descriptions() -> List[str]:
     return categories
 
 
-def _get_all_expenses(who: str):
-    # call get_expenses with nb_months_ago = 0, -1 ... until no more expenses are found
-    sum_expenses: int = 0
+def _get_all_savings_for_each_month(who: str) -> List[int]:
+    # Returns a list where list[i] is the sum of all expenses of `who` for the month at `i` months ago
+    # Last record is the current month
+
+    RENT_COST = 455
+    INVEST_COST = 1_000
+
+    sum_expenses: List[int] = []
     nb_months_ago = 0
     while True:
-        # maybe includes income as well? but marked as negative?
+        # Get all expenses/periodic expenses/incomes for the month at `nb_months_ago` months ago
+        # income is negative val
+        # cost is positive val
         expenses: List[Expense] = get_expenses(nb_months_ago)
+        expenses_periodic = get_expenses(nb_months_ago, monthly=True)
         if len(expenses) == 0:
             break
-        sum_expenses += sum([e.price_fabian if e.paid_by == who else e.price_elisa for e in expenses])
+
+        sum_expense = sum([e.price_fabian if who == 'fabian' else e.price_elisa for e in expenses])
+        sum_expense += sum([e.price_fabian if who == 'fabian' else e.price_elisa for e in expenses_periodic])
+        sum_expense += (RENT_COST + INVEST_COST)
+        sum_expense = sum_expense * -1  # st it's positive if it's a saving, negative if there's debt that month
+
+        sum_expenses.append(sum_expense)
         nb_months_ago -= 1
+
+    # reverse the list so that the last record is the current month
+    sum_expenses = sum_expenses[::-1]
+
+    # remove first elt (somehow first is strange output)
+    sum_expenses = sum_expenses[1:]
 
     return sum_expenses
