@@ -1,5 +1,5 @@
-// const url = "http://127.0.0.1:5000"
-const url = "http://ofabian.pythonanywhere.com"
+const url = "http://127.0.0.1:5000"
+// const url = "http://ofabian.pythonanywhere.com"
 const key = authenticate()
 
 const inp_price = document.getElementById('inp_price');
@@ -171,14 +171,18 @@ const printMonthlySaved = (monthlySaved) => {
 
     // Prepare the data (last 12 months or less)
     const data = monthlySaved.slice(Math.max(0, monthlySaved.length - 12));
+    const targetData = new Array(data.length).fill(0);
+    const valueData = new Array(data.length).fill(0);
 
     // hard cap of 1,000
     for (let i = 0; i < data.length; i++) {
-        data[i] = Math.min(data[i], 800);
+        valueData[i] = Math.min(data[i].value, 800);
+        targetData[i] = Math.min(data[i].target, 800);
+
     }
 
     // Prepare the target data (a constant value of 343)
-    const targetData = new Array(data.length).fill(343);
+    // const targetData = new Array(data.length).fill(343);
 
     // Create the chart
     new Chart(ctx, {
@@ -187,7 +191,7 @@ const printMonthlySaved = (monthlySaved) => {
             labels: labels,
             datasets: [{
                 label: 'Savings',
-                data: data,
+                data: valueData,
                 fill: false,
                 borderColor: 'rgb(75, 192, 192)',
                 tension: 0.1

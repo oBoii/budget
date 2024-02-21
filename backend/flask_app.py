@@ -9,6 +9,7 @@ from flask_cors import CORS
 
 from expense import Expense
 from grouped_expense import GroupedExpense
+from savings_pairs import SavingsPair
 from library import (
     add_expense,
     get_debt_per_person,
@@ -35,7 +36,7 @@ class IndexResponse:
     def __init__(self, fabian: float, elisa: float, expenses: List[Expense], grouped_expenses: List[GroupedExpense],
                  monthly_expenses: List[Expense], monthly_grouped_expenses: List[GroupedExpense],
                  historic_descriptions: List[str],
-                 savings_of_lifetime_fabian: List[float], savings_of_lifetime_elisa: List[float]):
+                 savings_of_lifetime_fabian: List[SavingsPair], savings_of_lifetime_elisa: List[SavingsPair]):
         self.fabian = fabian
         self.elisa = elisa
         self.expenses = expenses
@@ -55,8 +56,8 @@ class IndexResponse:
             "monthly_expenses": [e.serialize() for e in self.monthly_expenses],
             "monthly_grouped_expenses": [e.serialize() for e in self.monthly_grouped_expenses],
             "historic_descriptions": self.historic_descriptions,
-            "savings_of_lifetime_fabian": self.savings_of_lifetime_fabian,
-            "savings_of_lifetime_elisa": self.savings_of_lifetime_elisa
+            "savings_of_lifetime_fabian": [e.serialize() for e in self.savings_of_lifetime_fabian],  # [SavingsPair]
+            "savings_of_lifetime_elisa": [e.serialize() for e in self.savings_of_lifetime_elisa]
         }
 
 
