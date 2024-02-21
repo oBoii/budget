@@ -515,13 +515,14 @@ const expensePrompt = (id) => {
 }
 
 const getExepenseListItem = (id, day, monthNumeric, category, description, myPrice, priceBoth) => {
+    // depending on whether the code is ran on the server or locally, the month and day may be switched
     const month = monthNumeric == '01' ? 'Jan' : monthNumeric == '02' ? 'Feb' : monthNumeric == '03' ? 'Mar' : monthNumeric == '04' ? 'Apr' : monthNumeric == '05' ? 'May' : monthNumeric == '06' ? 'Jun' : monthNumeric == '07' ? 'Jul' : monthNumeric == '08' ? 'Aug' : monthNumeric == '09' ? 'Sep' : monthNumeric == '10' ? 'Oct' : monthNumeric == '11' ? 'Nov' : 'Dec';
     const colour = category == "Inkomst" ? "green" : "blue";
     return `
     <li class="expenseItem" onclick="expensePrompt(${id})">
       <span class="leftSpan">
-        <span class="expenseItemTop expenseItemDay">${day}</span> <br>
-        <span class="expenseItemBot">${month}</span>
+        <span class="expenseItemTop expenseItemDay">${month}</span> <br>
+        <span class="expenseItemBot">${day}</span>
       </span>
       <span class="centerSpan">
         <span class="expenseItemTop">${category}</span> <br>
@@ -569,8 +570,8 @@ const updateExpensesAll = (expenses) => {
         const description = expense.description == null || expense.description == '' ? '' : expense.description.charAt(0).toUpperCase() + expense.description.slice(1);
 
         const myPrice = getName() == FABIAN ? priceFabian : priceElisa;
-        const day = date.split('/')[1];
-        const monthNumeric = date.split('/')[0];
+        const day = date.split('/')[0];
+        const monthNumeric = date.split('/')[1];
 
 
         lst_expenses.innerHTML += getExepenseListItem(id, day, monthNumeric, category, description, myPrice, priceFabian + priceElisa);
