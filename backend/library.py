@@ -171,12 +171,9 @@ def get_expenses(nb_months_ago, monthly=False) -> List[Expense]:
     return data
 
 
-def delete_expense(id):
+def delete_expense(id: int):
     # group: id: take the maximum
-    query = """
-        DELETE FROM expenses
-        WHERE id = ?
-        """,
+    query = """DELETE FROM expenses WHERE id = ?"""
     execute_sql_query(query, (id,))
 
     return True
