@@ -302,11 +302,8 @@ button {
 }
 
 .swiper-slide {
-    text-align: center;
-    /* Center slide text vertically */
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
-    margin: 0;
-    width: 100%;
+    justify-content: center;
 }

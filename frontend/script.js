@@ -1,5 +1,5 @@
-const url = "http://127.0.0.1:5000"
-// const url = "http://ofabian.pythonanywhere.com"
+// const url = "http://127.0.0.1:5000"
+const url = "http://ofabian.pythonanywhere.com"
 const key = authenticate()
 
 const inp_price = document.getElementById('inp_price');
@@ -157,6 +157,31 @@ const updateDebtsAndExpensesAll = (maxTrials = 3) => {
         })
 }
 
+const _formatNumber = (num) => { // eg 2.0k -> 2k, but 2.5k -> 2.5k
+    const numm = num.toFixed(1);
+    return numm % 1 === 0 ? num.toFixed(0) : numm;
+}
+
+const _printMonthlySavedValues = (realValues, targetValues) => {
+    // Create a copy of the values and remove the last value
+    realValues = realValues.slice();
+    targetValues = targetValues.slice();
+
+    // Exclude the last value (current month)
+    realValues.pop();
+    targetValues.pop();
+
+    const realAvg = realValues.reduce((a, b) => a + b, 0) / realValues.length;
+    const targetAvg = targetValues.reduce((a, b) => a + b, 0) / targetValues.length;
+    const realTotal = realValues.reduce((a, b) => a + b, 0) / 1000; // divide by 1000 to get kEUR
+
+
+    // Update the HTML elements
+    document.querySelector('#real_avg').textContent = realAvg.toFixed(0)
+    document.querySelector('#target_avg').textContent = targetAvg.toFixed(0)
+    document.querySelector('#real_total').textContent = `${_formatNumber(realTotal)}k`;
+}
+
 const printMonthlySaved = (monthlySaved) => {
     // Get the canvas context
     const ctx = document.getElementById('savingsChart').getContext('2d');
@@ -181,37 +206,26 @@ const printMonthlySaved = (monthlySaved) => {
 
     }
 
+    _printMonthlySavedValues(valueData, targetData);
+
     // Prepare the target data (a constant value of 343)
     // const targetData = new Array(data.length).fill(343);
 
     // Create the chart
     new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: labels,
-            datasets: [{
-                label: 'Savings',
-                data: valueData,
-                fill: false,
-                borderColor: 'rgb(75, 192, 192)',
-                tension: 0.1
+        type: 'line', data: {
+            labels: labels, datasets: [{
+                label: 'Savings', data: valueData, fill: false, borderColor: 'rgb(75, 192, 192)', tension: 0.1
             }, {
-                label: 'Target',
-                data: targetData,
-                fill: false,
-                borderColor: 'rgb(255, 99, 132)',
-                borderDash: [5, 5], // This will make the line dashed
+                label: 'Target', data: targetData, fill: false, borderColor: 'rgb(255, 99, 132)', borderDash: [5, 5], // This will make the line dashed
                 tension: 0.1
             }]
-        },
-        options: {
-            responsive: true,
-            scales: {
+        }, options: {
+            responsive: true, scales: {
                 y: {
                     beginAtZero: true
                 }
-            },
-            plugins: {
+            }, plugins: {
                 legend: {
                     display: false // This hides the "Savings" and "Target" buttons
                 }
@@ -557,8 +571,7 @@ const updateExpensesAll = (expenses) => {
         // const date = expense.date; // eg: dd-mm
         // convert to dd/mm
 
-        if (expense.date == null)
-            expense.date = "00-00"
+        if (expense.date == null) expense.date = "00-00"
 
         const date = expense.date.split('-').reverse().join('/');
         const priceFabian = Math.abs(expense.price_fabian);
@@ -599,10 +612,7 @@ const chooseCategory = (selectTag) => {
     // Set background colour of selectTag
     const selectTagId = selectTag.id;
 
-    const selectTags = [
-        document.getElementById('lst_categories_basics'),
-        document.getElementById('lst_categories_fun'),
-        document.getElementById('lst_categories_infreq')];
+    const selectTags = [document.getElementById('lst_categories_basics'), document.getElementById('lst_categories_fun'), document.getElementById('lst_categories_infreq')];
 
     const otherSelectTags = selectTags.filter(tag => tag.id != selectTagId)
     const currentSelectTag = document.getElementById(selectTagId);

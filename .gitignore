@@ -7,3 +7,5 @@ frontend/.vscode/settings.json
 backend/.idea/workspace.xml
 *.xml
 *.iml
+*.iml
+backend/.idea/backend.iml
