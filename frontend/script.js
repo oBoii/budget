@@ -685,6 +685,11 @@ const clearExpensesFilter = () => {
     updateExpensesAll(ALL_EXPENSES);
 }
 
+const showOnlyPaidByMe = () => {
+    const expenses = ALL_EXPENSES.filter(expense => expense.paid_by === getName().toLowerCase());
+    updateExpensesAll(expenses);
+}
+
 // for select tags
 const fillCategoriesList = () => {
     const lst_categories_basics = document.getElementById('lst_categories_basics');

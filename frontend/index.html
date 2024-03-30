@@ -105,8 +105,10 @@
                         <canvas id="savingsChart"></canvas>
                     </div>
                     <div>
-                        Average: <sup><span id="real_avg" style="color: #4BC0C0;">##</span></sup>&frasl;<sub><span id="target_avg"
-                            style="color: #FF6384;">##</span></sub>, Total: <span id="real_total" style="color: #4BC0C0;">##k</span>
+                        Average: <sup><span id="real_avg" style="color: #4BC0C0;">##</span></sup>&frasl;<sub><span
+                            id="target_avg"
+                            style="color: #FF6384;">##</span></sub>, Total: <span id="real_total"
+                                                                                  style="color: #4BC0C0;">##k</span>
                     </div>
                 </div>
             </div>
@@ -132,9 +134,16 @@
             <div style="position: relative; top: 8px;">
                 <nav aria-label="Page navigation example">
                     <ul class="pagination justify-content-center pagination">
+
+                        <li class="page-item">
+                            <a class="page-link" onclick="showOnlyPaidByMe()">
+                                <i class="fa" style="color: #3e3e3e; font-weight: lighter">&#xf0b0;</i>
+                            </a>
+                        </li>
+
                         <li class="page-item"> <!-- remove filters on expense list -->
                             <a class="page-link" onclick="clearExpensesFilter()">
-                                <i class="fa" style="color: #3e3e3e; font-weight: lighter">&#xf021;</i>
+                                <i class="fa" style="color: #3e3e3e; font-weight: lighter">&#xf0c9;</i>
                             </a>
                         </li>
                         <li id="paginationPrev" class="page-item">
