@@ -215,10 +215,12 @@ const printMonthlySaved = (monthlySaved) => {
     new Chart(ctx, {
         type: 'line', data: {
             labels: labels, datasets: [{
-                label: 'Savings', data: valueData, fill: false, borderColor: 'rgb(75, 192, 192)', tension: 0.1
+                label: 'Savings', data: valueData, fill: false, borderColor: 'rgb(75, 192, 192)',
+                tension: 0.3, pointRadius: 5,
             }, {
-                label: 'Target', data: targetData, fill: false, borderColor: 'rgb(255, 99, 132)', borderDash: [5, 5], // This will make the line dashed
-                tension: 0.1
+                label: 'Target', data: targetData, fill: false, borderColor: 'rgb(255, 99, 132)',
+                tension: 0.3, pointRadius: 5,
+                borderDash: [5, 5], // This will make the line dashed
             }]
         }, options: {
             responsive: true, scales: {
