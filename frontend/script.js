@@ -216,10 +216,10 @@ const printMonthlySaved = (monthlySaved) => {
         type: 'line', data: {
             labels: labels, datasets: [{
                 label: 'Savings', data: valueData, fill: false, borderColor: 'rgb(75, 192, 192)',
-                tension: 0.3, pointRadius: 5,
+                tension: 0.3, pointRadius: 10,
             }, {
                 label: 'Target', data: targetData, fill: false, borderColor: 'rgb(255, 99, 132)',
-                tension: 0.3, pointRadius: 5,
+                tension: 0.3, pointRadius: 10,
                 borderDash: [5, 5], // This will make the line dashed
             }]
         }, options: {
