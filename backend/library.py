@@ -9,6 +9,7 @@ import numpy as np
 from typing import List
 
 from savings_pairs import SavingsPair
+import pytz
 
 
 def param(name):
@@ -45,7 +46,8 @@ def get_debt_per_person():
 def _get_active_months(start_date, end_date):
     # don't consider the day
     start_date = start_date[:-2] + "01"  # eg: '2023-12-25' -> '2023-12-01'
-    now = f"{datetime.now().strftime('%Y-%m')}-01"
+    # now = f"{datetime.now().strftime('%Y-%m')}-01"
+    now = f"{datetime.now(pytz.timezone('Europe/Brussels')).strftime('%Y-%m')}-01" # make it timezone aware
     end_date = end_date[:-2] + "-01" if end_date else None
 
     if end_date is None or end_date == "":
