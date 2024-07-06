@@ -77,15 +77,12 @@
                     </div>
 
                     <!-- Modal footer -->
-                    <div class="modal-footer" style="text-align: left">
-                        <input type="text" placeholder="Add a new trip" class="form-control">
-                        <button>Submit</button>
-
-                        <!--                        <div class="vert-margin-sm">-->
-                        <!--                        <input type="text" placeholder="Add a new trip" class="form-select">-->
-                        <!--filled using javascript-->
-                        <!--                        </div>-->
-                        <!-- <button type="button" class="btn bg-pink" data-dismiss="modal">Close</button>-->
+                    <div class="modal-footer" style="text-align: left; padding-left: 0;">
+                        <!--Descrip-->
+                        <input id="inp_trip_description" type="text" placeholder="Add a new trip" class="form-control">
+                        <!--Date-->
+                        <input id="inp_trip_date" type="date" class="form-control">
+                        <button onclick="TripsHistoryListComponent.addTrip()">Submit</button>
                     </div>
 
                 </div>
@@ -119,17 +116,20 @@
         <div class="put_selects_side_by_side vert-margin-sm">
             <!-- USE HTML SELECT-TAG INSTEAD (A select tag for `Basics`, `Fun` and `Infrequent`) all items automatically added to the list using javascript -->
             <!-- Basics -->
-            <select class="form-select" id="lst_categories_basics" style="width: 33%;" onchange="NewExpense.chooseCategory(this)">
+            <select class="form-select" id="lst_categories_basics" style="width: 33%;"
+                    onchange="NewExpense.chooseCategory(this)">
                 <option selected disabled>🍎 Basics</option>
             </select>
 
             <!-- Fun -->
-            <select class="form-select" id="lst_categories_fun" style="width: 33%" onchange="NewExpense.chooseCategory(this)">
+            <select class="form-select" id="lst_categories_fun" style="width: 33%"
+                    onchange="NewExpense.chooseCategory(this)">
                 <option selected disabled>🎉 Fun</option>
             </select>
 
             <!-- Infrequent -->
-            <select class="form-select" id="lst_categories_infreq" style="width: 33%" onchange="NewExpense.chooseCategory(this)">
+            <select class="form-select" id="lst_categories_infreq" style="width: 33%"
+                    onchange="NewExpense.chooseCategory(this)">
                 <option selected disabled>📎 Infreq</option>
             </select>
         </div>

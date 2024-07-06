@@ -134,7 +134,6 @@ class NewExpense {
         NewExpense.data.ratio = inp_ratio.value;
     }
 
-    const
     static fillCategoriesList = () => {
         const lst_categories_basics = document.getElementById('lst_categories_basics');
         const lst_categories_fun = document.getElementById('lst_categories_fun');
@@ -168,6 +167,14 @@ class NewExpense {
         }
     }
 
+    static fillDescriptions = (descriptions) => {
+        const descriptionshtml = document.getElementById('descriptions')
+        for (let i = 0; i < descriptions.length; i++) {
+            const option = document.createElement('option')
+            option.value = descriptions[i]
+            descriptionshtml.appendChild(option)
+        }
+    }
 
     static chooseCategory = (selectTag) => {
         const options = selectTag.options;
@@ -754,7 +761,7 @@ class ExpenseListItem {
     }
 }
 
-class TripsHistory {
+class TripsHistoryItem {
     static html(date, description, price) {
         return `
         <li class="tripItem">
@@ -768,6 +775,37 @@ class TripsHistory {
         </li>
         `
     }
+}
+
+class TripsHistoryListComponent {
+    static render = (trips) => {
+        const lst_trips = document.getElementById('ul_trips_all');
+        lst_trips.innerHTML = '';
+
+        trips.forEach(trip => {
+            const date = trip.date;
+            const description = trip.description;
+            const price = trip.price;
+
+            lst_trips.innerHTML += TripsHistoryItem.html(date, description, price);
+        });
+    }
+
+    static addTrip = () => {
+        const description = document.getElementById('inp_trip_description').value;
+        const date = document.getElementById('inp_trip_date').value; // format: yyyy-mm-dd
+        
+        console.log(date)
+
+        const fullUrl = `${url}/add_trip?description=${description}&date=${date}`;
+        Api.betterFetch(fullUrl)
+            .then(response => response.json())
+            .then(data => {
+                location.reload();
+            })
+            .catch(e => Api.handleError(e))
+    }
+
 }
 
 const inp_price = document.getElementById('inp_price');
@@ -786,15 +824,6 @@ const getMonthFromUrlParam = () => { // returns 0, -1, ... indicating how many m
     const urlParams = new URLSearchParams(window.location.search);
     const month = parseInt(urlParams.get('month'));
     return isNaN(month) ? 0 : month;
-}
-
-const fillDescriptions = (descriptions) => {
-    const descriptionshtml = document.getElementById('descriptions')
-    for (let i = 0; i < descriptions.length; i++) {
-        const option = document.createElement('option')
-        option.value = descriptions[i]
-        descriptionshtml.appendChild(option)
-    }
 }
 
 
@@ -854,7 +883,7 @@ const main = (maxTrials = 3) => {
 
             const historicDescriptions = data.historic_descriptions;
 
-            fillDescriptions(historicDescriptions);
+            NewExpense.fillDescriptions(historicDescriptions); // used for autocomplete
 
             DebtsComponent.render(fabian, elisa);
             ExpensesListComponent.render(expenses);
