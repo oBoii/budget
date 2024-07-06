@@ -773,11 +773,14 @@ class ExpenseListItem {
     }
 
     static deleteExpensePrompt(id) {
-        if (id === -1) {
-            alert('Monthly expenses cannot be edited')
-            return;
-        }
-        confirm(`Delete expense with id ${id}?`) ? this.deleteExpense(id) : null;
+        // small delay of 0.01 sec to allow css to change color
+        setTimeout(() => {
+            if (id === -1) {
+                alert('Monthly expenses cannot be edited')
+                return;
+            }
+            confirm(`Delete expense with id ${id}?`) ? this.deleteExpense(id) : null;
+        }, 10);
     }
 
     static editExpensePrompt(id, date) {
