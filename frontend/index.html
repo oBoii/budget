@@ -16,6 +16,14 @@
     <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css"/>
     <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
 
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap JS and its dependencies -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
 
     <link rel="icon" type="image/png" href="fav.png"/>
     <link rel="stylesheet" href="style.css?version=39">
@@ -25,11 +33,64 @@
 <body>
 <!--disable horizontal scroll-->
 <div id="main" style="overflow-x: hidden;">
-    <div id="div_debts">
-        <!-- Shows debt for Fabian and Elisa  -->
-        <span id="lbl_name_has_debt">##</span> moet <span id="lbl_name_no_debt">##</span> <span
-            id="lbl_debt">##</span>
-        EUR.
+    <div id="div_debts" class="side-by-side">
+        <div class="left-div" style="width: 100%">
+            <!-- Shows debt for Fabian and Elisa  -->
+            <span id="lbl_name_has_debt">##</span> moet <span id="lbl_name_no_debt">##</span> <span
+                id="lbl_debt">##</span>
+            EUR.
+        </div>
+        <div class="middle-div">
+            <button class="bg-darkgray" data-toggle="modal" data-target="#myModal">
+                ☰
+            </button>
+        </div>
+
+        <!-- The Modal -->
+        <div class="modal" id="myModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">Previous trips</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+
+                    <!-- Modal body -->
+                    <div class="modal-body" style="text-align: left">
+                        <ul class="expenseHistory">
+                            <li class="expenseItem">
+                                <span class="leftSpan">
+                                <span class="expenseItemTop expenseItemDay">Jul</span> <br>
+                                <span class="expenseItemBot">2024</span>
+                                </span>
+                                <span class="centerSpan">
+                                    <span class="expenseItemTop">Oostenrijk</span> <br>
+                                </span>
+                                <span class="rightSpan">
+                                    <span class="expenseItemTop blue" style="font-size: 0.9em;">40.30</span> <br>
+                                    <span class="expenseItemBot"></span>
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Modal footer -->
+                    <div class="modal-footer" style="text-align: left">
+                        <input type="text" placeholder="Add a new trip" class="form-control">
+                        <button>Submit</button>
+
+                        <!--                        <div class="vert-margin-sm">-->
+                        <!--                        <input type="text" placeholder="Add a new trip" class="form-select">-->
+                        <!--filled using javascript-->
+                        <!--                        </div>-->
+                        <!-- <button type="button" class="btn bg-pink" data-dismiss="modal">Close</button>-->
+                    </div>
+
+                </div>
+            </div>
+        </div>
     </div>
 
     <div id="div_price" class="margin">
