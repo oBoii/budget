@@ -39,7 +39,7 @@ function authenticate(isForceAuthenticate = false) {
 }
 
 function handleError(err) {
-    if (err == `SyntaxError: Unexpected token 'U', "Unauthorized Access" is not valid JSON`) {
+    if (err === `SyntaxError: Unexpected token 'U', "Unauthorized Access" is not valid JSON`) {
         authenticate(true)
         location.reload()
     } else {
@@ -116,7 +116,7 @@ const updateDebtsAndExpensesAll = (maxTrials = 3) => {
                 const priceFabian = expense.price_fabian;
                 const priceElisa = expense.price_elisa;
 
-                const monthlyExpense = groupedMonthlyExenses.find(expense => expense.category == category);
+                const monthlyExpense = groupedMonthlyExenses.find(expense => expense.category === category);
 
                 if (monthlyExpense) {
                     expense.price_fabian += monthlyExpense.price_fabian;
@@ -129,7 +129,7 @@ const updateDebtsAndExpensesAll = (maxTrials = 3) => {
                 const priceFabian = expense.price_fabian;
                 const priceElisa = expense.price_elisa;
 
-                const monthlyExpense = groupedExenses.find(expense => expense.category == category);
+                const monthlyExpense = groupedExenses.find(expense => expense.category === category);
 
                 if (!monthlyExpense) {
                     groupedExenses.push(expense);
@@ -213,13 +213,21 @@ const printMonthlySaved = (monthlySaved) => {
     new Chart(ctx, {
         type: 'line', data: {
             labels: labels, datasets: [{
-                label: 'Savings', data: valueData, fill: false, borderColor: 'rgb(75, 192, 192)',
-                tension: 0.3, pointRadius: 5,
-                // make the clickable point also bigger
+                label: 'Savings',
+                data: valueData,
+                fill: false,
+                borderColor: 'rgb(75, 192, 192)',
+                tension: 0.3,
+                pointRadius: 5, // make the clickable point also bigger
                 pointHoverRadius: 15,
             }, {
-                label: 'Target', data: targetData, fill: false, borderColor: 'rgb(255, 99, 132)',
-                tension: 0.3, pointRadius: 5, pointHoverRadius: 15,
+                label: 'Target',
+                data: targetData,
+                fill: false,
+                borderColor: 'rgb(255, 99, 132)',
+                tension: 0.3,
+                pointRadius: 5,
+                pointHoverRadius: 15,
                 borderDash: [5, 5], // This will make the line dashed
             }]
         }, options: {
@@ -265,9 +273,9 @@ const getExpenesPerMainCategory = (expenses, incomeCategory) => {
     let expensesInfreq = 0;
 
     // exclude Income
-    const incomeSum = getName() == FABIAN ? expenses.filter(expense => expense.category == incomeCategory).reduce((a, b) => {
+    const incomeSum = getName() === FABIAN ? expenses.filter(expense => expense.category === incomeCategory).reduce((a, b) => {
         return a + b.price_fabian
-    }, 0) : expenses.filter(expense => expense.category == incomeCategory).reduce((a, b) => {
+    }, 0) : expenses.filter(expense => expense.category === incomeCategory).reduce((a, b) => {
         return a + b.price_elisa
     }, 0);
 
@@ -287,11 +295,11 @@ const getExpenesPerMainCategory = (expenses, incomeCategory) => {
         // category is in `categories_basics_keys`
         if (basics_keys.includes(category)) {
             // only my price
-            expensesBasics += getName() == FABIAN ? priceFabian : priceElisa;
+            expensesBasics += getName() === FABIAN ? priceFabian : priceElisa;
         } else if (fun_keys.includes(category)) {
-            expensesFun += getName() == FABIAN ? priceFabian : priceElisa;
+            expensesFun += getName() === FABIAN ? priceFabian : priceElisa;
         } else if (infreq_keys.includes(category)) {
-            expensesInfreq += getName() == FABIAN ? priceFabian : priceElisa;
+            expensesInfreq += getName() === FABIAN ? priceFabian : priceElisa;
         } else {
             alert(`Category ${category} not found in categories_basics_keys, categories_fun_keys or categories_infreq_keys`)
             raiseError(`Category ${category} not found in categories_basics_keys, categories_fun_keys or categories_infreq_keys`)
@@ -331,9 +339,9 @@ const updateBar = (groupedExenses, indivualExpenses) => {
     const maxLen = 10;
     // substring
     let labels = groupedExenses.map(expense => stringSubstr(expense.category, maxLen));
-    let prices = groupedExenses.map(expense => getName() == FABIAN ? expense.price_fabian : expense.price_elisa);
+    let prices = groupedExenses.map(expense => getName() === FABIAN ? expense.price_fabian : expense.price_elisa);
 
-    [prices, labels] = filterZip(prices, labels, (price) => price != 0);
+    [prices, labels] = filterZip(prices, labels, (price) => price !== 0);
 
     // make label "Inkomst" last
     const incomeIndex = labels.indexOf("Inkomst");
@@ -375,7 +383,7 @@ const updateBar = (groupedExenses, indivualExpenses) => {
                         label: function (context) {
                             const price = context.dataset.data[context.dataIndex];
                             const category = context.label;
-                            const expenses = indivualExpenses.filter(expense => stringSubstr(expense.category, maxLen) == category); // some category may be displayed as Zelfontwik...
+                            const expenses = indivualExpenses.filter(expense => stringSubstr(expense.category, maxLen) === category); // some category may be displayed as Zelfontwik...
 
                             // filter div_expenses to only show expenses of this category
                             const lst_expenses = document.getElementById('ul_expenses_all');
@@ -390,9 +398,10 @@ const updateBar = (groupedExenses, indivualExpenses) => {
                                 const priceElisa = expense.price_elisa;
                                 const description = expense.description;
 
-                                const myPrice = getName() == FABIAN ? priceFabian : priceElisa;
+                                const myPrice = getName() === FABIAN ? priceFabian : priceElisa;
 
-                                lst_expenses.innerHTML += getExpenseListItem(id, day, monthNumeric, category, description, myPrice, priceFabian + priceElisa);
+                                console.log('updateBar', date)
+                                lst_expenses.innerHTML += ExpenseListItem.html(id, date, day, monthNumeric, category, description, myPrice, priceFabian + priceElisa);
 
                             });
 
@@ -522,78 +531,6 @@ const updateDebts = (fabian, elisa) => {
     }
 }
 
-class ExpenseListItem {
-    constructor() {
-
-    }
-}
-
-const expensePrompt = (id) => {
-    if (id === -1) {
-        alert('Monthly expenses cannot be edited')
-        return;
-    }
-    confirm(`Delete expense with id ${id}?`) ? deleteExpense(id) : null;
-}
-
-function editExpense(id) {
-    if (id === -1) {
-        alert('Monthly expenses cannot be edited')
-        return;
-    }
-    prompt(`Edit expense with id ${id}?`)
-    console.log(`Edit expense with id ${id}`);
-}
-
-const getExpenseListItem = (id, day, monthNumeric, category, description, myPrice, priceBoth) => {
-    const month = monthNumeric == '01' ? 'Jan' : monthNumeric == '02' ? 'Feb' : monthNumeric == '03' ? 'Mar' : monthNumeric == '04' ? 'Apr' : monthNumeric == '05' ? 'May' : monthNumeric == '06' ? 'Jun' : monthNumeric == '07' ? 'Jul' : monthNumeric == '08' ? 'Aug' : monthNumeric == '09' ? 'Sep' : monthNumeric == '10' ? 'Oct' : monthNumeric == '11' ? 'Nov' : 'Dec';
-    const colour = category == "Inkomst" ? "green" : "blue";
-    return `
-    <li class="expenseItem" 
-        onmousedown="startTimer(${id})" ontouchstart="startTimer(${id})"
-        onmouseup="stopTimer()" ontouchend="stopTimer()"
-        onmouseleave="stopTimer()"
-        onclick="expensePrompt(${id})">
-      <span class="leftSpan">
-        <span class="expenseItemTop expenseItemDay">${month}</span> <br>
-        <span class="expenseItemBot">${day}</span>
-      </span>
-      <span class="centerSpan">
-        <span class="expenseItemTop">${category}</span> <br>
-        <span class="expenseItemBot">${description}</span>
-      </span>
-      <span class="rightSpan">
-        ${getPriceText(myPrice, priceBoth, colour)}
-      </span>
-    </li>
-    `
-}
-
-let timerId = null;
-
-function startTimer(id) {
-    console.log('start timer')
-    timerId = setTimeout(() => editExpense(id), 500);
-}
-
-function stopTimer() {
-    console.log('stop timer')
-    clearTimeout(timerId);
-}
-
-
-const getPriceText = (myPrice, total, color = "blue") => {
-    if (myPrice == total) {
-        return `<span class="expenseItemTop ${color}" style="font-size: 0.9em;">${myPrice.toFixed(2)}</span> <br>
-    <span class="expenseItemBot"></span>`
-    } else if (myPrice == 0) {
-        return `&frasl;`;
-    }
-    return `<span style="font-size: 1.2em; position: relative; top: 10px;">
-  <sup><span class="${color}">${myPrice}</span></sup>&frasl;<sub><span class="expenseTotal">${total.toFixed(2)}</span></sub>
-  </span>`
-}
-
 
 const updateExpensesAll = (expenses) => {
     const lst_expenses = document.getElementById('ul_expenses_all');
@@ -603,7 +540,7 @@ const updateExpensesAll = (expenses) => {
         // const date = expense.date; // eg: dd-mm
         // convert to dd/mm
 
-        if (expense.date == null) expense.date = "00-00"
+        if (expense.date === null) expense.date = "00-00"
 
         const date = expense.date.split('-').reverse().join('/');
         const priceFabian = Math.abs(expense.price_fabian);
@@ -612,14 +549,14 @@ const updateExpensesAll = (expenses) => {
         const id = expense.id;
 
         // capitalize first letter of description, if not null or ''
-        const description = expense.description == null || expense.description == '' ? '' : expense.description.charAt(0).toUpperCase() + expense.description.slice(1);
+        const description = expense.description === null || expense.description === '' ? '' : expense.description.charAt(0).toUpperCase() + expense.description.slice(1);
 
-        const myPrice = getName() == FABIAN ? priceFabian : priceElisa;
+        const myPrice = getName() === FABIAN ? priceFabian : priceElisa;
         const day = date.split('/')[0];
         const monthNumeric = date.split('/')[1];
 
-
-        lst_expenses.innerHTML += getExpenseListItem(id, day, monthNumeric, category, description, myPrice, priceFabian + priceElisa);
+        console.log('updateExpensesAll', date)
+        lst_expenses.innerHTML += ExpenseListItem.html(id, date, day, monthNumeric, category, description, myPrice, priceFabian + priceElisa);
 
     });
 }
@@ -665,13 +602,13 @@ const submit = () => {
 
     let price_me = inp_price_me.value;
     let price_other = inp_price_other.value;
-    if (category == 'Inkomst') { // make negative
+    if (category === 'Inkomst') { // make negative
         price_me = -Math.abs(price_me);
         price_other = -Math.abs(price_other);
     }
 
-    const price_fabian = getName() == FABIAN ? price_me : price_other;
-    const price_elisa = getName() == FABIAN ? price_other : price_me;
+    const price_fabian = getName() === FABIAN ? price_me : price_other;
+    const price_elisa = getName() === FABIAN ? price_other : price_me;
     const paidBy = getName().toLowerCase();
 
     const subcategory = null;
@@ -691,7 +628,7 @@ const submit = () => {
 const editName = () => {
     // toggle between Fabian and Elisa. Store in localStorage
     const lbl_name = document.getElementById('lbl_name');
-    if (lbl_name.innerHTML == FABIAN) {
+    if (lbl_name.innerHTML === FABIAN) {
         lbl_name.innerHTML = ELISA;
         localStorage.setItem('budget_name', ELISA);
     } else {
@@ -703,15 +640,6 @@ const editName = () => {
     // location.reload();
 }
 
-const deleteExpense = (id) => {
-    const fullUrl = `${url}/delete_expense?id=${id}`;
-    betterFetch(fullUrl)
-        .then(response => response.json())
-        .then(data => {
-            location.reload();
-        })
-        .catch(e => handleError(e))
-}
 
 const clearExpensesFilter = () => {
     updateExpensesAll(ALL_EXPENSES);
@@ -777,7 +705,7 @@ const updateNavigationButtons = () => {
     nextChild.setAttribute('href', `?month=${month + 1}`);
 
     // update disabled buttons
-    if (month == 0) {
+    if (month === 0) {
         next.classList.add('disabled');
     } else {
         next.classList.remove('disabled');
@@ -817,3 +745,100 @@ inp_price_other.addEventListener('input', () => {
     inp_ratio.value = (inp_price_me.value / inp_price.value * 100).toFixed(0);
     lbl_percent.innerHTML = inp_ratio.value + '%';
 });
+
+
+class ExpenseListItem {
+    static timerId = null;
+
+    static deleteExpensePrompt(id) {
+        if (id === -1) {
+            alert('Monthly expenses cannot be edited')
+            return;
+        }
+        confirm(`Delete expense with id ${id}?`) ? this.deleteExpense(id) : null;
+    }
+
+    static editExpensePrompt(id, date) {
+        if (id === -1) {
+            alert('Monthly expenses cannot be edited');
+            return;
+        }
+        console.log('editExpensePrompt', date)
+        const newDate = prompt(`Edit expense with id ${id}?`, date);
+        if (newDate) {
+            // Matches dates in the format "dd/mm/yyyy"
+            const datePattern = /^\d{2}\/\d{2}\/\d{4}$/;
+            if (datePattern.test(newDate)) {
+                this.editExpense(id, newDate);
+            } else {
+                alert('Invalid date. Please enter a date in the format "dd/mm".');
+            }
+        }
+    }
+
+    static html(id, date, day, monthNumeric, category, description, myPrice, priceBoth) {
+        console.log(id, day, monthNumeric, category, description, myPrice, priceBoth)
+        const month = monthNumeric === '01' ? 'Jan' : monthNumeric === '02' ? 'Feb' : monthNumeric === '03' ? 'Mar' : monthNumeric === '04' ? 'Apr' : monthNumeric === '05' ? 'May' : monthNumeric === '06' ? 'Jun' : monthNumeric === '07' ? 'Jul' : monthNumeric === '08' ? 'Aug' : monthNumeric === '09' ? 'Sep' : monthNumeric === '10' ? 'Oct' : monthNumeric === '11' ? 'Nov' : 'Dec';
+        const colour = category === "Inkomst" ? "green" : "blue";
+        return `
+        <li class="expenseItem" 
+            onmousedown="ExpenseListItem.startTimer(${id}, '${date}')" ontouchstart="ExpenseListItem.startTimer(${id}, '${date}')"
+            onmouseup="ExpenseListItem.stopTimer()" ontouchend="ExpenseListItem.stopTimer()"
+            onmouseleave="ExpenseListItem.stopTimer()"
+            onclick="ExpenseListItem.deleteExpensePrompt(${id})">
+          <span class="leftSpan">
+            <span class="expenseItemTop expenseItemDay">${month}</span> <br>
+            <span class="expenseItemBot">${day}</span>
+          </span>
+          <span class="centerSpan">
+            <span class="expenseItemTop">${category}</span> <br>
+            <span class="expenseItemBot">${description}</span>
+          </span>
+          <span class="rightSpan">
+            ${this.getPriceText(myPrice, priceBoth, colour)}
+          </span>
+        </li>
+        `
+    }
+
+    static startTimer(itemId, date) {
+        // used for long press to edit expense
+        ExpenseListItem.timerId = setTimeout(() => this.editExpensePrompt(itemId, date), 500);
+    }
+
+    static stopTimer() {
+        clearTimeout(ExpenseListItem.timerId);
+    }
+
+    static getPriceText(myPrice, total, color = "blue") {
+        if (myPrice === total) {
+            return `<span class="expenseItemTop ${color}" style="font-size: 0.9em;">${myPrice.toFixed(2)}</span> <br>
+        <span class="expenseItemBot"></span>`
+        } else if (myPrice === 0) {
+            return `&frasl;`;
+        }
+        return `<span style="font-size: 1.2em; position: relative; top: 10px;">
+      <sup><span class="${color}">${myPrice}</span></sup>&frasl;<sub><span class="expenseTotal">${total.toFixed(2)}</span></sub>
+      </span>`
+    }
+
+    static deleteExpense(id) {
+        const fullUrl = `${url}/delete_expense?id=${id}`;
+        betterFetch(fullUrl)
+            .then(response => response.json())
+            .then(data => {
+                location.reload();
+            })
+            .catch(e => handleError(e))
+    }
+
+    static editExpense(id, date) {
+        const fullUrl = `${url}/edit_expense?id=${id}&date=${date}`; // date format: dd/mm/yyyy
+        betterFetch(fullUrl)
+            .then(response => response.json())
+            .then(data => {
+                location.reload();
+            })
+            .catch(e => handleError(e))
+    }
+}
