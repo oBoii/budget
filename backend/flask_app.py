@@ -15,7 +15,8 @@ from library import (
     get_debt_per_person,
     get_expenses,
     param,
-    delete_expense, get_total_expenses_grouped_by_category, get_historic_descriptions, _get_all_savings_for_each_month,
+    delete_expense, edit_expense, get_total_expenses_grouped_by_category, get_historic_descriptions,
+    _get_all_savings_for_each_month,
 )
 
 sns.set_theme()
@@ -122,6 +123,17 @@ def page_delete_expense():
 
     delete_expense(id)
     return json.dumps({"message": "Expense deleted"})
+
+
+@auth.login_required
+@app.route("/edit_expense")
+def page_edit_expense():
+    r = request
+    id = int(r.args.get("id"))
+    date = r.args.get("date")
+
+    edit_expense(id, date)
+    return json.dumps({"message": "Expense edited"})
 
 
 if not (param("isServer")):

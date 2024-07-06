@@ -47,7 +47,7 @@ def _get_active_months(start_date, end_date):
     # don't consider the day
     start_date = start_date[:-2] + "01"  # eg: '2023-12-25' -> '2023-12-01'
     # now = f"{datetime.now().strftime('%Y-%m')}-01"
-    now = f"{datetime.now(pytz.timezone('Europe/Brussels')).strftime('%Y-%m')}-01" # make it timezone aware
+    now = f"{datetime.now(pytz.timezone('Europe/Brussels')).strftime('%Y-%m')}-01"  # make it timezone aware
     end_date = end_date[:-2] + "-01" if end_date else None
 
     if end_date is None or end_date == "":
@@ -177,6 +177,19 @@ def delete_expense(id: int):
     # group: id: take the maximum
     query = """DELETE FROM expenses WHERE id = ?"""
     execute_sql_query(query, (id,))
+
+    return True
+
+
+def edit_expense(id: int, date: str):
+    """
+    :param id: int
+    :param date: str in format 'DD/MM/YYYY'
+    :return:
+    """
+    date = datetime.strptime(date, "%d/%m/%Y").strftime("%Y-%m-%d")
+    query = """UPDATE expenses SET date = ? WHERE id = ?"""
+    execute_sql_query(query, (date, id))
 
     return True
 
