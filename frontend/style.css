@@ -186,6 +186,10 @@ td button {
     /* margin: 0.5em; */
 }
 
+.expenseItem:focus, .expenseItem:hover {
+    background-color: #f0f0f0;
+}
+
 .leftSpan {
     flex: 0 0 10%;
     text-align: center;

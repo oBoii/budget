@@ -816,7 +816,7 @@ class ExpenseListItem {
 
     static startTimer(itemId, date) {
         // used for long press to edit expense
-        ExpenseListItem.timerId = setTimeout(() => this.editExpensePrompt(itemId, date), 500);
+        ExpenseListItem.timerId = setTimeout(() => this.editExpensePrompt(itemId, date), 2500); // 2 seconds
     }
 
     static stopTimer() {
