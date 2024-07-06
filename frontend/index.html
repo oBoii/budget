@@ -196,13 +196,13 @@
                     <ul class="pagination justify-content-center pagination">
 
                         <li class="page-item">
-                            <a class="page-link" onclick="showOnlyPaidByMe()">
+                            <a class="page-link" onclick="ExpensesListComponent.showOnlyPaidByMe()">
                                 <i class="fa" style="color: #3e3e3e; font-weight: lighter">&#xf0b0;</i>
                             </a>
                         </li>
 
                         <li class="page-item"> <!-- remove filters on expense list -->
-                            <a class="page-link" onclick="clearExpensesFilter()">
+                            <a class="page-link" onclick="ExpensesListComponent.clearExpensesFilter()">
                                 <i class="fa" style="color: #3e3e3e; font-weight: lighter">&#xf0c9;</i>
                             </a>
                         </li>
@@ -264,13 +264,14 @@
             inp_ratio.value = 50;
         }
 
-        fillCategoriesList();
+        NewExpense.fillCategoriesList();
 
         lbl_percent.innerHTML = inp_ratio.value + '%';
         Auth.readName();
-        updateDebtsAndExpensesAll();
+        main();
+
         NewExpense.checkSubmit();
-        updateNavigationButtons()
+        ExpensesListComponent.updateNavigationButtons()
 
 
         // submit button enabled when all fields are filled in
