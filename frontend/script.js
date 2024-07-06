@@ -400,7 +400,6 @@ const updateBar = (groupedExenses, indivualExpenses) => {
 
                                 const myPrice = getName() === FABIAN ? priceFabian : priceElisa;
 
-                                console.log('updateBar', date)
                                 lst_expenses.innerHTML += ExpenseListItem.html(id, date, day, monthNumeric, category, description, myPrice, priceFabian + priceElisa);
 
                             });
@@ -555,7 +554,6 @@ const updateExpensesAll = (expenses) => {
         const day = date.split('/')[0];
         const monthNumeric = date.split('/')[1];
 
-        console.log('updateExpensesAll', date)
         lst_expenses.innerHTML += ExpenseListItem.html(id, date, day, monthNumeric, category, description, myPrice, priceFabian + priceElisa);
 
     });
@@ -759,25 +757,41 @@ class ExpenseListItem {
     }
 
     static editExpensePrompt(id, date) {
+        // date format: dd/mm/yyyy
         if (id === -1) {
             alert('Monthly expenses cannot be edited');
             return;
         }
-        console.log('editExpensePrompt', date)
+
         const newDate = prompt(`Edit expense with id ${id}?`, date);
-        if (newDate) {
-            // Matches dates in the format "dd/mm/yyyy"
-            const datePattern = /^\d{2}\/\d{2}\/\d{4}$/;
-            if (datePattern.test(newDate)) {
-                this.editExpense(id, newDate);
-            } else {
-                alert('Invalid date. Please enter a date in the format "dd/mm".');
-            }
+        if (!newDate) {
+            return;
         }
+
+        // Matches dates in the format "dd/mm/yyyy"
+        const datePattern = /^\d{2}\/\d{2}\/\d{4}$/;
+        if (!datePattern.test(newDate)) {
+            alert('Invalid date. Please enter a date in the format "dd/mm/yyyy".');
+            return;
+        }
+
+        // Check if the date is in the future, that's not allowed
+        const newDateObj = new Date(newDate.split('/').reverse().join('-')); // Convert to format "yyyy-mm-dd"
+        console.log(newDateObj)
+
+        // Allow tomorrow, but not later
+        const currentDate = new Date();
+        currentDate.setDate(currentDate.getDate() + 1);
+
+        if (newDateObj > currentDate) {
+            alert('Invalid date. The expense date cannot be in the future.');
+            return;
+        }
+
+        this.editExpense(id, newDate);
     }
 
     static html(id, date, day, monthNumeric, category, description, myPrice, priceBoth) {
-        console.log(id, day, monthNumeric, category, description, myPrice, priceBoth)
         const month = monthNumeric === '01' ? 'Jan' : monthNumeric === '02' ? 'Feb' : monthNumeric === '03' ? 'Mar' : monthNumeric === '04' ? 'Apr' : monthNumeric === '05' ? 'May' : monthNumeric === '06' ? 'Jun' : monthNumeric === '07' ? 'Jul' : monthNumeric === '08' ? 'Aug' : monthNumeric === '09' ? 'Sep' : monthNumeric === '10' ? 'Oct' : monthNumeric === '11' ? 'Nov' : 'Dec';
         const colour = category === "Inkomst" ? "green" : "blue";
         return `
