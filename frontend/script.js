@@ -777,7 +777,6 @@ class ExpenseListItem {
 
         // Check if the date is in the future, that's not allowed
         const newDateObj = new Date(newDate.split('/').reverse().join('-')); // Convert to format "yyyy-mm-dd"
-        console.log(newDateObj)
 
         // Allow tomorrow, but not later
         const currentDate = new Date();
