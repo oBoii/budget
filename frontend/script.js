@@ -748,6 +748,30 @@ inp_price_other.addEventListener('input', () => {
 class ExpenseListItem {
     static timerId = null;
 
+    static html(id, date, day, monthNumeric, category, description, myPrice, priceBoth) {
+        const month = monthNumeric === '01' ? 'Jan' : monthNumeric === '02' ? 'Feb' : monthNumeric === '03' ? 'Mar' : monthNumeric === '04' ? 'Apr' : monthNumeric === '05' ? 'May' : monthNumeric === '06' ? 'Jun' : monthNumeric === '07' ? 'Jul' : monthNumeric === '08' ? 'Aug' : monthNumeric === '09' ? 'Sep' : monthNumeric === '10' ? 'Oct' : monthNumeric === '11' ? 'Nov' : 'Dec';
+        const colour = category === "Inkomst" ? "green" : "blue";
+        return `
+        <li class="expenseItem" 
+            onmousedown="ExpenseListItem.startTimer(${id}, '${date}')" ontouchstart="ExpenseListItem.startTimer(${id}, '${date}')"
+            onmouseup="ExpenseListItem.stopTimer()" ontouchend="ExpenseListItem.stopTimer()"
+            onmouseleave="ExpenseListItem.stopTimer()"
+            onclick="ExpenseListItem.deleteExpensePrompt(${id})">
+          <span class="leftSpan">
+            <span class="expenseItemTop expenseItemDay">${month}</span> <br>
+            <span class="expenseItemBot">${day}</span>
+          </span>
+          <span class="centerSpan">
+            <span class="expenseItemTop">${category}</span> <br>
+            <span class="expenseItemBot">${description}</span>
+          </span>
+          <span class="rightSpan">
+            ${this.getPriceText(myPrice, priceBoth, colour)}
+          </span>
+        </li>
+        `
+    }
+
     static deleteExpensePrompt(id) {
         if (id === -1) {
             alert('Monthly expenses cannot be edited')
@@ -788,30 +812,6 @@ class ExpenseListItem {
         }
 
         this.editExpense(id, newDate);
-    }
-
-    static html(id, date, day, monthNumeric, category, description, myPrice, priceBoth) {
-        const month = monthNumeric === '01' ? 'Jan' : monthNumeric === '02' ? 'Feb' : monthNumeric === '03' ? 'Mar' : monthNumeric === '04' ? 'Apr' : monthNumeric === '05' ? 'May' : monthNumeric === '06' ? 'Jun' : monthNumeric === '07' ? 'Jul' : monthNumeric === '08' ? 'Aug' : monthNumeric === '09' ? 'Sep' : monthNumeric === '10' ? 'Oct' : monthNumeric === '11' ? 'Nov' : 'Dec';
-        const colour = category === "Inkomst" ? "green" : "blue";
-        return `
-        <li class="expenseItem" 
-            onmousedown="ExpenseListItem.startTimer(${id}, '${date}')" ontouchstart="ExpenseListItem.startTimer(${id}, '${date}')"
-            onmouseup="ExpenseListItem.stopTimer()" ontouchend="ExpenseListItem.stopTimer()"
-            onmouseleave="ExpenseListItem.stopTimer()"
-            onclick="ExpenseListItem.deleteExpensePrompt(${id})">
-          <span class="leftSpan">
-            <span class="expenseItemTop expenseItemDay">${month}</span> <br>
-            <span class="expenseItemBot">${day}</span>
-          </span>
-          <span class="centerSpan">
-            <span class="expenseItemTop">${category}</span> <br>
-            <span class="expenseItemBot">${description}</span>
-          </span>
-          <span class="rightSpan">
-            ${this.getPriceText(myPrice, priceBoth, colour)}
-          </span>
-        </li>
-        `
     }
 
     static startTimer(itemId, date) {
