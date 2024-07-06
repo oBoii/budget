@@ -11,7 +11,7 @@ from expense import Expense
 from grouped_expense import GroupedExpense
 from savings_pairs import SavingsPair
 from library import (
-    add_expense,
+    add_expense, add_trip,
     get_debt_per_person,
     get_expenses,
     param,
@@ -134,6 +134,17 @@ def page_edit_expense():
 
     edit_expense(id, date)
     return json.dumps({"message": "Expense edited"})
+
+
+@auth.login_required
+@app.route("/add_trip")
+def page_add_trip():
+    r = request
+    description = r.args.get("description")
+    date = r.args.get("date")
+
+    trip_id = add_trip(description, date)
+    return json.dumps({"message": "Trip added", "trip_id": trip_id})
 
 
 if not (param("isServer")):

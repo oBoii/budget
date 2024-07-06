@@ -34,6 +34,27 @@ def add_expense(price_fabian, price_elisa, paid_by, category, description, subca
     execute_sql_query(query, params)
 
 
+def add_trip(description, date):
+    """
+    :param description:
+    :param date: format 'YYYY-MM-DD'
+    :return:
+    """
+    query = """
+        INSERT INTO trips (description, start_date)
+        VALUES (?, ?)
+        """
+    params = (description, date)
+    execute_sql_query(query, params)
+
+    # Get the id of the last inserted trip
+    query = """
+        SELECT id FROM trips ORDER BY id DESC LIMIT 1
+        """
+    rows = execute_sql_query(query)
+    return rows[0][0]  # return the id of the last inserted trip
+
+
 def get_debt_per_person():
     fabian1, elisa1 = _get_debt_per_person()
     fabian2, elisa2 = _get_debt_per_person_monthly()
