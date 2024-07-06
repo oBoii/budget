@@ -1,5 +1,5 @@
-// const url = "http://127.0.0.1:5000"
-const url = "http://ofabian.pythonanywhere.com"
+const url = "http://127.0.0.1:5000"
+// const url = "http://ofabian.pythonanywhere.com"
 const key = authenticate()
 
 const inp_price = document.getElementById('inp_price');
@@ -121,7 +121,6 @@ const updateDebtsAndExpensesAll = (maxTrials = 3) => {
                 if (monthlyExpense) {
                     expense.price_fabian += monthlyExpense.price_fabian;
                     expense.price_elisa += monthlyExpense.price_elisa;
-                    console.log("adding monthly expense", monthlyExpense)
                 }
             });
             // add all monthly expenses that are not in groupedExenses
@@ -134,7 +133,6 @@ const updateDebtsAndExpensesAll = (maxTrials = 3) => {
 
                 if (!monthlyExpense) {
                     groupedExenses.push(expense);
-                    console.log("adding monthly expense", monthlyExpense)
                 }
             });
 
@@ -394,7 +392,7 @@ const updateBar = (groupedExenses, indivualExpenses) => {
 
                                 const myPrice = getName() == FABIAN ? priceFabian : priceElisa;
 
-                                lst_expenses.innerHTML += getExepenseListItem(id, day, monthNumeric, category, description, myPrice, priceFabian + priceElisa);
+                                lst_expenses.innerHTML += getExpenseListItem(id, day, monthNumeric, category, description, myPrice, priceFabian + priceElisa);
 
                             });
 
@@ -524,6 +522,12 @@ const updateDebts = (fabian, elisa) => {
     }
 }
 
+class ExpenseListItem {
+    constructor() {
+
+    }
+}
+
 const expensePrompt = (id) => {
     if (id === -1) {
         alert('Monthly expenses cannot be edited')
@@ -532,12 +536,24 @@ const expensePrompt = (id) => {
     confirm(`Delete expense with id ${id}?`) ? deleteExpense(id) : null;
 }
 
-const getExepenseListItem = (id, day, monthNumeric, category, description, myPrice, priceBoth) => {
-    // depending on whether the code is ran on the server or locally, the month and day may be switched
+function editExpense(id) {
+    if (id === -1) {
+        alert('Monthly expenses cannot be edited')
+        return;
+    }
+    prompt(`Edit expense with id ${id}?`)
+    console.log(`Edit expense with id ${id}`);
+}
+
+const getExpenseListItem = (id, day, monthNumeric, category, description, myPrice, priceBoth) => {
     const month = monthNumeric == '01' ? 'Jan' : monthNumeric == '02' ? 'Feb' : monthNumeric == '03' ? 'Mar' : monthNumeric == '04' ? 'Apr' : monthNumeric == '05' ? 'May' : monthNumeric == '06' ? 'Jun' : monthNumeric == '07' ? 'Jul' : monthNumeric == '08' ? 'Aug' : monthNumeric == '09' ? 'Sep' : monthNumeric == '10' ? 'Oct' : monthNumeric == '11' ? 'Nov' : 'Dec';
     const colour = category == "Inkomst" ? "green" : "blue";
     return `
-    <li class="expenseItem" onclick="expensePrompt(${id})">
+    <li class="expenseItem" 
+        onmousedown="startTimer(${id})" ontouchstart="startTimer(${id})"
+        onmouseup="stopTimer()" ontouchend="stopTimer()"
+        onmouseleave="stopTimer()"
+        onclick="expensePrompt(${id})">
       <span class="leftSpan">
         <span class="expenseItemTop expenseItemDay">${month}</span> <br>
         <span class="expenseItemBot">${day}</span>
@@ -551,8 +567,20 @@ const getExepenseListItem = (id, day, monthNumeric, category, description, myPri
       </span>
     </li>
     `
-
 }
+
+let timerId = null;
+
+function startTimer(id) {
+    console.log('start timer')
+    timerId = setTimeout(() => editExpense(id), 500);
+}
+
+function stopTimer() {
+    console.log('stop timer')
+    clearTimeout(timerId);
+}
+
 
 const getPriceText = (myPrice, total, color = "blue") => {
     if (myPrice == total) {
@@ -591,7 +619,7 @@ const updateExpensesAll = (expenses) => {
         const monthNumeric = date.split('/')[1];
 
 
-        lst_expenses.innerHTML += getExepenseListItem(id, day, monthNumeric, category, description, myPrice, priceFabian + priceElisa);
+        lst_expenses.innerHTML += getExpenseListItem(id, day, monthNumeric, category, description, myPrice, priceFabian + priceElisa);
 
     });
 }
