@@ -119,17 +119,17 @@
         <div class="put_selects_side_by_side vert-margin-sm">
             <!-- USE HTML SELECT-TAG INSTEAD (A select tag for `Basics`, `Fun` and `Infrequent`) all items automatically added to the list using javascript -->
             <!-- Basics -->
-            <select class="form-select" id="lst_categories_basics" style="width: 33%;" onchange="chooseCategory(this)">
+            <select class="form-select" id="lst_categories_basics" style="width: 33%;" onchange="NewExpense.chooseCategory(this)">
                 <option selected disabled>🍎 Basics</option>
             </select>
 
             <!-- Fun -->
-            <select class="form-select" id="lst_categories_fun" style="width: 33%" onchange="chooseCategory(this)">
+            <select class="form-select" id="lst_categories_fun" style="width: 33%" onchange="NewExpense.chooseCategory(this)">
                 <option selected disabled>🎉 Fun</option>
             </select>
 
             <!-- Infrequent -->
-            <select class="form-select" id="lst_categories_infreq" style="width: 33%" onchange="chooseCategory(this)">
+            <select class="form-select" id="lst_categories_infreq" style="width: 33%" onchange="NewExpense.chooseCategory(this)">
                 <option selected disabled>📎 Infreq</option>
             </select>
         </div>
@@ -145,11 +145,11 @@
 
 
     <div id="div_submit" class="margin">
-        <button name="btn_submit" id="btn_submit" onclick="submit()">Submit</button>
+        <button name="btn_submit" id="btn_submit" onclick="NewExpense.submit()">Submit</button>
     </div>
 
     <div id="profile_name" class="margin" style="text-align: left;">
-        Betaald door <span id="lbl_name" onclick="editName()">##</span>.
+        Betaald door <span id="lbl_name" onclick="Auth.editName()">##</span>.
     </div>
 
 
@@ -258,7 +258,7 @@
 
 
         // default input ratio: 100 for Fabian, 50 for Elisa
-        if (getName() == FABIAN) {
+        if (Auth.getName() == FABIAN) {
             inp_ratio.value = 100;
         } else {
             inp_ratio.value = 50;
@@ -267,9 +267,9 @@
         fillCategoriesList();
 
         lbl_percent.innerHTML = inp_ratio.value + '%';
-        readName();
+        Auth.readName();
         updateDebtsAndExpensesAll();
-        checkSubmit();
+        NewExpense.checkSubmit();
         updateNavigationButtons()
 
 

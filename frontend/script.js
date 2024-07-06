@@ -1,74 +1,314 @@
-// const url = "http://127.0.0.1:5000"
-const url = "http://ofabian.pythonanywhere.com"
-const key = authenticate()
+// const url = "http://ofabian.pythonanywhere.com"
+const url = "http://127.0.0.1:5000"
+
+class Auth {
+    static getKey() {
+        return localStorage.getItem("budget_key")
+    }
+
+    static setKey(key) {
+        localStorage.setItem('budget_key', key)
+    }
+
+    static authenticate(isForceAuthenticate = false) {
+        let key = Auth.getKey()
+        if (!key || isForceAuthenticate) {
+            key = prompt("Password")
+            Auth.setKey(key)
+        }
+        return key
+    }
+
+    static getName() {
+        return localStorage.getItem('budget_name') || FABIAN;
+    }
+
+    static readName() {
+        const lbl_name = document.getElementById('lbl_name');
+        lbl_name.innerHTML = Auth.getName();
+    }
+
+    static editName = () => {
+        // toggle between Fabian and Elisa. Store in localStorage
+        const lbl_name = document.getElementById('lbl_name');
+        if (lbl_name.innerHTML === FABIAN) {
+            lbl_name.innerHTML = ELISA;
+            localStorage.setItem('budget_name', ELISA);
+        } else {
+            lbl_name.innerHTML = FABIAN;
+            localStorage.setItem('budget_name', FABIAN);
+        }
+
+        Auth.readName();
+        // location.reload();
+    }
+}
+
+class Api {
+    static handleError(err) {
+        if (err === `SyntaxError: Unexpected token 'U', "Unauthorized Access" is not valid JSON`) {
+            Auth.authenticate(true)
+            location.reload()
+        } else {
+            alert("Error: " + err)
+        }
+    }
+
+    static betterFetch(url, options = {}) {
+        options.headers = {'Authorization': 'Basic ' + btoa(Auth.getKey())}
+        return fetch(url, options)
+    }
+}
+
+class NewExpense {
+    static eventListenersInitialized = false;
+    static data = {
+        price: 0, ratio: 100, category: '', description: '',
+    }
+
+    static setupEventListeners = () => {
+        inp_price.addEventListener('input', () => {
+            NewExpense.update();
+            NewExpense.checkSubmit();
+        });
+
+        inp_ratio.addEventListener('input', () => {
+            lbl_percent.innerHTML = inp_ratio.value + '%';
+            NewExpense.update();
+        });
+
+        inp_price_me.addEventListener('input', () => {
+            NewExpense.checkSubmit();
+
+            // change value of inp_price_other accordingly
+            inp_price_other.value = (inp_price.value - inp_price_me.value).toFixed(2);
+
+            //update slider
+            inp_ratio.value = (inp_price_me.value / inp_price.value * 100).toFixed(0);
+            lbl_percent.innerHTML = inp_ratio.value + '%';
+        });
+
+        inp_price_other.addEventListener('input', () => {
+            NewExpense.checkSubmit();
+
+            // change value of inp_price_me accordingly
+            inp_price_me.value = (inp_price.value - inp_price_other.value).toFixed(2);
+
+            //update slider
+            inp_ratio.value = (inp_price_me.value / inp_price.value * 100).toFixed(0);
+            lbl_percent.innerHTML = inp_ratio.value + '%';
+        });
+
+        NewExpense.eventListenersInitialized = true;
+    }
+
+    static update = () => {
+        // round to 2 decimals
+        inp_price_me.value = (inp_price.value * (inp_ratio.value / 100)).toFixed(2);
+        inp_price_other.value = (inp_price.value * ((100 - inp_ratio.value) / 100)).toFixed(2);
+
+        NewExpense.data.price = inp_price.value;
+        NewExpense.data.ratio = inp_ratio.value;
+    }
+
+    static chooseCategory = (selectTag) => {
+        const options = selectTag.options;
+        const selectedOption = options[options.selectedIndex];
+        const category = selectedOption.value;
+
+        NewExpense.data.category = category;
+        NewExpense.checkSubmit();
+
+        // Set background colour of selectTag
+        const selectTagId = selectTag.id;
+
+        const selectTags = [document.getElementById('lst_categories_basics'), document.getElementById('lst_categories_fun'), document.getElementById('lst_categories_infreq')];
+
+        const otherSelectTags = selectTags.filter(tag => tag.id !== selectTagId)
+        const currentSelectTag = document.getElementById(selectTagId);
+
+        currentSelectTag.style.borderColor = '#034286';
+        otherSelectTags.forEach(tag => tag.style.borderColor = '#dcdcdc');
+
+        // Set other selectTag back to default
+        otherSelectTags.forEach(tag => tag.selectedIndex = 0);
+    }
+
+    static checkSubmit = () => {
+        btn_submit.disabled = !(inp_price.value !== '' && inp_price.value !== 0 && NewExpense.data.category !== '');
+    }
+
+    static submit = () => {
+        // send data to server
+        const category = NewExpense.data.category;
+
+        let price_me = inp_price_me.value;
+        let price_other = inp_price_other.value;
+        if (category === 'Inkomst') { // make negative
+            price_me = -Math.abs(price_me);
+            price_other = -Math.abs(price_other);
+        }
+
+        const price_fabian = Auth.getName() === FABIAN ? price_me : price_other;
+        const price_elisa = Auth.getName() === FABIAN ? price_other : price_me;
+        const paidBy = Auth.getName().toLowerCase();
+
+        const subcategory = null;
+        const description = document.getElementById('inp_description').value;
+
+        const fullUrl = `${url}/add_expense?price_fabian=${price_fabian}&price_elisa=${price_elisa}&paid_by=${paidBy}&category=${category}&subcategory=${subcategory}&description=${description}`;
+
+        Api.betterFetch(fullUrl)
+            .then(response => response.json())
+            .then(data => {
+                location.reload();
+            })
+            .catch(e => Api.handleError(e))
+
+    }
+}
+
+
+class ExpenseListItem {
+    static timerId = null;
+
+    static html(id, date, day, monthNumeric, category, description, myPrice, priceBoth) {
+        const month = monthNumeric === '01' ? 'Jan' : monthNumeric === '02' ? 'Feb' : monthNumeric === '03' ? 'Mar' : monthNumeric === '04' ? 'Apr' : monthNumeric === '05' ? 'May' : monthNumeric === '06' ? 'Jun' : monthNumeric === '07' ? 'Jul' : monthNumeric === '08' ? 'Aug' : monthNumeric === '09' ? 'Sep' : monthNumeric === '10' ? 'Oct' : monthNumeric === '11' ? 'Nov' : 'Dec';
+        const colour = category === "Inkomst" ? "green" : "blue";
+        return `
+        <li class="expenseItem" 
+            onmousedown="ExpenseListItem.startTimer(${id}, '${date}')" ontouchstart="ExpenseListItem.startTimer(${id}, '${date}')"
+            onmouseup="ExpenseListItem.stopTimer()" ontouchend="ExpenseListItem.stopTimer()"
+            onmouseleave="ExpenseListItem.stopTimer()"
+            onclick="ExpenseListItem.deleteExpensePrompt(${id})">
+          <span class="leftSpan">
+            <span class="expenseItemTop expenseItemDay">${month}</span> <br>
+            <span class="expenseItemBot">${day}</span>
+          </span>
+          <span class="centerSpan">
+            <span class="expenseItemTop">${category}</span> <br>
+            <span class="expenseItemBot">${description}</span>
+          </span>
+          <span class="rightSpan">
+            ${this.getPriceText(myPrice, priceBoth, colour)}
+          </span>
+        </li>
+        `
+    }
+
+    static deleteExpensePrompt(id) {
+        // small delay of 0.01 sec to allow css to change color
+        setTimeout(() => {
+            if (id === -1) {
+                alert('Monthly expenses cannot be edited')
+                return;
+            }
+            confirm(`Delete expense with id ${id}?`) ? this.deleteExpense(id) : null;
+        }, 10);
+    }
+
+    static editExpensePrompt(id, date) {
+        // date format: dd/mm/yyyy
+        if (id === -1) {
+            alert('Monthly expenses cannot be edited');
+            return;
+        }
+
+        const newDate = prompt(`Edit expense with id ${id}?`, date);
+        if (!newDate) {
+            return;
+        }
+
+        // Matches dates in the format "dd/mm/yyyy"
+        const datePattern = /^\d{2}\/\d{2}\/\d{4}$/;
+        if (!datePattern.test(newDate)) {
+            alert('Invalid date. Please enter a date in the format "dd/mm/yyyy".');
+            return;
+        }
+
+        // Check if the date is in the future, that's not allowed
+        const newDateObj = new Date(newDate.split('/').reverse().join('-')); // Convert to format "yyyy-mm-dd"
+
+        // Allow tomorrow, but not later
+        const currentDate = new Date();
+        currentDate.setDate(currentDate.getDate() + 1);
+
+        if (newDateObj > currentDate) {
+            alert('Invalid date. The expense date cannot be in the future.');
+            return;
+        }
+
+        this.editExpense(id, newDate);
+    }
+
+    static startTimer(itemId, date) {
+        // used for long press to edit expense
+        ExpenseListItem.timerId = setTimeout(() => this.editExpensePrompt(itemId, date), 2500); // 2 seconds
+    }
+
+    static stopTimer() {
+        clearTimeout(ExpenseListItem.timerId);
+    }
+
+    static getPriceText(myPrice, total, color = "blue") {
+        if (myPrice === total) {
+            return `<span class="expenseItemTop ${color}" style="font-size: 0.9em;">${myPrice.toFixed(2)}</span> <br>
+        <span class="expenseItemBot"></span>`
+        } else if (myPrice === 0) {
+            return `&frasl;`;
+        }
+        return `<span style="font-size: 1.2em; position: relative; top: 10px;">
+      <sup><span class="${color}">${myPrice}</span></sup>&frasl;<sub><span class="expenseTotal">${total.toFixed(2)}</span></sub>
+      </span>`
+    }
+
+    static deleteExpense(id) {
+        const fullUrl = `${url}/delete_expense?id=${id}`;
+        Api.betterFetch(fullUrl)
+            .then(response => response.json())
+            .then(data => {
+                location.reload();
+            })
+            .catch(e => Api.handleError(e))
+    }
+
+    static editExpense(id, date) {
+        const fullUrl = `${url}/edit_expense?id=${id}&date=${date}`; // date format: dd/mm/yyyy
+        Api.betterFetch(fullUrl)
+            .then(response => response.json())
+            .then(data => {
+                location.reload();
+            })
+            .catch(e => Api.handleError(e))
+    }
+}
+
+class TripsHistory {
+    static html(date, description, price) {
+        return `
+        <li class="tripItem">
+          <span class="leftSpan">
+            <span class="tripItemTop">${date}</span> <br>
+            <span class="tripItemBot">${description}</span>
+          </span>
+          <span class="rightSpan">
+            <span class="tripItemTop">${price}</span>
+          </span>
+        </li>
+        `
+    }
+}
 
 const inp_price = document.getElementById('inp_price');
 const inp_ratio = document.getElementById('inp_ratio');
 const lbl_percent = document.getElementById('lbl_percent');
 const inp_price_me = document.getElementById('inp_price_me');
 const inp_price_other = document.getElementById('inp_price_other');
-const lbl_name = document.getElementById('lbl_name');
 const btn_submit = document.getElementById('btn_submit');
-
-let EXPENSES_ALL = null;
 
 
 const FABIAN = 'Fabian';
 const ELISA = 'Elisa';
-
-const data = {
-    price: 0, ratio: 100, category: '', description: '',
-}
-
-// *** authentication ***
-function getKey() {
-    return localStorage.getItem("budget_key")
-}
-
-function setKey(key) {
-    localStorage.setItem('budget_key', key)
-}
-
-function authenticate(isForceAuthenticate = false) {
-    let key = getKey()
-    if (!key || isForceAuthenticate) {
-        key = prompt("Password")
-        setKey(key)
-    }
-    return key
-}
-
-function handleError(err) {
-    if (err === `SyntaxError: Unexpected token 'U', "Unauthorized Access" is not valid JSON`) {
-        authenticate(true)
-        location.reload()
-    } else {
-        alert("Error: " + err)
-    }
-}
-
-function betterFetch(url, options = {}) {
-    options.headers = {'Authorization': 'Basic ' + btoa(getKey())}
-    return fetch(url, options)
-}
-
-const getName = () => {
-    return localStorage.getItem('budget_name') || FABIAN;
-}
-
-const readName = () => {
-    const lbl_name = document.getElementById('lbl_name');
-    lbl_name.innerHTML = getName();
-}
-
-const update = () => {
-    // round to 2 decimals
-    inp_price_me.value = (inp_price.value * (inp_ratio.value / 100)).toFixed(2);
-    inp_price_other.value = (inp_price.value * ((100 - inp_ratio.value) / 100)).toFixed(2);
-
-    data.price = inp_price.value;
-    data.ratio = inp_ratio.value;
-}
 
 
 const getMonthFromUrlParam = () => { // returns 0, -1, ... indicating how many months ago
@@ -90,7 +330,7 @@ const updateDebtsAndExpensesAll = (maxTrials = 3) => {
     const nbMonthsAgo = getMonthFromUrlParam();
 
     const fullUrl = `${url}?month=${nbMonthsAgo}`;
-    betterFetch(fullUrl)
+    Api.betterFetch(fullUrl)
         .then(response => response.json())
         .then(data => {
             const fabian = data.fabian; // eg: +14.00
@@ -99,7 +339,7 @@ const updateDebtsAndExpensesAll = (maxTrials = 3) => {
             const monthlyExpenses = data.monthly_expenses;
 
             // list of how much saved at month 0, 1, 2, 3, ... (last element is current month)
-            const monthlySaved = getName() === FABIAN ? data.savings_of_lifetime_fabian : data.savings_of_lifetime_elisa;
+            const monthlySaved = Auth.getName() === FABIAN ? data.savings_of_lifetime_fabian : data.savings_of_lifetime_elisa;
 
             // append monthlyExpenses to expenses
             monthlyExpenses.forEach(expense => {
@@ -151,7 +391,7 @@ const updateDebtsAndExpensesAll = (maxTrials = 3) => {
             ALL_EXPENSES = expenses;
         })
         .catch(e => {
-            maxTrials > 0 ? updateDebtsAndExpensesAll(maxTrials - 1) : handleError(e)
+            maxTrials > 0 ? updateDebtsAndExpensesAll(maxTrials - 1) : Api.handleError(e)
         })
 }
 
@@ -252,7 +492,7 @@ const getExpenesPerMainCategory = (expenses, incomeCategory) => {
     let expensesInfreq = 0;
 
     // exclude Income
-    const incomeSum = getName() === FABIAN ? expenses.filter(expense => expense.category === incomeCategory).reduce((a, b) => {
+    const incomeSum = Auth.getName() === FABIAN ? expenses.filter(expense => expense.category === incomeCategory).reduce((a, b) => {
         return a + b.price_fabian
     }, 0) : expenses.filter(expense => expense.category === incomeCategory).reduce((a, b) => {
         return a + b.price_elisa
@@ -274,11 +514,11 @@ const getExpenesPerMainCategory = (expenses, incomeCategory) => {
         // category is in `categories_basics_keys`
         if (basics_keys.includes(category)) {
             // only my price
-            expensesBasics += getName() === FABIAN ? priceFabian : priceElisa;
+            expensesBasics += Auth.getName() === FABIAN ? priceFabian : priceElisa;
         } else if (fun_keys.includes(category)) {
-            expensesFun += getName() === FABIAN ? priceFabian : priceElisa;
+            expensesFun += Auth.getName() === FABIAN ? priceFabian : priceElisa;
         } else if (infreq_keys.includes(category)) {
-            expensesInfreq += getName() === FABIAN ? priceFabian : priceElisa;
+            expensesInfreq += Auth.getName() === FABIAN ? priceFabian : priceElisa;
         } else {
             alert(`Category ${category} not found in categories_basics_keys, categories_fun_keys or categories_infreq_keys`)
             raiseError(`Category ${category} not found in categories_basics_keys, categories_fun_keys or categories_infreq_keys`)
@@ -318,7 +558,7 @@ const updateBar = (groupedExenses, indivualExpenses) => {
     const maxLen = 10;
     // substring
     let labels = groupedExenses.map(expense => stringSubstr(expense.category, maxLen));
-    let prices = groupedExenses.map(expense => getName() === FABIAN ? expense.price_fabian : expense.price_elisa);
+    let prices = groupedExenses.map(expense => Auth.getName() === FABIAN ? expense.price_fabian : expense.price_elisa);
 
     [prices, labels] = filterZip(prices, labels, (price) => price !== 0);
 
@@ -377,7 +617,7 @@ const updateBar = (groupedExenses, indivualExpenses) => {
                                 const priceElisa = expense.price_elisa;
                                 const description = expense.description;
 
-                                const myPrice = getName() === FABIAN ? priceFabian : priceElisa;
+                                const myPrice = Auth.getName() === FABIAN ? priceFabian : priceElisa;
 
                                 lst_expenses.innerHTML += ExpenseListItem.html(id, date, day, monthNumeric, category, description, myPrice, priceFabian + priceElisa);
 
@@ -529,7 +769,7 @@ const updateExpensesAll = (expenses) => {
         // capitalize first letter of description, if not null or ''
         const description = expense.description === null || expense.description === '' ? '' : expense.description.charAt(0).toUpperCase() + expense.description.slice(1);
 
-        const myPrice = getName() === FABIAN ? priceFabian : priceElisa;
+        const myPrice = Auth.getName() === FABIAN ? priceFabian : priceElisa;
         const day = date.split('/')[0];
         const monthNumeric = date.split('/')[1];
 
@@ -539,91 +779,12 @@ const updateExpensesAll = (expenses) => {
 }
 
 
-const checkSubmit = () => {
-    if (inp_price.value != '' && inp_price.value != 0 && data.category != '') {
-        btn_submit.disabled = false;
-    } else {
-        btn_submit.disabled = true;
-    }
-}
-
-const chooseCategory = (selectTag) => {
-    const options = selectTag.options;
-    const selectedOption = options[options.selectedIndex];
-    const category = selectedOption.value;
-
-    data.category = category;
-    checkSubmit();
-
-    // Set background colour of selectTag
-    const selectTagId = selectTag.id;
-
-    const selectTags = [document.getElementById('lst_categories_basics'), document.getElementById('lst_categories_fun'), document.getElementById('lst_categories_infreq')];
-
-    const otherSelectTags = selectTags.filter(tag => tag.id != selectTagId)
-    const currentSelectTag = document.getElementById(selectTagId);
-
-    currentSelectTag.style.borderColor = '#034286';
-    otherSelectTags.forEach(tag => tag.style.borderColor = '#dcdcdc');
-
-    // Set other selectTag back to default
-    otherSelectTags.forEach(tag => tag.selectedIndex = 0);
-
-
-}
-
-
-const submit = () => {
-    // send data to server
-    const category = data.category;
-
-    let price_me = inp_price_me.value;
-    let price_other = inp_price_other.value;
-    if (category === 'Inkomst') { // make negative
-        price_me = -Math.abs(price_me);
-        price_other = -Math.abs(price_other);
-    }
-
-    const price_fabian = getName() === FABIAN ? price_me : price_other;
-    const price_elisa = getName() === FABIAN ? price_other : price_me;
-    const paidBy = getName().toLowerCase();
-
-    const subcategory = null;
-    const description = document.getElementById('inp_description').value;
-
-    const fullUrl = `${url}/add_expense?price_fabian=${price_fabian}&price_elisa=${price_elisa}&paid_by=${paidBy}&category=${category}&subcategory=${subcategory}&description=${description}`;
-
-    betterFetch(fullUrl)
-        .then(response => response.json())
-        .then(data => {
-            location.reload();
-        })
-        .catch(e => handleError(e))
-
-}
-
-const editName = () => {
-    // toggle between Fabian and Elisa. Store in localStorage
-    const lbl_name = document.getElementById('lbl_name');
-    if (lbl_name.innerHTML === FABIAN) {
-        lbl_name.innerHTML = ELISA;
-        localStorage.setItem('budget_name', ELISA);
-    } else {
-        lbl_name.innerHTML = FABIAN;
-        localStorage.setItem('budget_name', FABIAN);
-    }
-
-    readName();
-    // location.reload();
-}
-
-
 const clearExpensesFilter = () => {
     updateExpensesAll(ALL_EXPENSES);
 }
 
 const showOnlyPaidByMe = () => {
-    const expenses = ALL_EXPENSES.filter(expense => expense.paid_by === getName().toLowerCase());
+    const expenses = ALL_EXPENSES.filter(expense => expense.paid_by === Auth.getName().toLowerCase());
     updateExpensesAll(expenses);
 }
 
@@ -691,149 +852,4 @@ const updateNavigationButtons = () => {
 }
 
 
-inp_price.addEventListener('input', () => {
-    update();
-    checkSubmit();
-});
-
-inp_ratio.addEventListener('input', () => {
-    lbl_percent.innerHTML = inp_ratio.value + '%';
-    update();
-});
-
-inp_price_me.addEventListener('input', () => {
-    checkSubmit();
-
-    // change value of inp_price_other accordingly
-    inp_price_other.value = (inp_price.value - inp_price_me.value).toFixed(2);
-
-    //update slider
-    inp_ratio.value = (inp_price_me.value / inp_price.value * 100).toFixed(0);
-    lbl_percent.innerHTML = inp_ratio.value + '%';
-});
-
-inp_price_other.addEventListener('input', () => {
-    checkSubmit();
-
-    // change value of inp_price_me accordingly
-    inp_price_me.value = (inp_price.value - inp_price_other.value).toFixed(2);
-
-    //update slider
-    inp_ratio.value = (inp_price_me.value / inp_price.value * 100).toFixed(0);
-    lbl_percent.innerHTML = inp_ratio.value + '%';
-});
-
-
-class ExpenseListItem {
-    static timerId = null;
-
-    static html(id, date, day, monthNumeric, category, description, myPrice, priceBoth) {
-        const month = monthNumeric === '01' ? 'Jan' : monthNumeric === '02' ? 'Feb' : monthNumeric === '03' ? 'Mar' : monthNumeric === '04' ? 'Apr' : monthNumeric === '05' ? 'May' : monthNumeric === '06' ? 'Jun' : monthNumeric === '07' ? 'Jul' : monthNumeric === '08' ? 'Aug' : monthNumeric === '09' ? 'Sep' : monthNumeric === '10' ? 'Oct' : monthNumeric === '11' ? 'Nov' : 'Dec';
-        const colour = category === "Inkomst" ? "green" : "blue";
-        return `
-        <li class="expenseItem" 
-            onmousedown="ExpenseListItem.startTimer(${id}, '${date}')" ontouchstart="ExpenseListItem.startTimer(${id}, '${date}')"
-            onmouseup="ExpenseListItem.stopTimer()" ontouchend="ExpenseListItem.stopTimer()"
-            onmouseleave="ExpenseListItem.stopTimer()"
-            onclick="ExpenseListItem.deleteExpensePrompt(${id})">
-          <span class="leftSpan">
-            <span class="expenseItemTop expenseItemDay">${month}</span> <br>
-            <span class="expenseItemBot">${day}</span>
-          </span>
-          <span class="centerSpan">
-            <span class="expenseItemTop">${category}</span> <br>
-            <span class="expenseItemBot">${description}</span>
-          </span>
-          <span class="rightSpan">
-            ${this.getPriceText(myPrice, priceBoth, colour)}
-          </span>
-        </li>
-        `
-    }
-
-    static deleteExpensePrompt(id) {
-        // small delay of 0.01 sec to allow css to change color
-        setTimeout(() => {
-            if (id === -1) {
-                alert('Monthly expenses cannot be edited')
-                return;
-            }
-            confirm(`Delete expense with id ${id}?`) ? this.deleteExpense(id) : null;
-        }, 10);
-    }
-
-    static editExpensePrompt(id, date) {
-        // date format: dd/mm/yyyy
-        if (id === -1) {
-            alert('Monthly expenses cannot be edited');
-            return;
-        }
-
-        const newDate = prompt(`Edit expense with id ${id}?`, date);
-        if (!newDate) {
-            return;
-        }
-
-        // Matches dates in the format "dd/mm/yyyy"
-        const datePattern = /^\d{2}\/\d{2}\/\d{4}$/;
-        if (!datePattern.test(newDate)) {
-            alert('Invalid date. Please enter a date in the format "dd/mm/yyyy".');
-            return;
-        }
-
-        // Check if the date is in the future, that's not allowed
-        const newDateObj = new Date(newDate.split('/').reverse().join('-')); // Convert to format "yyyy-mm-dd"
-
-        // Allow tomorrow, but not later
-        const currentDate = new Date();
-        currentDate.setDate(currentDate.getDate() + 1);
-
-        if (newDateObj > currentDate) {
-            alert('Invalid date. The expense date cannot be in the future.');
-            return;
-        }
-
-        this.editExpense(id, newDate);
-    }
-
-    static startTimer(itemId, date) {
-        // used for long press to edit expense
-        ExpenseListItem.timerId = setTimeout(() => this.editExpensePrompt(itemId, date), 2500); // 2 seconds
-    }
-
-    static stopTimer() {
-        clearTimeout(ExpenseListItem.timerId);
-    }
-
-    static getPriceText(myPrice, total, color = "blue") {
-        if (myPrice === total) {
-            return `<span class="expenseItemTop ${color}" style="font-size: 0.9em;">${myPrice.toFixed(2)}</span> <br>
-        <span class="expenseItemBot"></span>`
-        } else if (myPrice === 0) {
-            return `&frasl;`;
-        }
-        return `<span style="font-size: 1.2em; position: relative; top: 10px;">
-      <sup><span class="${color}">${myPrice}</span></sup>&frasl;<sub><span class="expenseTotal">${total.toFixed(2)}</span></sub>
-      </span>`
-    }
-
-    static deleteExpense(id) {
-        const fullUrl = `${url}/delete_expense?id=${id}`;
-        betterFetch(fullUrl)
-            .then(response => response.json())
-            .then(data => {
-                location.reload();
-            })
-            .catch(e => handleError(e))
-    }
-
-    static editExpense(id, date) {
-        const fullUrl = `${url}/edit_expense?id=${id}&date=${date}`; // date format: dd/mm/yyyy
-        betterFetch(fullUrl)
-            .then(response => response.json())
-            .then(data => {
-                location.reload();
-            })
-            .catch(e => handleError(e))
-    }
-}
+NewExpense.setupEventListeners();
