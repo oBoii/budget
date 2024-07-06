@@ -243,27 +243,6 @@ const printMonthlySaved = (monthlySaved) => {
         }
     });
 }
-const printCurrentDayAndMonth = () => {
-    const nbMonthsAgo = getMonthFromUrlParam();
-
-    // get date of nbMonthsAgo months ago
-    const currentDate = new Date();
-    const date = new Date(currentDate.getFullYear(), currentDate.getMonth() - nbMonthsAgo, 1);
-    const day = date.getDate();
-    const daysInMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
-
-
-    const lbl_day_progress_of_month = document.getElementById('lbl_day_progress_of_month');
-    const lbl_total_days_in_month = document.getElementById('lbl_total_days_in_month');
-    const lbl_month = document.getElementById('lbl_month');
-
-    const monthExplicit = date.toLocaleString('default', {month: 'long'});
-
-    // <!-- Oct - Day: 12/31 -->
-    const msg = nbMonthsAgo < 0 ? `${monthExplicit}` : `${monthExplicit} &emsp; ${day}/${daysInMonth}`
-
-    document.getElementById('selected_month_msg').innerHTML = msg
-}
 
 const getExpenesPerMainCategory = (expenses, incomeCategory) => {
     // expense: eg [{category: "Groceries", price_fabian: 10, price_elisa: 20}, ... ]
