@@ -791,19 +791,6 @@ class TripsHistoryItem {
         </a>
         </li>
         `
-        // <li class="expenseItem">
-        //      <span class="leftSpan">
-        //          <span class="expenseItemTop expenseItemDay">Jul</span> <br>
-        //          <span class="expenseItemBot">2024</span>
-        //      </span>
-        //      <span class="centerSpan">
-        //          <span class="expenseItemTop">Oostenrijk</span> <br>
-        //      </span>
-        //      <span class="rightSpan">
-        //          <span class="expenseItemTop blue" style="font-size: 0.9em;">40.30</span> <br>
-        //          <span class="expenseItemBot"></span>
-        //      </span>
-        // </li>
     }
 }
 
