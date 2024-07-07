@@ -179,14 +179,18 @@ td button {
     margin: 0;
 }
 
-.expenseItem {
+.expenseItem, .tripItem {
     display: flex;
     border: none;
     padding: 0.5em;
     /* margin: 0.5em; */
 }
 
-.expenseItem:focus, .expenseItem:hover {
+.tripItem {
+    color: #3e3e3e;
+}
+
+.expenseItem:focus, .expenseItem:hover, .tripItem:focus, .tripItem:hover {
     background-color: #f0f0f0;
 }
 
@@ -213,7 +217,7 @@ td button {
 }
 
 .expenseItemBot,
-.expenseTotal {
+.expenseTotal, .tripItemBot {
     font-size: 0.8em;
     color: #0000009c;
 }

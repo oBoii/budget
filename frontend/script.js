@@ -424,6 +424,12 @@ class BarComponent { // Bar chart with expenses of the month
     }
 }
 
+function monthNumericToString(monthNumeric) {
+    // eg 01 -> Jan
+    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    return monthNames[parseInt(monthNumeric) - 1];
+}
+
 class LineChartComponent { // Line chart with monthly savings
     static _formatNumber = (num) => { // eg 2.0k -> 2k, but 2.5k -> 2.5k
         const numm = num.toFixed(1);
@@ -762,18 +768,42 @@ class ExpenseListItem {
 }
 
 class TripsHistoryItem {
-    static html(date, description, price) {
+    static html(id, date, description, price) {
+        // date format: yyyy-mm-dd
+        const month_numeric = date.split('-')[1]; // eg: 07
+        const month = monthNumericToString(month_numeric); // eg: Jul
+        const year = date.split('-')[0]; // eg: 2024
+
         return `
-        <li class="tripItem">
+        <li>
+        <a href="trip.html?id=${id}" class="tripItem"> <!-- TODO -->
           <span class="leftSpan">
-            <span class="tripItemTop">${date}</span> <br>
-            <span class="tripItemBot">${description}</span>
+            <span>${month}</span> <br>
+            <span class="tripItemBot">${year}</span>
+          </span>
+          <span class="centerSpan">
+            <span class="expenseItemTop">${description}</span> <br>
           </span>
           <span class="rightSpan">
-            <span class="tripItemTop">${price}</span>
+            <span class="expenseItemTop blue" style="font-size: 0.9em;">${price} EUR</span> <br>
+            <span class="expenseItemBot"></span>
           </span>
+        </a>
         </li>
         `
+        // <li class="expenseItem">
+        //      <span class="leftSpan">
+        //          <span class="expenseItemTop expenseItemDay">Jul</span> <br>
+        //          <span class="expenseItemBot">2024</span>
+        //      </span>
+        //      <span class="centerSpan">
+        //          <span class="expenseItemTop">Oostenrijk</span> <br>
+        //      </span>
+        //      <span class="rightSpan">
+        //          <span class="expenseItemTop blue" style="font-size: 0.9em;">40.30</span> <br>
+        //          <span class="expenseItemBot"></span>
+        //      </span>
+        // </li>
     }
 }
 
@@ -783,18 +813,19 @@ class TripsHistoryListComponent {
         lst_trips.innerHTML = '';
 
         trips.forEach(trip => {
-            const date = trip.date;
+            const id = trip.id;
+            const date = trip.start_date;
             const description = trip.description;
-            const price = trip.price;
+            const price = (Auth.getName() === FABIAN) ? trip.total_price_fabian : trip.total_price_elisa; // total_price_fabian: 0, total_price_elisa: 0
 
-            lst_trips.innerHTML += TripsHistoryItem.html(date, description, price);
+            lst_trips.innerHTML += TripsHistoryItem.html(id, date, description, price);
         });
     }
 
     static addTrip = () => {
         const description = document.getElementById('inp_trip_description').value;
         const date = document.getElementById('inp_trip_date').value; // format: yyyy-mm-dd
-        
+
         console.log(date)
 
         const fullUrl = `${url}/add_trip?description=${description}&date=${date}`;
@@ -842,6 +873,8 @@ const main = (maxTrials = 3) => {
             const elisa = data.elisa; // eg: +12.00
             const expenses = data.expenses;
             const monthlyExpenses = data.monthly_expenses;
+
+            const trips = data.trips;
 
             // list of how much saved at month 0, 1, 2, 3, ... (last element is current month)
             const monthlySaved = Auth.getName() === FABIAN ? data.savings_of_lifetime_fabian : data.savings_of_lifetime_elisa;
@@ -892,6 +925,9 @@ const main = (maxTrials = 3) => {
             BarComponent.render(groupedExenses, expenses);
 
             LineChartComponent.render(monthlySaved);
+
+            TripsHistoryListComponent.render(trips);
+            console.log(trips)
 
             ALL_EXPENSES = expenses;
         })
