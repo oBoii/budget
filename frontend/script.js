@@ -352,7 +352,7 @@ class BarComponent { // Bar chart with expenses of the month
 
         // make label "Inkomst" last
         const incomeIndex = labels.indexOf("Inkomst");
-        if (incomeIndex != -1) {
+        if (incomeIndex !== -1) {
             labels.push(labels.splice(incomeIndex, 1)[0]);
             prices.push(prices.splice(incomeIndex, 1)[0]);
 
@@ -390,7 +390,7 @@ class BarComponent { // Bar chart with expenses of the month
                             label: function (context) {
                                 const price = context.dataset.data[context.dataIndex];
                                 const category = context.label;
-                                const expenses = indivualExpenses.filter(expense => stringSubstr(expense.category, maxLen) === category); // some category may be displayed as Zelfontwik...
+                                const expenses = indivualExpenses.filter(expense => BarComponent._stringSubstr(expense.category, maxLen) === category); // some category may be displayed as Zelfontwik...
 
                                 // filter div_expenses to only show expenses of this category
                                 const lst_expenses = document.getElementById('ul_expenses_all');
