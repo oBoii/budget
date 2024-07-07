@@ -202,14 +202,23 @@ def get_trips() -> List[Trip]:
         ORDER BY start_date DESC, id DESC
         """
     rows = execute_sql_query(query)
-    # TODO, must fetch total prices from `trip_expenses`
 
     # Perform trip calculations based on fetched data
     data: List[Trip] = []
     for row in rows:
         id, description, start_date = row
-        total_price_fabian = 0  # TODO
-        total_price_elisa = 0  # TODO
+
+        # Fetch total expenses for this trip
+        expense_query = """
+            SELECT sum(price_fabian), sum(price_elisa) FROM trip_expenses
+            WHERE trip_id = ?
+            """
+        expense_rows = execute_sql_query(expense_query, (id,))
+        total_price_fabian, total_price_elisa = expense_rows[0]
+        # If no expenses yet, set to 0
+        total_price_fabian = total_price_fabian if total_price_fabian else 0
+        total_price_elisa = total_price_elisa if total_price_elisa else 0
+
         data.append(Trip(id, description, start_date, total_price_fabian, total_price_elisa))
 
     return data
