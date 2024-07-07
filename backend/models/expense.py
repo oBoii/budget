@@ -1,8 +1,10 @@
 from typing import Optional
 import datetime
 
+from models.abstract_model import AbstractModel
 
-class Expense:
+
+class Expense(AbstractModel):
     def __init__(self, id: int, date: Optional[datetime.date], price_fabian: float, price_elisa: float, paid_by: str,
                  category: str, subcategory: str, description: str):
         self.id = id

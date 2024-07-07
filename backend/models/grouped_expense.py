@@ -1,4 +1,7 @@
-class GroupedExpense:
+from models.abstract_model import AbstractModel
+
+
+class GroupedExpense(AbstractModel):
     def __init__(self, category: str, price_fabian: float, price_elisa: float):
         self.category = category
         self.price_fabian = price_fabian

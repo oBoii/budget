@@ -2,13 +2,15 @@ import json
 import sqlite3
 from datetime import datetime
 
-from expense import Expense
-from grouped_expense import GroupedExpense
+from models.savings_pairs import SavingsPair
+from models.trip import Trip
+from models.expense import Expense
+from models.grouped_expense import GroupedExpense
+
 from root import ROOT
 import numpy as np
 from typing import List
 
-from savings_pairs import SavingsPair
 import pytz
 
 
@@ -190,6 +192,25 @@ def get_expenses(nb_months_ago, monthly=False) -> List[Expense]:
 
         individual_cost = Expense(id, date, price_person, price_other, paid_by, category, subcategories, descriptions)
         data.append(individual_cost)
+
+    return data
+
+
+def get_trips() -> List[Trip]:
+    query = """
+        SELECT id, description, start_date FROM trips
+        ORDER BY start_date DESC, id DESC
+        """
+    rows = execute_sql_query(query)
+    # TODO, must fetch total prices from `trip_expenses`
+
+    # Perform trip calculations based on fetched data
+    data: List[Trip] = []
+    for row in rows:
+        id, description, start_date = row
+        total_price_fabian = 0  # TODO
+        total_price_elisa = 0  # TODO
+        data.append(Trip(id, description, start_date, total_price_fabian, total_price_elisa))
 
     return data
 

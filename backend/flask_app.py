@@ -7,17 +7,18 @@ from flask_httpauth import HTTPBasicAuth
 from flask import Flask, request
 from flask_cors import CORS
 
-from expense import Expense
-from grouped_expense import GroupedExpense
-from savings_pairs import SavingsPair
 from library import (
     add_expense, add_trip,
     get_debt_per_person,
-    get_expenses,
+    get_expenses, get_trips,
     param,
     delete_expense, edit_expense, get_total_expenses_grouped_by_category, get_historic_descriptions,
     _get_all_savings_for_each_month,
 )
+from models.expense import Expense
+from models.grouped_expense import GroupedExpense
+from models.savings_pairs import SavingsPair
+from models.trip import Trip
 
 sns.set_theme()
 
@@ -37,7 +38,8 @@ class IndexResponse:
     def __init__(self, fabian: float, elisa: float, expenses: List[Expense], grouped_expenses: List[GroupedExpense],
                  monthly_expenses: List[Expense], monthly_grouped_expenses: List[GroupedExpense],
                  historic_descriptions: List[str],
-                 savings_of_lifetime_fabian: List[SavingsPair], savings_of_lifetime_elisa: List[SavingsPair]):
+                 savings_of_lifetime_fabian: List[SavingsPair], savings_of_lifetime_elisa: List[SavingsPair],
+                 trips: List[Trip]):
         self.fabian = fabian
         self.elisa = elisa
         self.expenses = expenses
@@ -47,6 +49,7 @@ class IndexResponse:
         self.historic_descriptions = historic_descriptions
         self.savings_of_lifetime_fabian = savings_of_lifetime_fabian
         self.savings_of_lifetime_elisa = savings_of_lifetime_elisa
+        self.trips = trips
 
     def serialize(self) -> dict:
         return {
@@ -58,7 +61,8 @@ class IndexResponse:
             "monthly_grouped_expenses": [e.serialize() for e in self.monthly_grouped_expenses],
             "historic_descriptions": self.historic_descriptions,
             "savings_of_lifetime_fabian": [e.serialize() for e in self.savings_of_lifetime_fabian],  # [SavingsPair]
-            "savings_of_lifetime_elisa": [e.serialize() for e in self.savings_of_lifetime_elisa]
+            "savings_of_lifetime_elisa": [e.serialize() for e in self.savings_of_lifetime_elisa],
+            "trips": [e.serialize() for e in self.trips],
         }
 
 
@@ -87,10 +91,12 @@ def page_index():
     savings_of_lifetime_fabian = _get_all_savings_for_each_month("fabian")
     savings_of_lifetime_elisa = _get_all_savings_for_each_month("elisa")
 
+    trips: List[Trip] = get_trips()
+
     return_data = IndexResponse(fabian, elisa, expenses, grouped_expenses,
                                 monthly_expenses, monthly_grouped_expenses,
                                 historic_descriptions,
-                                savings_of_lifetime_fabian, savings_of_lifetime_elisa)
+                                savings_of_lifetime_fabian, savings_of_lifetime_elisa, trips)
 
     return json.dumps(return_data.serialize())
 
