@@ -9,12 +9,23 @@ class Block {
 
 }
 
-class NewExpenseBlock extends Block {
+class MainBlock extends Block {
     constructor() {
-        super(NewExpenseBlock.render);
+        super(MainBlock.render);
     }
 
     static render() {
+        return `
+        ${new DebtHeaderBlock().html()}
+        ${new NewExpenseBlock().html()}
+        ${new GraphsBlock().html()}
+        ${new ExpenseHistoryBlock().html()}`
+    }
+}
+
+
+class NewExpenseBlock {
+    html() {
         return `
         <div id="div_price" class="margin">
             <!-- round up to 2 decimals -->
@@ -73,7 +84,163 @@ class NewExpenseBlock extends Block {
 
         <div id="div_submit" class="margin">
             <button name="btn_submit" id="btn_submit" onclick="NewExpense.submit()">Submit</button>
+        </div>
+        
+        <div id="profile_name" class="margin" style="text-align: left;">
+            Betaald door <span id="lbl_name" onclick="Auth.editName()">##</span>.
         </div>`
     }
 
+}
+
+class DebtHeaderBlock { //extends Block {
+    html() {
+        return `
+        <div id="div_debts" class="side-by-side">
+        <div class="left-div" style="width: 100%">
+            <!-- Shows debt for Fabian and Elisa  -->
+            <span id="lbl_name_has_debt">##</span> moet <span id="lbl_name_no_debt">##</span> <span
+                id="lbl_debt">##</span>
+            EUR.
+        </div>
+        <div class="middle-div">
+            <button class="bg-darkgray" data-toggle="modal" data-target="#myModal">
+                ☰
+            </button>
+        </div>
+
+        <!-- The Modal -->
+        <div class="modal" id="myModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">Previous trips</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+
+                    <!-- Modal body -->
+                    <div class="modal-body" style="text-align: left">
+                        <ul class="expenseHistory" id="ul_trips_all">
+                            <li class="expenseItem">
+                                <span class="leftSpan">
+                                <span class="expenseItemTop expenseItemDay">Jul</span> <br>
+                                <span class="expenseItemBot">2024</span>
+                                </span>
+                                <span class="centerSpan">
+                                    <span class="expenseItemTop">Oostenrijk</span> <br>
+                                </span>
+                                <span class="rightSpan">
+                                    <span class="expenseItemTop blue" style="font-size: 0.9em;">40.30</span> <br>
+                                    <span class="expenseItemBot"></span>
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Modal footer -->
+                    <div class="modal-footer" style="text-align: left; padding-left: 0;">
+                        <!--Descrip-->
+                        <input id="inp_trip_description" type="text" placeholder="Add a new trip" class="form-control">
+                        <!--Date-->
+                        <input id="inp_trip_date" type="date" class="form-control">
+                        <button onclick="TripsHistoryListComponent.addTrip()">Submit</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>`
+    }
+}
+
+class GraphsBlock {
+    html() {
+        return `
+        <div id="div_statistics" class="margin">
+            <div class="swiper-container">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide">
+                        <div style="margin-bottom: -4em; position: relative; top: -3em;">
+                            <canvas id="donutChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="swiper-slide">
+                        <div id="savings_per_month">
+                            <canvas id="savingsChart"></canvas>
+                        </div>
+                        <div>
+                            Average: <sup><span id="real_avg" style="color: #4BC0C0;">##</span></sup>&frasl;<sub><span
+                                id="target_avg"
+                                style="color: #FF6384;">##</span></sub>, Total: <span id="real_total"
+                                                                                      style="color: #4BC0C0;">##k</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    
+            <div id="div_budget_statistics" style="margin-bottom: 0.5em;">
+                <!-- 💲2730 =  🍞750 + 🏠550 + ✈️1000 +  💸1200 -->
+                💲<span id="lbl_income">##</span> = 🍞<span id="lbl_cap"></span> + 🏠<span id="lbl_rent">##</span> +
+                ✈️<span id="lbl_longterm_savings">##</span> + 💸<span id="lbl_invest">##</span>
+            </div>
+            <div>
+                <canvas id="barChart"></canvas>
+            </div>
+        </div>`
+    }
+}
+
+class ExpenseHistoryNavigationButtonsBlock { //extends Block {
+    html() {
+        return `
+        <div class="side-by-side margin-side">
+            <div class="left-div" style="font-size: 1.1em;">
+            </div>
+            <div class="middle-div">
+            
+                <div style="position: relative; top: 8px;">
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination justify-content-center pagination">
+            
+                            <li class="page-item">
+                                <a class="page-link" onclick="ExpensesListComponent.showOnlyPaidByMe()">
+                                    <i class="fa" style="color: #3e3e3e; font-weight: lighter">&#xf0b0;</i>
+                                </a>
+                            </li>
+            
+                            <li class="page-item"> <!-- remove filters on expense list -->
+                                <a class="page-link" onclick="ExpensesListComponent.clearExpensesFilter()">
+                                    <i class="fa" style="color: #3e3e3e; font-weight: lighter">&#xf0c9;</i>
+                                </a>
+                            </li>
+                            <li id="paginationPrev" class="page-item">
+                                <a id="paginationPrevChild" class="page-link">&laquo;</a>
+                            </li>
+                            <li id="paginationCurr" class="page-item active">
+                                <a id="paginationCurrChild" class="page-link">##</a>
+                            </li>
+                            <li id="paginationNext" class="page-item disabled"><a id="paginationNextChild"
+                                                                                  class="page-link">&raquo;</a></li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+        `
+    }
+}
+
+class ExpenseHistoryBlock { //extends Block {
+
+    html() {
+        return `
+        ${new ExpenseHistoryNavigationButtonsBlock().html()}
+
+        <div id="div_expenses">
+            <ul id="ul_expenses_all" class="expenseHistory">
+            </ul>
+        </div>`
+    }
 }
