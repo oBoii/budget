@@ -545,7 +545,7 @@ class ExpensesListComponent {
     static updateNavigationButtons = () => {
         // page navigation: calls getMonthFromUrlParam() and updates the navigation buttons
         // get current month from url param
-        const month = getMonthFromUrlParam();
+        const month = UrlArgsService.getMonth();
 
         const prev = document.getElementById('paginationPrev');
         const curr = document.getElementById('paginationCurr');
@@ -838,19 +838,12 @@ const FABIAN = 'Fabian';
 const ELISA = 'Elisa';
 
 
-const getMonthFromUrlParam = () => { // returns 0, -1, ... indicating how many months ago
-    const urlParams = new URLSearchParams(window.location.search);
-    const month = parseInt(urlParams.get('month'));
-    return isNaN(month) ? 0 : month;
-}
-
-
 /**
  * This function is called when the page is loaded. It fetches the data from the server and updates the page.
  * @param maxTrials
  */
 const main = (maxTrials = 3) => {
-    const nbMonthsAgo = getMonthFromUrlParam();
+    const nbMonthsAgo = UrlArgsService.getMonth();
 
     const fullUrl = `${url}?month=${nbMonthsAgo}`;
     Api.betterFetch(fullUrl)

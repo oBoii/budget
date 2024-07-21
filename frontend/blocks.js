@@ -1,3 +1,18 @@
+class UrlArgsService {
+    static getMonth() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const month = parseInt(urlParams.get('month'));
+        return isNaN(month) ? 0 : month;
+    }
+
+    static getTrip() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const trip = parseInt(urlParams.get('trip'));
+        return isNaN(trip) ? 0 : trip;
+    }
+}
+
+
 class Block {
     constructor(render_function) {
         const content = render_function();
@@ -23,7 +38,6 @@ class MainBlock extends Block {
     }
 }
 
-
 class NewExpenseBlock {
     html() {
         return `
@@ -47,7 +61,6 @@ class NewExpenseBlock {
                        class="form-control">
             </div>
         </div>
-
 
         <!--Categories-->
         <div id="div_categories" class="margin">
