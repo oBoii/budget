@@ -194,54 +194,80 @@ const printMonthlySaved = (monthlySaved) => {
 
     // Prepare the data (last 12 months or less)
     const data = monthlySaved.slice(Math.max(0, monthlySaved.length - 12));
-    const targetData = new Array(data.length).fill(0);
-    const valueData = new Array(data.length).fill(0);
+    // const targetData = new Array(data.length).fill(0);
+    // const valueData = new Array(data.length).fill(0);
 
     // hard cap of 1,000
-    for (let i = 0; i < data.length; i++) {
-        valueData[i] = Math.min(data[i].value, 800);
-        targetData[i] = Math.min(data[i].target, 800);
+    // for (let i = 0; i < data.length; i++) {
+    //     valueData[i] = Math.min(data[i].value, 800);
+    //     targetData[i] = Math.min(data[i].target, 800);
+    // }
 
-    }
+    const valueData = data.map(d => d.value);
+    const targetData = data.map(d => d.target);
 
     _printMonthlySavedValues(valueData, targetData);
 
-    // Prepare the target data (a constant value of 343)
-    // const targetData = new Array(data.length).fill(343);
-
     // Create the chart
+    const visibleMax = Math.round(
+        // 10% more than the highest value, but rounded to 100
+        (valueData.reduce((a, b) => Math.max(a, b), 0) * 1.1) / 100) * 100;
+
+    // // 75th percentile
+    // // Calculate the 75th percentile
+    // const sortedData = valueData.slice().sort((a, b) => a - b);
+    // const percentileIndex = Math.floor(0.9 * sortedData.length);
+    // const percentileValue = sortedData[percentileIndex];
+    //
+    // // Set the visible max to the 75th percentile value, rounded to the nearest 100
+    // const visibleMax = Math.round(percentileValue / 100) * 100;
+
+
     new Chart(ctx, {
-        type: 'line', data: {
-            labels: labels, datasets: [{
-                label: 'Savings',
-                data: valueData,
-                fill: false,
-                borderColor: 'rgb(75, 192, 192)',
-                tension: 0.3,
-                pointRadius: 5, // make the clickable point also bigger
-                pointHoverRadius: 15,
-            }, {
-                label: 'Target',
-                data: targetData,
-                fill: false,
-                borderColor: 'rgb(255, 99, 132)',
-                tension: 0.3,
-                pointRadius: 5,
-                pointHoverRadius: 15,
-                borderDash: [5, 5], // This will make the line dashed
-            }]
-        }, options: {
-            responsive: true, scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }, plugins: {
-                legend: {
-                    display: false // This hides the "Savings" and "Target" buttons
+            type: 'line',
+            data: {
+                labels: labels, datasets:
+                    [{
+                        label: 'Savings',
+                        data: valueData,
+                        fill: false,
+                        borderColor: 'rgb(75, 192, 192)',
+                        tension: 0.3,
+                        pointRadius: 5, // make the clickable point also bigger
+                        pointHoverRadius: 15,
+                    }, {
+                        label: 'Target',
+                        data: targetData,
+                        fill: false,
+                        borderColor: 'rgb(255, 99, 132)',
+                        tension: 0.3,
+                        pointRadius: 5,
+                        pointHoverRadius: 15,
+                        borderDash: [5, 5], // This will make the line dashed
+                    }]
+            }
+            ,
+            options: {
+                responsive: true, scales:
+                    {
+                        y: {
+                            beginAtZero: true,
+                            max: visibleMax, // 10% more than the highest value
+                            ticks: {
+                                stepSize: 100
+                            }
+                        }
+                    }
+                ,
+                plugins: {
+                    legend: {
+                        display: false // This hides the "Savings" and "Target" buttons
+                    }
                 }
             }
         }
-    });
+    )
+    ;
 }
 
 const getExpenesPerMainCategory = (expenses, incomeCategory) => {
